@@ -1,6 +1,6 @@
 {
   "name": "Taller Biker",
-  "short_name": "TallerBiker",
+  "short_name": "Taller Biker",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
@@ -8,12 +8,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3198/3198348.png",
+      "src": "/logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3198/3198348.png",
+      "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
