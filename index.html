@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Taller Biker - Gestión Profesional</title>
     
-    <!-- Configuración para Instalación como App Nativa (PWA Modo Standalone) -->
+    <!-- Vinculación PWA Standalone -->
     <meta name="theme-color" content="#0a0a0a">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Taller Biker">
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Taller%20Biker%22,%22short_name%22:%22TallerBiker%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%230a0a0a%22,%22theme_color%22:%22%2300ff88%22}">
+    <link rel="manifest" href="/manifest.json">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -117,9 +117,35 @@
         .status-entregado { background-color: #0a84ff; color: #fff; }
 
         .modal-content { background-color: var(--bg-card); color: var(--text-light); border: 1px solid var(--border-color); border-radius: 16px; }
-        .nav-tabs { border-bottom: 1px solid var(--border-color); }
-        .nav-tabs .nav-link { color: #bbbbbb; border: none; padding: 10px 12px; font-size: 0.85rem; font-weight: 600; }
-        .nav-tabs .nav-link.active { color: var(--neon-green); background-color: transparent; border-bottom: 3px solid var(--neon-green); }
+        
+        /* Solapas optimizadas para una sola fila */
+        .nav-tabs { 
+            border-bottom: 1px solid var(--border-color); 
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+        }
+
+        .nav-tabs .nav-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-tabs .nav-link { 
+            color: #bbbbbb; 
+            border: none; 
+            padding: 8px 4px; 
+            font-size: 0.78rem; 
+            font-weight: 600; 
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        .nav-tabs .nav-link.active { 
+            color: var(--neon-green); 
+            background-color: transparent; 
+            border-bottom: 3px solid var(--neon-green); 
+        }
 
         .fab-mic {
             position: fixed; bottom: 85px; right: 20px; width: 58px; height: 58px; border-radius: 50%;
@@ -127,8 +153,8 @@
             font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4); z-index: 1000; border: none; cursor: pointer;
         }
 
-        .total-highlight { font-size: 1.5rem; font-weight: 800; color: var(--neon-green); }
-        .resta-highlight { font-size: 1.5rem; font-weight: 800; color: #ff9500; }
+        .total-highlight { font-size: 1.4rem; font-weight: 800; color: var(--neon-green); }
+        .resta-highlight { font-size: 1.4rem; font-weight: 800; color: #ff9500; }
         
         .receipt-preview-box {
             background-color: #090d12;
@@ -147,7 +173,7 @@
 <body>
 
     <div class="app-container">
-        <!-- Navbar limpia con nombre completo y foto de perfil -->
+        <!-- Navbar con foto de perfil -->
         <nav class="navbar navbar-dark">
             <div class="container-fluid d-flex justify-content-between align-items-center">
                 <a class="navbar-brand m-0" href="#" id="appTitleHeader"><i class="fas fa-tools me-2"></i>Taller Biker</a>
@@ -157,13 +183,13 @@
             </div>
         </nav>
 
-        <div class="container-fluid pt-3 px-3">
+        <div class="container-fluid pt-3 px-2">
             <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
                 <li class="nav-item">
                     <button class="nav-link active" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-calculator me-1"></i> Caja / Doc</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-stethoscope me-1"></i> Diagnóstico</button>
+                    <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-stethoscope me-1"></i> Diag</button>
                 </li>
                 <li class="nav-item">
                     <button class="nav-link" id="ordenes-tab" data-bs-toggle="tab" data-bs-target="#ordenes" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-tasks me-1"></i> Trabajos</button>
@@ -182,7 +208,6 @@
                             <button class="btn btn-sm btn-outline-secondary text-light" onclick="limpiarPresupuesto()">Limpiar</button>
                         </div>
                         <div class="card-body">
-                            <!-- SELECCIÓN TIPO DOCUMENTO -->
                             <div class="mb-3">
                                 <label class="form-label small text-info fw-bold"><i class="fas fa-exchange-alt me-1"></i> Tipo de Documento a Generar:</label>
                                 <select id="p_tipo_doc" class="form-select border-info" onchange="calcularPresupuestoVivo()">
@@ -245,25 +270,24 @@
                             <div class="p-3 border border-secondary rounded bg-black mt-3">
                                 <div class="row text-center">
                                     <div class="col-3">
-                                        <small class="text-muted d-block" style="font-size:0.7rem;">M. Obra</small>
+                                        <small class="text-muted d-block" style="font-size:0.65rem;">M. Obra</small>
                                         <span id="subtotalServiciosDisplay" class="fw-bold small">$0</span>
                                     </div>
                                     <div class="col-3">
-                                        <small class="text-muted d-block" style="font-size:0.7rem;">Repuestos</small>
+                                        <small class="text-muted d-block" style="font-size:0.65rem;">Repuestos</small>
                                         <span id="subtotalRepuestosDisplay" class="fw-bold small">$0</span>
                                     </div>
                                     <div class="col-3">
-                                        <small class="text-muted d-block" style="font-size:0.7rem;">TOTAL</small>
+                                        <small class="text-muted d-block" style="font-size:0.65rem;">TOTAL</small>
                                         <span id="totalFinalDisplay" class="total-highlight">$0</span>
                                     </div>
                                     <div class="col-3">
-                                        <small class="text-warning d-block" style="font-size:0.7rem;">RESTA</small>
+                                        <small class="text-warning d-block" style="font-size:0.65rem;">RESTA</small>
                                         <span id="restaFinalDisplay" class="resta-highlight">$0</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- VISTA PREVIA EN VIVO -->
                             <div class="mt-3">
                                 <label class="form-label small text-info fw-bold"><i class="fas fa-eye me-1"></i> Vista Previa (WhatsApp):</label>
                                 <div id="receiptPreviewBox" class="receipt-preview-box">Cargá los datos arriba para ver el texto formateado...</div>
