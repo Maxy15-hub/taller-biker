@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Taller Biker - Gestión Profesional</title>
+    
+    <!-- Configuración para permitir Instalación como App (PWA) -->
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Taller Biker">
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Taller%20Biker%22,%22short_name%22:%22TallerBiker%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%230a0a0a%22,%22theme_color%22:%22%2300ff88%22}">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- SDK Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
     <style>
         :root {
             --bg-dark: #0a0a0a;
@@ -40,8 +50,23 @@
             color: var(--neon-green) !important; font-weight: 800; font-size: 1.2rem;
         }
 
+        /* Foto de perfil limpia sin fondo */
+        .user-profile-badge {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .user-avatar-nav {
-            width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--neon-green); object-fit: cover;
+            width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--neon-green); object-fit: cover;
+        }
+
+        .user-name-text {
+            color: var(--text-light); font-weight: 700; font-size: 0.95rem;
         }
 
         .card {
@@ -120,7 +145,7 @@
 <body>
 
     <div class="app-container">
-        <!-- Navbar con foto de perfil Google -->
+        <!-- Navbar limpia con nombre completo y foto de perfil -->
         <nav class="navbar navbar-dark">
             <div class="container-fluid d-flex justify-content-between align-items-center">
                 <a class="navbar-brand m-0" href="#" id="appTitleHeader"><i class="fas fa-tools me-2"></i>Taller Biker</a>
@@ -299,11 +324,10 @@
                         </div>
                     </div>
 
-                    <!-- NUEVA SECCIÓN: IMPORTAR CATÁLOGO DE PRECIOS DESDE ARCHIVO -->
-                    <div class="card mb-3 border-neon">
+                    <div class="card mb-3 border-success">
                         <div class="card-header bg-dark text-success fw-bold"><i class="fas fa-file-excel me-2"></i>Importar Tarifario / Precios desde Archivo</div>
                         <div class="card-body">
-                            <p class="small text-muted mb-2">Subí un archivo CSV o de texto con la lista actualizada de precios de bicicleterías (formato: <em>Servicio,Precio</em>):</p>
+                            <p class="small text-muted mb-2">Subí un archivo CSV o TXT con la lista de precios de bicicleterías (formato: <em>Servicio,Precio</em>):</p>
                             <input type="file" id="catalogFile" accept=".csv, .txt, .json" style="display:none" onchange="importarTarifarioArchivo(event)">
                             <button class="btn btn-sm btn-outline-neon w-100" onclick="document.getElementById('catalogFile').click()"><i class="fas fa-file-upload me-1"></i> Cargar Archivo de Precios</button>
                         </div>
@@ -650,9 +674,15 @@
             const userCard = document.getElementById('userSessionCard');
 
             if(user) {
-                const name = user.displayName ? user.displayName.split(' ')[0] : 'Maxy';
-                const photo = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar-nav me-1" alt="Profile">` : `<i class="fas fa-user-circle me-1"></i>`;
-                authContainer.innerHTML = `<span class="badge bg-success d-flex align-items-center p-1 px-2">${photo} <span>${name}</span></span>`;
+                const fullName = user.displayName ? user.displayName : 'Maxi Esquivel';
+                const photo = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar-nav" alt="Profile">` : `<i class="fas fa-user-circle fa-lg text-success"></i>`;
+                
+                authContainer.innerHTML = `
+                    <div class="user-profile-badge">
+                        ${photo}
+                        <span class="user-name-text">${fullName}</span>
+                    </div>
+                `;
                 userCard.innerHTML = `
                     <div class="mb-2">
                         <strong class="d-block text-success"><i class="fas fa-check-circle me-1"></i> Sincronización activa</strong>
