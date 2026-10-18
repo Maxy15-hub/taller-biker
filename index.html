@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Taller Biker - Gestión Profesional</title>
     
-    <!-- Configuración para permitir Instalación como App (PWA) -->
+    <!-- Configuración para Instalación como App Nativa (PWA Modo Standalone) -->
     <meta name="theme-color" content="#0a0a0a">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Taller Biker">
     <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Taller%20Biker%22,%22short_name%22:%22TallerBiker%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%230a0a0a%22,%22theme_color%22:%22%2300ff88%22}">
@@ -50,7 +51,6 @@
             color: var(--neon-green) !important; font-weight: 800; font-size: 1.2rem;
         }
 
-        /* Foto de perfil limpia sin fondo */
         .user-profile-badge {
             background: transparent !important;
             border: none !important;
@@ -59,6 +59,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
         }
 
         .user-avatar-nav {
@@ -126,7 +127,8 @@
             font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4); z-index: 1000; border: none; cursor: pointer;
         }
 
-        .total-highlight { font-size: 1.6rem; font-weight: 800; color: var(--neon-green); }
+        .total-highlight { font-size: 1.5rem; font-weight: 800; color: var(--neon-green); }
+        .resta-highlight { font-size: 1.5rem; font-weight: 800; color: #ff9500; }
         
         .receipt-preview-box {
             background-color: #090d12;
@@ -158,19 +160,16 @@
         <div class="container-fluid pt-3 px-3">
             <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
                 <li class="nav-item">
-                    <button class="nav-link active" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button"><i class="fas fa-calculator me-1"></i> Caja / Doc</button>
+                    <button class="nav-link active" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-calculator me-1"></i> Caja / Doc</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button"><i class="fas fa-stethoscope me-1"></i> Diagnóstico</button>
+                    <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-stethoscope me-1"></i> Diagnóstico</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="ordenes-tab" data-bs-toggle="tab" data-bs-target="#ordenes" type="button"><i class="fas fa-tasks me-1"></i> Trabajos</button>
+                    <button class="nav-link" id="ordenes-tab" data-bs-toggle="tab" data-bs-target="#ordenes" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-tasks me-1"></i> Trabajos</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button"><i class="fas fa-history me-1"></i> Historial</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button"><i class="fas fa-cog me-1"></i> Config</button>
+                    <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-history me-1"></i> Historial</button>
                 </li>
             </ul>
 
@@ -223,31 +222,43 @@
                             </div>
 
                             <div class="mt-3 pt-2 border-top border-secondary">
-                                <label class="form-label small text-muted d-block">Carga Rápida - Descuentos:</label>
+                                <label class="form-label small text-muted d-block">Descuentos y Pagos Adelantados:</label>
                                 <div id="discountPresetsContainer" class="mb-2"></div>
-                                <div class="row g-2">
+                                <div class="row g-2 mb-2">
                                     <div class="col-7">
                                         <input type="text" id="p_descuento_nombre" class="form-control form-control-sm" placeholder="Motivo descuento" oninput="calcularPresupuestoVivo()">
                                     </div>
                                     <div class="col-5">
-                                        <input type="number" id="p_descuento_monto" class="form-control form-control-sm" placeholder="Monto $" oninput="calcularPresupuestoVivo()">
+                                        <input type="number" id="p_descuento_monto" class="form-control form-control-sm" placeholder="Descuento $" oninput="calcularPresupuestoVivo()">
+                                    </div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-7">
+                                        <label class="form-label small text-warning m-0">Adelanto de pago / Seña ($):</label>
+                                    </div>
+                                    <div class="col-5">
+                                        <input type="number" id="p_adelanto_monto" class="form-control form-control-sm border-warning" placeholder="Monto abonado $" oninput="calcularPresupuestoVivo()">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="p-3 border border-secondary rounded bg-black mt-3">
                                 <div class="row text-center">
-                                    <div class="col-4">
-                                        <small class="text-muted d-block" style="font-size:0.75rem;">M. Obra</small>
-                                        <span id="subtotalServiciosDisplay" class="fw-bold">$0</span>
+                                    <div class="col-3">
+                                        <small class="text-muted d-block" style="font-size:0.7rem;">M. Obra</small>
+                                        <span id="subtotalServiciosDisplay" class="fw-bold small">$0</span>
                                     </div>
-                                    <div class="col-4">
-                                        <small class="text-muted d-block" style="font-size:0.75rem;">Repuestos</small>
-                                        <span id="subtotalRepuestosDisplay" class="fw-bold">$0</span>
+                                    <div class="col-3">
+                                        <small class="text-muted d-block" style="font-size:0.7rem;">Repuestos</small>
+                                        <span id="subtotalRepuestosDisplay" class="fw-bold small">$0</span>
                                     </div>
-                                    <div class="col-4">
-                                        <small class="text-muted d-block" style="font-size:0.75rem;">TOTAL</small>
+                                    <div class="col-3">
+                                        <small class="text-muted d-block" style="font-size:0.7rem;">TOTAL</small>
                                         <span id="totalFinalDisplay" class="total-highlight">$0</span>
+                                    </div>
+                                    <div class="col-3">
+                                        <small class="text-warning d-block" style="font-size:0.7rem;">RESTA</small>
+                                        <span id="restaFinalDisplay" class="resta-highlight">$0</span>
                                     </div>
                                 </div>
                             </div>
@@ -313,9 +324,21 @@
                     <h5 class="mb-3"><i class="fas fa-receipt text-info me-2"></i>Comprobantes Guardados</h5>
                     <div id="historialComprobantesList"></div>
                 </div>
+            </div>
+        </div>
 
-                <!-- CONFIGURACIÓN Y CARGA DE ARCHIVO DE PRECIOS -->
-                <div class="tab-pane fade" id="config">
+        <button class="fab-mic" id="btnMic" onclick="toggleDictadoVoz()"><i class="fas fa-microphone"></i></button>
+    </div>
+
+    <!-- Modales -->
+    <div class="modal fade" id="configModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title"><i class="fas fa-cog text-success me-2"></i>Configuración y Tarifario del Taller</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
                     <div class="card mb-3 border-info">
                         <div class="card-header bg-dark text-info fw-bold"><i class="fas fa-cloud me-2"></i>Sincronización Automática</div>
                         <div class="card-body text-center" id="userSessionCard">
@@ -327,7 +350,7 @@
                     <div class="card mb-3 border-success">
                         <div class="card-header bg-dark text-success fw-bold"><i class="fas fa-file-excel me-2"></i>Importar Tarifario / Precios desde Archivo</div>
                         <div class="card-body">
-                            <p class="small text-muted mb-2">Subí un archivo CSV o TXT con la lista de precios de bicicleterías (formato: <em>Servicio,Precio</em>):</p>
+                            <p class="small text-muted mb-2">Subí un archivo CSV o TXT con la lista de precios (formato: <em>Servicio,Precio</em>):</p>
                             <input type="file" id="catalogFile" accept=".csv, .txt, .json" style="display:none" onchange="importarTarifarioArchivo(event)">
                             <button class="btn btn-sm btn-outline-neon w-100" onclick="document.getElementById('catalogFile').click()"><i class="fas fa-file-upload me-1"></i> Cargar Archivo de Precios</button>
                         </div>
@@ -404,11 +427,8 @@
                 </div>
             </div>
         </div>
-
-        <button class="fab-mic" id="btnMic" onclick="toggleDictadoVoz()"><i class="fas fa-microphone"></i></button>
     </div>
 
-    <!-- Modales -->
     <div class="modal fade" id="aiModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -482,6 +502,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Registro del Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    console.log('Service Worker registrado correctamente');
+                }).catch(err => {
+                    console.log('Error al registrar Service Worker:', err);
+                });
+            });
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyA9y6XngFzZzNlohlZSC0iRb6ntDY7Czeg",
             authDomain: "taller-biker.firebaseapp.com",
@@ -547,6 +578,7 @@
             initSpeech();
             calcularPresupuestoVivo();
             generarDiagnosticoTexto();
+            gestionarVisibilidadMic();
         });
 
         function saveData() {
@@ -559,6 +591,22 @@
             if (currentUser && db && navigator.onLine) {
                 sincronizarHaciaNube();
             }
+        }
+
+        function gestionarVisibilidadMic() {
+            setTimeout(() => {
+                const activeTab = document.querySelector('.nav-link.active');
+                const btnMic = document.getElementById('btnMic');
+                if (activeTab && (activeTab.id === 'presupuesto-tab' || activeTab.id === 'diag-tab')) {
+                    btnMic.style.display = 'flex';
+                } else {
+                    btnMic.style.display = 'none';
+                }
+            }, 50);
+        }
+
+        function abrirConfigModal() {
+            new bootstrap.Modal(document.getElementById('configModal')).show();
         }
 
         function exportarCopiaSeguridad() {
@@ -678,7 +726,7 @@
                 const photo = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar-nav" alt="Profile">` : `<i class="fas fa-user-circle fa-lg text-success"></i>`;
                 
                 authContainer.innerHTML = `
-                    <div class="user-profile-badge">
+                    <div class="user-profile-badge" onclick="abrirConfigModal()">
                         ${photo}
                         <span class="user-name-text">${fullName}</span>
                     </div>
@@ -866,7 +914,10 @@
             document.querySelectorAll('.r-row').forEach(r => subRepuestos += (parseFloat(r.querySelector('.r-precio').value) || 0));
             
             const descuento = parseFloat(document.getElementById('p_descuento_monto').value) || 0;
+            const adelanto = parseFloat(document.getElementById('p_adelanto_monto').value) || 0;
+
             const total = Math.max(0, (subServicios + subRepuestos) - descuento);
+            const resta = Math.max(0, total - adelanto);
 
             let txt = "";
             if(tipoDoc === "presupuesto") {
@@ -914,7 +965,13 @@
                 const descNom = document.getElementById('p_descuento_nombre').value || 'Descuento';
                 txt += `🏷️ Descuento (${descNom}): -$${descuento.toLocaleString()}\n`;
             }
-            txt += `💰 TOTAL ${tipoDoc === "presupuesto" ? "ESTIMADO" : "ABONADO"}: $${total.toLocaleString()}\n`;
+            txt += `💰 TOTAL SERVICIO: $${total.toLocaleString()}\n`;
+
+            if(adelanto > 0) {
+                txt += `💵 Adelanto de pago / Seña: -$${adelanto.toLocaleString()}\n`;
+                txt += `🔻 RESTA SALDO A PAGAR: $${resta.toLocaleString()}\n`;
+            }
+
             txt += `──────────────────────────────\n`;
             
             if(tipoDoc === "presupuesto") {
@@ -929,15 +986,16 @@
             if(configTaller.direccion) txt += `📍 ${configTaller.direccion}\n`;
             if(configTaller.telefono) txt += `📲 Consultas: ${configTaller.telefono}`;
 
-            return { txt, subServicios, subRepuestos, descuento, total, cliente, bici, fecha };
+            return { txt, subServicios, subRepuestos, descuento, adelanto, total, resta, cliente, bici, fecha };
         }
 
         function calcularPresupuestoVivo() {
-            const { txt, subServicios, subRepuestos, total } = construirTextoComprobante();
+            const { txt, subServicios, subRepuestos, total, resta } = construirTextoComprobante();
 
             document.getElementById('subtotalServiciosDisplay').innerText = '$' + subServicios.toLocaleString();
             document.getElementById('subtotalRepuestosDisplay').innerText = '$' + subRepuestos.toLocaleString();
             document.getElementById('totalFinalDisplay').innerText = '$' + total.toLocaleString();
+            document.getElementById('restaFinalDisplay').innerText = '$' + resta.toLocaleString();
 
             document.getElementById('receiptPreviewBox').innerText = txt;
         }
@@ -996,6 +1054,7 @@
             document.getElementById('p_bici').value = '';
             document.getElementById('p_descuento_nombre').value = '';
             document.getElementById('p_descuento_monto').value = '';
+            document.getElementById('p_adelanto_monto').value = '';
             document.getElementById('serviciosList').innerHTML = '';
             document.getElementById('repuestosList').innerHTML = '';
             addServicioRow();
