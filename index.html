@@ -33,11 +33,15 @@
         }
 
         .navbar {
-            background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 12px 16px;
+            background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 10px 16px;
         }
 
         .navbar-brand {
             color: var(--neon-green) !important; font-weight: 800; font-size: 1.2rem;
+        }
+
+        .user-avatar-nav {
+            width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--neon-green); object-fit: cover;
         }
 
         .card {
@@ -116,7 +120,7 @@
 <body>
 
     <div class="app-container">
-        <!-- Navbar -->
+        <!-- Navbar con foto de perfil Google -->
         <nav class="navbar navbar-dark">
             <div class="container-fluid d-flex justify-content-between align-items-center">
                 <a class="navbar-brand m-0" href="#" id="appTitleHeader"><i class="fas fa-tools me-2"></i>Taller Biker</a>
@@ -237,8 +241,9 @@
                 <!-- DIAGNÓSTICO TÉCNICO -->
                 <div class="tab-pane fade" id="diag">
                     <div class="card">
-                        <div class="card-header bg-dark text-warning fw-bold">
-                            <i class="fas fa-stethoscope me-2"></i>Informe de Diagnóstico IA / Voz
+                        <div class="card-header bg-dark text-warning fw-bold d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-stethoscope me-2"></i>Informe de Diagnóstico IA / Voz</span>
+                            <button class="btn btn-sm btn-outline-warning" onclick="limpiarDiagnostico()"><i class="fas fa-eraser me-1"></i> Limpiar</button>
                         </div>
                         <div class="card-body">
                             <div class="row g-2 mb-3">
@@ -253,8 +258,8 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label small text-muted">Detalle del Diagnóstico / Observaciones Técnicas</label>
-                                <textarea id="d_hallazgos" class="form-control" rows="4" placeholder="Ej: Transmisión desgastada, cambio de cadena urgente. Frenos con pastillas contaminadas..." oninput="generarDiagnosticoTexto()"></textarea>
+                                <label class="form-label small text-muted">Detalle del Diagnóstico / Observaciones Técnicas (Independiente)</label>
+                                <textarea id="d_hallazgos" class="form-control" rows="5" placeholder="Dictá con el micrófono o escribí acá únicamente las fallas técnicas..." oninput="generarDiagnosticoTexto()"></textarea>
                             </div>
 
                             <div class="mt-3">
@@ -284,13 +289,23 @@
                     <div id="historialComprobantesList"></div>
                 </div>
 
-                <!-- CONFIGURACIÓN Y CATÁLOGO -->
+                <!-- CONFIGURACIÓN Y CARGA DE ARCHIVO DE PRECIOS -->
                 <div class="tab-pane fade" id="config">
                     <div class="card mb-3 border-info">
                         <div class="card-header bg-dark text-info fw-bold"><i class="fas fa-cloud me-2"></i>Sincronización Automática</div>
                         <div class="card-body text-center" id="userSessionCard">
                             <p class="small text-muted mb-2">Iniciá sesión para respaldar tus datos automáticamente en tu cuenta de Google.</p>
                             <button class="btn btn-sm btn-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
+                        </div>
+                    </div>
+
+                    <!-- NUEVA SECCIÓN: IMPORTAR CATÁLOGO DE PRECIOS DESDE ARCHIVO -->
+                    <div class="card mb-3 border-neon">
+                        <div class="card-header bg-dark text-success fw-bold"><i class="fas fa-file-excel me-2"></i>Importar Tarifario / Precios desde Archivo</div>
+                        <div class="card-body">
+                            <p class="small text-muted mb-2">Subí un archivo CSV o de texto con la lista actualizada de precios de bicicleterías (formato: <em>Servicio,Precio</em>):</p>
+                            <input type="file" id="catalogFile" accept=".csv, .txt, .json" style="display:none" onchange="importarTarifarioArchivo(event)">
+                            <button class="btn btn-sm btn-outline-neon w-100" onclick="document.getElementById('catalogFile').click()"><i class="fas fa-file-upload me-1"></i> Cargar Archivo de Precios</button>
                         </div>
                     </div>
 
@@ -374,13 +389,13 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title"><i class="fas fa-robot text-success me-2"></i>Asistente por Voz</h6>
+                    <h6 class="modal-title" id="aiModalTitle"><i class="fas fa-robot text-success me-2"></i>Asistente por Voz</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="small text-muted">Dictá o escribí lo realizado (ej: <em>"Presupuesto para Bauti, service completo 25000 y repuesto de pedales 3000"</em>):</p>
+                    <p class="small text-muted" id="aiModalSubtitle">Dictá o escribí lo realizado:</p>
                     <textarea id="aiInputText" class="form-control mb-3" rows="3" placeholder="Esperando voz o texto..."></textarea>
-                    <button class="btn btn-neon w-100" onclick="procesarTextoIA()"><i class="fas fa-magic me-2"></i>Procesar y Rellenar Presupuesto</button>
+                    <button class="btn btn-neon w-100" onclick="procesarTextoIA()"><i class="fas fa-magic me-2"></i>Procesar Datos</button>
                 </div>
             </div>
         </div>
@@ -569,6 +584,36 @@
             reader.readAsText(file);
         }
 
+        function importarTarifarioArchivo(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const lines = evt.target.result.split('\n');
+                    let agregados = 0;
+                    lines.forEach(line => {
+                        const parts = line.split(',');
+                        if (parts.length >= 2) {
+                            const nombre = parts[0].trim();
+                            const precio = parseFloat(parts[1].trim());
+                            if (nombre && !isNaN(precio)) {
+                                presets.push({ nombre, precio });
+                                agregados++;
+                            }
+                        }
+                    });
+                    saveData();
+                    renderPresets();
+                    alert(`¡Tarifario importado! Se agregaron ${agregados} precios al catálogo del taller.`);
+                } catch(err) {
+                    alert("Error al leer el archivo de precios.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
         function sincronizarHaciaNube() {
             if(!currentUser || !db) return;
             db.collection('usuarios').doc(currentUser.uid).set({
@@ -605,8 +650,9 @@
             const userCard = document.getElementById('userSessionCard');
 
             if(user) {
-                const name = user.displayName ? user.displayName.split(' ')[0] : 'Usuario';
-                authContainer.innerHTML = `<span class="badge bg-success"><i class="fas fa-cloud-check me-1"></i> ${name}</span>`;
+                const name = user.displayName ? user.displayName.split(' ')[0] : 'Maxy';
+                const photo = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar-nav me-1" alt="Profile">` : `<i class="fas fa-user-circle me-1"></i>`;
+                authContainer.innerHTML = `<span class="badge bg-success d-flex align-items-center p-1 px-2">${photo} <span>${name}</span></span>`;
                 userCard.innerHTML = `
                     <div class="mb-2">
                         <strong class="d-block text-success"><i class="fas fa-check-circle me-1"></i> Sincronización activa</strong>
@@ -685,6 +731,16 @@
         }
 
         function toggleDictadoVoz() {
+            const activeTab = document.querySelector('.nav-link.active').id;
+            
+            if (activeTab === 'diag-tab') {
+                document.getElementById('aiModalTitle').innerHTML = `<i class="fas fa-stethoscope text-warning me-2"></i>Dictado de Diagnóstico`;
+                document.getElementById('aiModalSubtitle').innerText = "Dictá las fallas y observaciones para el informe técnico:";
+            } else {
+                document.getElementById('aiModalTitle').innerHTML = `<i class="fas fa-robot text-success me-2"></i>Dictado para Calculadora / Presupuesto`;
+                document.getElementById('aiModalSubtitle').innerText = "Dictá los trabajos y repuestos a cobrar:";
+            }
+
             const aiModal = new bootstrap.Modal(document.getElementById('aiModal'));
             aiModal.show();
 
@@ -706,36 +762,41 @@
             const input = document.getElementById('aiInputText').value.toLowerCase();
             if(!input) return;
 
-            const clienteMatch = input.match(/para\s+([a-zA-Záéíóúñ]+)/i);
-            if(clienteMatch) {
-                document.getElementById('p_cliente').value = clienteMatch[1];
-                document.getElementById('d_cliente').value = clienteMatch[1];
+            const activeTab = document.querySelector('.nav-link.active').id;
+
+            if (activeTab === 'diag-tab') {
+                const clienteMatch = input.match(/para\s+([a-zA-Záéíóúñ]+)/i);
+                if(clienteMatch) document.getElementById('d_cliente').value = clienteMatch[1];
+                document.getElementById('d_hallazgos').value = input;
+                generarDiagnosticoTexto();
+            } else {
+                const clienteMatch = input.match(/para\s+([a-zA-Záéíóúñ]+)/i);
+                if(clienteMatch) document.getElementById('p_cliente').value = clienteMatch[1];
+
+                document.getElementById('serviciosList').innerHTML = '';
+                document.getElementById('repuestosList').innerHTML = '';
+
+                presets.forEach(p => {
+                    if(input.includes(p.nombre.toLowerCase()) || input.includes(p.nombre.split(' ')[0].toLowerCase())) {
+                        addServicioRow(p.nombre, p.precio);
+                    }
+                });
+
+                presetsDescuentos.forEach(d => {
+                    if(input.includes(d.nombre.toLowerCase()) || input.includes('descuento')) {
+                        document.getElementById('p_descuento_nombre').value = d.nombre;
+                        document.getElementById('p_descuento_monto').value = d.monto;
+                    }
+                });
+
+                if(document.querySelectorAll('.s-row').length === 0) addServicioRow();
+                if(document.querySelectorAll('.r-row').length === 0) addRepuestoRow();
+
+                calcularPresupuestoVivo();
             }
 
-            document.getElementById('serviciosList').innerHTML = '';
-            document.getElementById('repuestosList').innerHTML = '';
-
-            presets.forEach(p => {
-                if(input.includes(p.nombre.toLowerCase()) || input.includes(p.nombre.split(' ')[0].toLowerCase())) {
-                    addServicioRow(p.nombre, p.precio);
-                }
-            });
-
-            presetsDescuentos.forEach(d => {
-                if(input.includes(d.nombre.toLowerCase()) || input.includes('descuento')) {
-                    document.getElementById('p_descuento_nombre').value = d.nombre;
-                    document.getElementById('p_descuento_monto').value = d.monto;
-                }
-            });
-
-            if(document.querySelectorAll('.s-row').length === 0) addServicioRow();
-            if(document.querySelectorAll('.r-row').length === 0) addRepuestoRow();
-
-            document.getElementById('d_hallazgos').value = input;
-
-            calcularPresupuestoVivo();
-            generarDiagnosticoTexto();
             bootstrap.Modal.getInstance(document.getElementById('aiModal')).hide();
+            document.getElementById('aiInputText').value = '';
         }
 
         function addServicioRow(nombre = '', precio = '') {
@@ -891,6 +952,13 @@
             const txt = generarDiagnosticoTexto();
             navigator.clipboard.writeText(txt);
             alert("¡Informe de Diagnóstico copiado con éxito para WhatsApp!");
+        }
+
+        function limpiarDiagnostico() {
+            document.getElementById('d_cliente').value = '';
+            document.getElementById('d_bici').value = '';
+            document.getElementById('d_hallazgos').value = '';
+            generarDiagnosticoTexto();
         }
 
         function limpiarPresupuesto() {
