@@ -81,7 +81,7 @@
         }
 
         .btn-neon {
-            background-color: var(--neon-green); color: #000; font-weight: 700; border: none; border-radius: 10px; padding: 10px 16px;
+            background-color: var(--neon-green); color: #000; font-weight: 700; border: none; border-radius: 10px; padding: 12px 16px;
         }
 
         .btn-neon:hover, .btn-neon:active { background-color: var(--neon-green-hover); color: #000; }
@@ -104,16 +104,12 @@
 
         .preset-badge {
             cursor: pointer; background-color: #1a2e23; color: var(--neon-green); border: 1px solid var(--neon-green);
-            margin: 4px; padding: 8px 14px; border-radius: 20px; display: inline-block; font-size: 0.85rem; font-weight: 700;
-        }
-
-        .order-item-row {
-            background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer;
+            margin: 3px; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 0.8rem; font-weight: 700;
         }
 
         .modal-content { background-color: var(--bg-card); color: var(--text-light); border: 1px solid var(--border-color); border-radius: 16px; }
         
-        /* Solapas optimizadas (3 opciones distribuidas en 100%) */
+        /* Solapas distribuidas */
         .nav-tabs { 
             border-bottom: 1px solid var(--border-color); 
             display: flex;
@@ -147,7 +143,6 @@
             font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4); z-index: 1000; border: none; cursor: pointer;
         }
 
-        /* Montos ajustados para evitar salto de línea */
         .total-highlight { 
             font-size: 1.15rem; 
             font-weight: 800; 
@@ -199,7 +194,7 @@
         </nav>
 
         <div class="container-fluid pt-3 px-2">
-            <!-- 3 Pestañas limpias y organizadas al 100% -->
+            <!-- 3 Pestañas de Navegación -->
             <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
                 <li class="nav-item">
                     <button class="nav-link active" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-calculator me-1"></i> Caja / Doc</button>
@@ -241,8 +236,8 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label small text-muted d-block">Carga Rápida (Catálogo Taller):</label>
-                                <div id="presetsContainer"></div>
+                                <label class="form-label small text-muted d-block">Carga Rápida (Catálogo Tarifario Taller):</label>
+                                <div id="presetsContainer" style="max-height: 180px; overflow-y: auto; border: 1px solid #333; padding: 8px; border-radius: 10px; background: #0c0c0c;"></div>
                             </div>
 
                             <div class="row g-3">
@@ -280,7 +275,7 @@
                                 </div>
                             </div>
 
-                            <!-- Tabla de Totales Pareja y Sin Salto de Línea -->
+                            <!-- Tabla de Totales -->
                             <div class="p-3 border border-secondary rounded bg-black mt-3">
                                 <div class="row text-center align-items-center g-0">
                                     <div class="col-3 border-end border-secondary">
@@ -307,14 +302,9 @@
                                 <div id="receiptPreviewBox" class="receipt-preview-box">Cargá los datos arriba para ver el texto formateado...</div>
                             </div>
 
-                            <!-- BOTONES DE ACCIÓN (Enviar y Copiar) -->
-                            <div class="row g-2 mt-3 mb-4">
-                                <div class="col-6">
-                                    <button class="btn btn-neon w-100 py-2" onclick="enviarPorWhatsApp()"><i class="fab fa-whatsapp me-1"></i> Enviar por WhatsApp</button>
-                                </div>
-                                <div class="col-6">
-                                    <button class="btn btn-outline-neon w-100 py-2" onclick="generarYCopiarComprobante()"><i class="fas fa-copy me-1"></i> Copiar Texto</button>
-                                </div>
+                            <!-- ÚNICO BOTÓN DE ENVÍO POR WHATSAPP -->
+                            <div class="mt-3 mb-4">
+                                <button class="btn btn-neon w-100 py-3 btn-lg fw-bold" onclick="enviarPorWhatsApp()"><i class="fab fa-whatsapp me-2"></i> Enviar por WhatsApp</button>
                             </div>
                         </div>
                     </div>
@@ -349,13 +339,8 @@
                                 <div id="diagPreviewBox" class="receipt-preview-box">Escribí o dictá el diagnóstico para ver el informe...</div>
                             </div>
 
-                            <div class="row g-2 mt-3 mb-3">
-                                <div class="col-6">
-                                    <button class="btn btn-neon w-100 py-2" onclick="enviarDiagnosticoWhatsApp()"><i class="fab fa-whatsapp me-1"></i> Enviar WhatsApp</button>
-                                </div>
-                                <div class="col-6">
-                                    <button class="btn btn-outline-neon w-100 py-2" onclick="copiarDiagnostico()"><i class="fas fa-copy me-1"></i> Copiar Texto</button>
-                                </div>
+                            <div class="mt-3 mb-3">
+                                <button class="btn btn-neon w-100 py-3 btn-lg fw-bold" onclick="enviarDiagnosticoWhatsApp()"><i class="fab fa-whatsapp me-2"></i> Enviar por WhatsApp</button>
                             </div>
                         </div>
                     </div>
@@ -451,7 +436,7 @@
                                 <div class="col-4"><input type="number" id="new_preset_price" class="form-control form-control-sm" placeholder="Precio $"></div>
                                 <div class="col-2"><button class="btn btn-sm btn-neon w-100" onclick="agregarPreset()">+</button></div>
                             </div>
-                            <ul class="list-group list-group-flush" id="listaPresetsConfig"></ul>
+                            <ul class="list-group list-group-flush" id="listaPresetsConfig" style="max-height: 200px; overflow-y: auto;"></ul>
                         </div>
                     </div>
 
@@ -498,7 +483,7 @@
                     <div id="comprobanteTextoView" class="receipt-preview-box"></div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-neon w-100" onclick="copiarComprobanteDesdeModal()"><i class="fab fa-whatsapp me-1"></i> Copiar Comprobante</button>
+                    <button class="btn btn-sm btn-neon w-100" onclick="enviarComprobanteDesdeModal()"><i class="fab fa-whatsapp me-1"></i> Enviar por WhatsApp</button>
                 </div>
             </div>
         </div>
@@ -555,15 +540,44 @@
             ig: "@tallerbiker_"
         };
 
+        // Tarifario actualizado del taller
         let presets = JSON.parse(localStorage.getItem('tb_presets')) || [
-            { nombre: "Service Puesta a Punto", precio: 15000 },
-            { nombre: "Service Completo + Lavado", precio: 25000 },
-            { nombre: "Centrado de Rueda", precio: 6000 },
-            { nombre: "Cambio de Caja Pedalier", precio: 8000 }
+            { nombre: "Emparchado y desarme de rueda y cámara", precio: 3000 },
+            { nombre: "Inflado de ruedas + Lubricación rápida", precio: 3000 },
+            { nombre: "Colocación de asiento / espejos", precio: 3000 },
+            { nombre: "Cambio de cámara o cubierta (por rueda)", precio: 3500 },
+            { nombre: "Apriete y ajuste general de seguridad / bulonería", precio: 4000 },
+            { nombre: "Cambio de cable y funda de freno (por rueda)", precio: 4000 },
+            { nombre: "Cambio de patines o pastillas de freno (por rueda)", precio: 4500 },
+            { nombre: "Cambio de eje y engrase de maza (por rueda)", precio: 5000 },
+            { nombre: "Cambio / Colocación de palanca izquierda", precio: 5000 },
+            { nombre: "Cambio y alineación de fusible de cambio", precio: 5000 },
+            { nombre: "Regulación y lubricación de cambios", precio: 5000 },
+            { nombre: "Limpieza, desengrasado y destrabado de shift / pata", precio: 5500 },
+            { nombre: "Juego de dirección común a rosca (1\")", precio: 6000 },
+            { nombre: "Freno completo instalado (por rueda)", precio: 6000 },
+            { nombre: "Centrado de rueda (por rueda)", precio: 6000 },
+            { nombre: "Instalación de freno delantero o trasero (Caliper + Disco)", precio: 6500 },
+            { nombre: "Servicio / Mantenimiento de caja inglesa (desarme)", precio: 7000 },
+            { nombre: "Juego de dirección Aheadset / Integrado (1 1/8\")", precio: 7000 },
+            { nombre: "Combo Frenos (Ajuste, centrado e inflado)", precio: 7500 },
+            { nombre: "Adaptación y cambio a rueda con rulemanes", precio: 7500 },
+            { nombre: "Cambio de horquilla / suspensión recta", precio: 8000 },
+            { nombre: "Cambio de caja pedalier (sellada o bolillas)", precio: 8000 },
+            { nombre: "Cambio de transmisión (Cadena y Piñón)", precio: 8000 },
+            { nombre: "Colocación y regulación de shifters integrados (par)", precio: 13500 },
+            { nombre: "Adaptación de maza a rulemanes (modificación)", precio: 14000 },
+            { nombre: "Puesta a Punto", precio: 15000 },
+            { nombre: "Conversión a monoplato", precio: 16000 },
+            { nombre: "Armado de bicicleta en caja desde cero", precio: 19000 },
+            { nombre: "Colocación e instalación de frenos hidráulicos", precio: 20000 },
+            { nombre: "Puesta a Punto + Lavado", precio: 22000 },
+            { nombre: "Trasvasado / Mudar componentes de cuadro a cuadro", precio: 25000 },
+            { nombre: "Recargo Fijo Servicio a Domicilio", precio: 6000 }
         ];
 
         let presetsDescuentos = JSON.parse(localStorage.getItem('tb_disc_presets')) || [
-            { nombre: "Promo Rider / Repartidor", monto: 2000 }
+            { nombre: "Descuento Especial Riders / Repartidores", monto: 2500 }
         ];
 
         let historialComprobantes = JSON.parse(localStorage.getItem('tb_historial')) || [];
@@ -665,12 +679,13 @@
                     const lines = evt.target.result.split('\n');
                     let agregados = 0;
                     lines.forEach(line => {
-                        const parts = line.split(',');
+                        let lineClean = line.replace(/•/g, '').replace(/\./g, '').trim();
+                        const parts = lineClean.split(/[:$]/);
                         if (parts.length >= 2) {
                             const nombre = parts[0].trim();
-                            const precio = parseFloat(parts[1].trim());
-                            if (nombre && !isNaN(precio)) {
-                                presets.push({ nombre, precio });
+                            const precioVal = parseFloat(parts[parts.length - 1].replace(/\./g, '').trim());
+                            if (nombre && !isNaN(precioVal)) {
+                                presets.push({ nombre, precio: precioVal });
                                 agregados++;
                             }
                         }
@@ -996,17 +1011,6 @@
             document.getElementById('receiptPreviewBox').innerText = txt;
         }
 
-        function generarYCopiarComprobante() {
-            const { txt, cliente, bici, total, fecha } = construirTextoComprobante();
-
-            navigator.clipboard.writeText(txt);
-            alert("¡Documento copiado con éxito!");
-
-            historialComprobantes.unshift({ id: Date.now(), cliente, bici, total, fecha, texto: txt });
-            saveData();
-            renderHistorial();
-        }
-
         function enviarPorWhatsApp() {
             const { txt, cliente, bici, total, fecha } = construirTextoComprobante();
             
@@ -1043,12 +1047,6 @@
             return txt;
         }
 
-        function copiarDiagnostico() {
-            const txt = generarDiagnosticoTexto();
-            navigator.clipboard.writeText(txt);
-            alert("¡Informe de Diagnóstico copiado con éxito!");
-        }
-
         function enviarDiagnosticoWhatsApp() {
             const txt = generarDiagnosticoTexto();
             const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
@@ -1081,8 +1079,8 @@
             container.innerHTML = ''; listConfig.innerHTML = '';
 
             presets.forEach((p, idx) => {
-                container.innerHTML += `<span class="preset-badge" onclick="addServicioRow('${p.nombre}', ${p.precio})">+ ${p.nombre}</span>`;
-                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} - $${p.precio}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
+                container.innerHTML += `<span class="preset-badge" onclick="addServicioRow('${p.nombre}', ${p.precio})">+ ${p.nombre} ($${p.precio.toLocaleString()})</span>`;
+                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} - $${p.precio.toLocaleString()}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
             });
         }
 
@@ -1147,9 +1145,10 @@
             new bootstrap.Modal(document.getElementById('comprobanteModal')).show();
         }
 
-        function copiarComprobanteDesdeModal() {
-            navigator.clipboard.writeText(document.getElementById('comprobanteTextoView').innerText);
-            alert("Comprobante copiado.");
+        function enviarComprobanteDesdeModal() {
+            const txt = document.getElementById('comprobanteTextoView').innerText;
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
+            window.open(url, '_blank');
         }
     </script>
 </body>
