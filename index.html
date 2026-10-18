@@ -111,19 +111,13 @@
             background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer;
         }
 
-        .badge-status { font-size: 0.75rem; padding: 6px 12px; border-radius: 20px; font-weight: 700; }
-        .status-proceso { background-color: #ff9500; color: #000; }
-        .status-listo { background-color: #00ff88; color: #000; }
-        .status-entregado { background-color: #0a84ff; color: #fff; }
-
         .modal-content { background-color: var(--bg-card); color: var(--text-light); border: 1px solid var(--border-color); border-radius: 16px; }
         
-        /* Solapas optimizadas para una sola fila */
+        /* Solapas optimizadas (3 opciones distribuidas en 100%) */
         .nav-tabs { 
             border-bottom: 1px solid var(--border-color); 
             display: flex;
-            flex-wrap: nowrap;
-            justify-content: space-between;
+            width: 100%;
         }
 
         .nav-tabs .nav-item {
@@ -134,8 +128,8 @@
         .nav-tabs .nav-link { 
             color: #bbbbbb; 
             border: none; 
-            padding: 8px 4px; 
-            font-size: 0.78rem; 
+            padding: 10px 4px; 
+            font-size: 0.85rem; 
             font-weight: 600; 
             white-space: nowrap;
             width: 100%;
@@ -153,8 +147,29 @@
             font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4); z-index: 1000; border: none; cursor: pointer;
         }
 
-        .total-highlight { font-size: 1.4rem; font-weight: 800; color: var(--neon-green); }
-        .resta-highlight { font-size: 1.4rem; font-weight: 800; color: #ff9500; }
+        /* Montos ajustados para evitar salto de línea */
+        .total-highlight { 
+            font-size: 1.15rem; 
+            font-weight: 800; 
+            color: var(--neon-green); 
+            white-space: nowrap;
+            display: block;
+        }
+        
+        .resta-highlight { 
+            font-size: 1.15rem; 
+            font-weight: 800; 
+            color: #ff9500; 
+            white-space: nowrap;
+            display: block;
+        }
+
+        .monto-subtotal {
+            font-size: 0.95rem;
+            font-weight: 700;
+            white-space: nowrap;
+            display: block;
+        }
         
         .receipt-preview-box {
             background-color: #090d12;
@@ -184,15 +199,13 @@
         </nav>
 
         <div class="container-fluid pt-3 px-2">
+            <!-- 3 Pestañas limpias y organizadas al 100% -->
             <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
                 <li class="nav-item">
                     <button class="nav-link active" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-calculator me-1"></i> Caja / Doc</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-stethoscope me-1"></i> Diag</button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="ordenes-tab" data-bs-toggle="tab" data-bs-target="#ordenes" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-tasks me-1"></i> Trabajos</button>
+                    <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-stethoscope me-1"></i> Diagnóstico</button>
                 </li>
                 <li class="nav-item">
                     <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-history me-1"></i> Historial</button>
@@ -267,17 +280,18 @@
                                 </div>
                             </div>
 
+                            <!-- Tabla de Totales Pareja y Sin Salto de Línea -->
                             <div class="p-3 border border-secondary rounded bg-black mt-3">
-                                <div class="row text-center">
-                                    <div class="col-3">
-                                        <small class="text-muted d-block" style="font-size:0.65rem;">M. Obra</small>
-                                        <span id="subtotalServiciosDisplay" class="fw-bold small">$0</span>
+                                <div class="row text-center align-items-center g-0">
+                                    <div class="col-3 border-end border-secondary">
+                                        <small class="text-muted d-block" style="font-size:0.65rem;">M. OBRA</small>
+                                        <span id="subtotalServiciosDisplay" class="monto-subtotal">$0</span>
                                     </div>
-                                    <div class="col-3">
-                                        <small class="text-muted d-block" style="font-size:0.65rem;">Repuestos</small>
-                                        <span id="subtotalRepuestosDisplay" class="fw-bold small">$0</span>
+                                    <div class="col-3 border-end border-secondary">
+                                        <small class="text-muted d-block" style="font-size:0.65rem;">REPUESTOS</small>
+                                        <span id="subtotalRepuestosDisplay" class="monto-subtotal">$0</span>
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-3 border-end border-secondary">
                                         <small class="text-muted d-block" style="font-size:0.65rem;">TOTAL</small>
                                         <span id="totalFinalDisplay" class="total-highlight">$0</span>
                                     </div>
@@ -293,7 +307,15 @@
                                 <div id="receiptPreviewBox" class="receipt-preview-box">Cargá los datos arriba para ver el texto formateado...</div>
                             </div>
 
-                            <button class="btn btn-neon w-100 mt-3 btn-lg mb-4" onclick="generarYCopiarComprobante()"><i class="fab fa-whatsapp me-2"></i>Copiar para WhatsApp</button>
+                            <!-- BOTONES DE ACCIÓN (Enviar y Copiar) -->
+                            <div class="row g-2 mt-3 mb-4">
+                                <div class="col-6">
+                                    <button class="btn btn-neon w-100 py-2" onclick="enviarPorWhatsApp()"><i class="fab fa-whatsapp me-1"></i> Enviar por WhatsApp</button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-outline-neon w-100 py-2" onclick="generarYCopiarComprobante()"><i class="fas fa-copy me-1"></i> Copiar Texto</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -327,20 +349,16 @@
                                 <div id="diagPreviewBox" class="receipt-preview-box">Escribí o dictá el diagnóstico para ver el informe...</div>
                             </div>
 
-                            <button class="btn btn-neon w-100 mt-3 btn-lg mb-3" onclick="copiarDiagnostico()"><i class="fab fa-whatsapp me-2"></i>Copiar Diagnóstico para WhatsApp</button>
+                            <div class="row g-2 mt-3 mb-3">
+                                <div class="col-6">
+                                    <button class="btn btn-neon w-100 py-2" onclick="enviarDiagnosticoWhatsApp()"><i class="fab fa-whatsapp me-1"></i> Enviar WhatsApp</button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-outline-neon w-100 py-2" onclick="copiarDiagnostico()"><i class="fas fa-copy me-1"></i> Copiar Texto</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- TRABAJOS / ÓRDENES -->
-                <div class="tab-pane fade" id="ordenes">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="m-0"><i class="fas fa-wrench text-success me-2"></i>Órdenes Activas</h5>
-                        <button class="btn btn-sm btn-neon" onclick="nuevaOrdenModal()"><i class="fas fa-plus"></i> Nueva</button>
-                    </div>
-
-                    <input type="text" id="searchOrders" class="form-control mb-3" placeholder="Buscar por cliente o vehículo..." onkeyup="renderOrdenes()">
-                    <div id="listaOrdenesContainer"></div>
                 </div>
 
                 <!-- HISTORIAL COMPROBANTES -->
@@ -469,44 +487,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="ordenModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="modal-title">Detalle de Trabajo</h6>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="modal_orden_id">
-                    <div class="mb-2">
-                        <label class="small text-muted">Cliente</label>
-                        <input type="text" id="m_cliente" class="form-control">
-                    </div>
-                    <div class="mb-2">
-                        <label class="small text-muted">Vehículo / Bici</label>
-                        <input type="text" id="m_bici" class="form-control">
-                    </div>
-                    <div class="mb-2">
-                        <label class="small text-muted">Estado</label>
-                        <select id="m_estado" class="form-select">
-                            <option value="En Proceso">En Proceso</option>
-                            <option value="Listo">Listo para retirar</option>
-                            <option value="Entregado">Entregado</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label class="small text-muted">Tareas a realizar</label>
-                        <textarea id="m_tareas" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-sm btn-danger me-auto" onclick="eliminarOrdenActual()">Eliminar</button>
-                    <button class="btn btn-sm btn-neon" onclick="guardarOrden()">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="comprobanteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -575,7 +555,6 @@
             ig: "@tallerbiker_"
         };
 
-        let ordenes = JSON.parse(localStorage.getItem('tb_ordenes')) || [];
         let presets = JSON.parse(localStorage.getItem('tb_presets')) || [
             { nombre: "Service Puesta a Punto", precio: 15000 },
             { nombre: "Service Completo + Lavado", precio: 25000 },
@@ -593,7 +572,6 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             cargarInputsConfig();
-            renderOrdenes();
             renderPresets();
             renderPresetsDescuentos();
             renderHistorial();
@@ -606,7 +584,6 @@
         });
 
         function saveData() {
-            localStorage.setItem('tb_ordenes', JSON.stringify(ordenes));
             localStorage.setItem('tb_presets', JSON.stringify(presets));
             localStorage.setItem('tb_disc_presets', JSON.stringify(presetsDescuentos));
             localStorage.setItem('tb_historial', JSON.stringify(historialComprobantes));
@@ -635,7 +612,7 @@
 
         function exportarCopiaSeguridad() {
             const dataBackup = {
-                configTaller, ordenes, presets, presetsDescuentos, historialComprobantes,
+                configTaller, presets, presetsDescuentos, historialComprobantes,
                 fechaExportacion: new Date().toISOString()
             };
             const jsonStr = JSON.stringify(dataBackup, null, 2);
@@ -661,14 +638,12 @@
                 try {
                     const data = JSON.parse(evt.target.result);
                     if(data.configTaller) configTaller = data.configTaller;
-                    if(data.ordenes) ordenes = data.ordenes;
                     if(data.presets) presets = data.presets;
                     if(data.presetsDescuentos) presetsDescuentos = data.presetsDescuentos;
                     if(data.historialComprobantes) historialComprobantes = data.historialComprobantes;
 
                     saveData();
                     cargarInputsConfig();
-                    renderOrdenes();
                     renderPresets();
                     renderPresetsDescuentos();
                     renderHistorial();
@@ -713,7 +688,7 @@
         function sincronizarHaciaNube() {
             if(!currentUser || !db) return;
             db.collection('usuarios').doc(currentUser.uid).set({
-                ordenes, presets, presetsDescuentos, historialComprobantes, configTaller,
+                presets, presetsDescuentos, historialComprobantes, configTaller,
                 ultimaSync: new Date().toISOString()
             }, { merge: true }).catch(err => {
                 console.log("No se pudo respaldar en la nube.");
@@ -725,7 +700,6 @@
             db.collection('usuarios').doc(currentUser.uid).get().then(doc => {
                 if(doc.exists) {
                     const data = doc.data();
-                    if(data.ordenes) ordenes = data.ordenes;
                     if(data.presets) presets = data.presets;
                     if(data.presetsDescuentos) presetsDescuentos = data.presetsDescuentos;
                     if(data.historialComprobantes) historialComprobantes = data.historialComprobantes;
@@ -733,7 +707,6 @@
                     
                     saveData();
                     cargarInputsConfig();
-                    renderOrdenes();
                     renderPresets();
                     renderPresetsDescuentos();
                     renderHistorial();
@@ -951,7 +924,7 @@
                 txt += `👤 Cliente: ${cliente}\n`;
                 txt += `📅 Fecha: ${fecha}\n`;
                 txt += `🚲 Trabajo: ${bici}\n`;
-                txt += `📌 Estado: ⏳ PRESUPUESTO PREVIO (SUJETO A REVISIÓN)\n`;
+                txt += `📌 Estado: ⏳ PRESUPUESTO PREVIO\n`;
                 txt += `──────────────────────────────\n`;
             } else {
                 txt += `🧾 COMPROBANTE DE SERVICIO Y ENTREGA\n`;
@@ -998,14 +971,13 @@
 
             txt += `──────────────────────────────\n`;
             
-            if(tipoDoc === "presupuesto") {
-                txt += `ℹ️ *Este documento es una estimación previa. El valor final puede variar si se detectan fallas ocultas con previo aviso.*\n\n`;
-            } else {
+            if(tipoDoc === "comprobante") {
                 txt += `💳 Medios de pago: Efectivo / Transferencia\n`;
                 if(configTaller.alias) txt += `📌 Alias: ${configTaller.alias}\n\n`;
                 txt += `¡Gracias por la confianza! Cuidá tu bici. 🚲💨\n`;
+                txt += `──────────────────────────────\n`;
             }
-            txt += `──────────────────────────────\n`;
+            
             txt += `🔧 ${configTaller.nombre} | ${configTaller.ig}\n`;
             if(configTaller.direccion) txt += `📍 ${configTaller.direccion}\n`;
             if(configTaller.telefono) txt += `📲 Consultas: ${configTaller.telefono}`;
@@ -1028,11 +1000,22 @@
             const { txt, cliente, bici, total, fecha } = construirTextoComprobante();
 
             navigator.clipboard.writeText(txt);
-            alert("¡Documento copiado con éxito para WhatsApp!");
+            alert("¡Documento copiado con éxito!");
 
             historialComprobantes.unshift({ id: Date.now(), cliente, bici, total, fecha, texto: txt });
             saveData();
             renderHistorial();
+        }
+
+        function enviarPorWhatsApp() {
+            const { txt, cliente, bici, total, fecha } = construirTextoComprobante();
+            
+            historialComprobantes.unshift({ id: Date.now(), cliente, bici, total, fecha, texto: txt });
+            saveData();
+            renderHistorial();
+
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
+            window.open(url, '_blank');
         }
 
         function generarDiagnosticoTexto() {
@@ -1063,7 +1046,13 @@
         function copiarDiagnostico() {
             const txt = generarDiagnosticoTexto();
             navigator.clipboard.writeText(txt);
-            alert("¡Informe de Diagnóstico copiado con éxito para WhatsApp!");
+            alert("¡Informe de Diagnóstico copiado con éxito!");
+        }
+
+        function enviarDiagnosticoWhatsApp() {
+            const txt = generarDiagnosticoTexto();
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
+            window.open(url, '_blank');
         }
 
         function limpiarDiagnostico() {
@@ -1129,71 +1118,6 @@
         }
 
         function borrarPresetDescuento(idx) { presetsDescuentos.splice(idx,1); saveData(); renderPresetsDescuentos(); }
-
-        function renderOrdenes() {
-            const container = document.getElementById('listaOrdenesContainer');
-            const search = document.getElementById('searchOrders').value.toLowerCase();
-            container.innerHTML = '';
-
-            ordenes.filter(o => o.cliente.toLowerCase().includes(search) || o.bici.toLowerCase().includes(search)).forEach(o => {
-                let badgeClass = o.estado === 'En Proceso' ? 'status-proceso' : (o.estado === 'Listo' ? 'status-listo' : 'status-entregado');
-                container.innerHTML += `
-                    <div class="order-item-row d-flex justify-content-between align-items-center" onclick="abrirModalOrden(${o.id})">
-                        <div>
-                            <div class="fw-bold">${o.cliente}</div>
-                            <small class="text-muted">${o.bici}</small>
-                        </div>
-                        <span class="badge badge-status ${badgeClass}">${o.estado}</span>
-                    </div>
-                `;
-            });
-        }
-
-        function abrirModalOrden(id) {
-            const o = ordenes.find(x => x.id === id);
-            if(!o) return;
-            document.getElementById('modal_orden_id').value = o.id;
-            document.getElementById('m_cliente').value = o.cliente;
-            document.getElementById('m_bici').value = o.bici;
-            document.getElementById('m_estado').value = o.estado;
-            document.getElementById('m_tareas').value = o.tareas;
-            new bootstrap.Modal(document.getElementById('ordenModal')).show();
-        }
-
-        function nuevaOrdenModal() {
-            document.getElementById('modal_orden_id').value = '';
-            document.getElementById('m_cliente').value = '';
-            document.getElementById('m_bici').value = '';
-            document.getElementById('m_tareas').value = '';
-            new bootstrap.Modal(document.getElementById('ordenModal')).show();
-        }
-
-        function guardarOrden() {
-            const id = document.getElementById('modal_orden_id').value;
-            const cliente = document.getElementById('m_cliente').value;
-            const bici = document.getElementById('m_bici').value;
-            const estado = document.getElementById('m_estado').value;
-            const tareas = document.getElementById('m_tareas').value;
-
-            if(!cliente) return;
-
-            if(id) {
-                const o = ordenes.find(x => x.id == id);
-                o.cliente = cliente; o.bici = bici; o.estado = estado; o.tareas = tareas;
-            } else {
-                ordenes.unshift({ id: Date.now(), cliente, bici, estado, tareas });
-            }
-            saveData(); renderOrdenes();
-            bootstrap.Modal.getInstance(document.getElementById('ordenModal')).hide();
-        }
-
-        function eliminarOrdenActual() {
-            const id = document.getElementById('modal_orden_id').value;
-            if(!id) return;
-            ordenes = ordenes.filter(o => o.id != id);
-            saveData(); renderOrdenes();
-            bootstrap.Modal.getInstance(document.getElementById('ordenModal')).hide();
-        }
 
         function renderHistorial() {
             const container = document.getElementById('historialComprobantesList');
