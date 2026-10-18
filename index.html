@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestión de Taller</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SDK Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --neon-green: #00ff88;
+            --neon-green-hover: #00cc6c;
+            --text-light: #ffffff;
+            --text-muted: #d0d0d0;
+            --border-color: #333333;
+        }
+
+        html, body {
+            height: 100%; width: 100%; margin: 0; padding: 0;
+            background-color: var(--bg-dark); color: var(--text-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 110px;
+        }
+
+        .navbar {
+            background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 12px 16px;
+        }
+
+        .navbar-brand {
+            color: var(--neon-green) !important; font-weight: 800; font-size: 1.2rem;
+        }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 14px; color: var(--text-light); margin-bottom: 16px;
+        }
+
+        .card-header {
+            border-bottom: 1px solid var(--border-color); background-color: rgba(255, 255, 255, 0.05);
+            font-weight: 600; padding: 12px 16px;
+        }
+
+        .btn-neon {
+            background-color: var(--neon-green); color: #000; font-weight: 700; border: none; border-radius: 10px; padding: 10px 16px;
+        }
+
+        .btn-neon:hover, .btn-neon:active { background-color: var(--neon-green-hover); color: #000; }
+
+        .btn-outline-neon {
+            border: 1px solid var(--neon-green); color: var(--neon-green); background: transparent; border-radius: 10px; font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            background-color: #222226; border: 1px solid #444444; color: #ffffff !important; border-radius: 10px; padding: 10px;
+        }
+
+        .form-control::placeholder { color: #aaaaaa !important; opacity: 1; }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #2a2a30; color: #fff; border-color: var(--neon-green); box-shadow: 0 0 0 0.2rem rgba(0, 255, 136, 0.25);
+        }
+
+        .text-muted { color: var(--text-muted) !important; }
+
+        .preset-badge {
+            cursor: pointer; background-color: #1a2e23; color: var(--neon-green); border: 1px solid var(--neon-green);
+            margin: 4px; padding: 8px 14px; border-radius: 20px; display: inline-block; font-size: 0.85rem; font-weight: 700;
+        }
+
+        .order-item-row {
+            background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer;
+        }
+
+        .badge-status { font-size: 0.75rem; padding: 6px 12px; border-radius: 20px; font-weight: 700; }
+        .status-proceso { background-color: #ff9500; color: #000; }
+        .status-listo { background-color: #00ff88; color: #000; }
+        .status-entregado { background-color: #0a84ff; color: #fff; }
+
+        .modal-content { background-color: var(--bg-card); color: var(--text-light); border: 1px solid var(--border-color); border-radius: 16px; }
+        .nav-tabs { border-bottom: 1px solid var(--border-color); }
+        .nav-tabs .nav-link { color: #bbbbbb; border: none; padding: 10px 14px; font-size: 0.9rem; font-weight: 600; }
+        .nav-tabs .nav-link.active { color: var(--neon-green); background-color: transparent; border-bottom: 3px solid var(--neon-green); }
+
+        .fab-mic {
+            position: fixed; bottom: 15px; right: 20px; width: 58px; height: 58px; border-radius: 50%;
+            background-color: var(--neon-green); color: #000; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4); z-index: 1000; border: none; cursor: pointer;
+        }
+
+        .total-highlight { font-size: 1.6rem; font-weight: 800; color: var(--neon-green); }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Navbar -->
+        <nav class="navbar navbar-dark">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <a class="navbar-brand m-0" href="#" id="appTitleHeader"><i class="fas fa-tools me-2"></i>Taller Biker</a>
+                <div id="authContainer">
+                    <button class="btn btn-sm btn-outline-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid pt-3 px-3">
+            <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button"><i class="fas fa-calculator me-1"></i> Presupuesto</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="ordenes-tab" data-bs-toggle="tab" data-bs-target="#ordenes" type="button"><i class="fas fa-tasks me-1"></i> Trabajos</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button"><i class="fas fa-history me-1"></i> Historial</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button"><i class="fas fa-cog me-1"></i> Config</button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- PRESUPUESTO EXPRESS -->
+                <div class="tab-pane fade show active" id="presupuesto">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-file-invoice-dollar me-2 text-success"></i>Calculadora En Vivo</span>
+                            <button class="btn btn-sm btn-outline-secondary text-light" onclick="limpiarPresupuesto()">Limpiar</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label small text-muted">Cliente</label>
+                                    <input type="text" id="p_cliente" class="form-control" placeholder="Ej: Bauti">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small text-muted">Vehículo / Bici</label>
+                                    <input type="text" id="p_bici" class="form-control" placeholder="Ej: Vairo 29">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small text-muted d-block">Carga Rápida - Servicios:</label>
+                                <div id="presetsContainer"></div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <h6 class="text-success small fw-bold">MANO DE OBRA / SERVICIOS</h6>
+                                    <div id="serviciosList"></div>
+                                    <button class="btn btn-sm btn-outline-neon w-100 mt-1" onclick="addServicioRow()"><i class="fas fa-plus me-1"></i> Agregar Servicio</button>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <h6 class="text-info small fw-bold">MATERIALES / REPUESTOS</h6>
+                                    <div id="repuestosList"></div>
+                                    <button class="btn btn-sm btn-outline-neon w-100 mt-1" onclick="addRepuestoRow()"><i class="fas fa-plus me-1"></i> Agregar Repuesto</button>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 pt-2 border-top border-secondary">
+                                <label class="form-label small text-muted d-block">Carga Rápida - Descuentos:</label>
+                                <div id="discountPresetsContainer" class="mb-2"></div>
+                                <div class="row g-2">
+                                    <div class="col-7">
+                                        <input type="text" id="p_descuento_nombre" class="form-control form-control-sm" placeholder="Motivo del descuento">
+                                    </div>
+                                    <div class="col-5">
+                                        <input type="number" id="p_descuento_monto" class="form-control form-control-sm" placeholder="Monto $" oninput="calcularPresupuestoVivo()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 border border-secondary rounded bg-black mt-3">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <small class="text-muted d-block" style="font-size:0.75rem;">M. Obra</small>
+                                        <span id="subtotalServiciosDisplay" class="fw-bold">$0</span>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted d-block" style="font-size:0.75rem;">Repuestos</small>
+                                        <span id="subtotalRepuestosDisplay" class="fw-bold">$0</span>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted d-block" style="font-size:0.75rem;">TOTAL</small>
+                                        <span id="totalFinalDisplay" class="total-highlight">$0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-neon w-100 mt-3 btn-lg" onclick="generarYCopiarComprobante()"><i class="fab fa-whatsapp me-2"></i>Copiar Comprobante WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRABAJOS / ÓRDENES -->
+                <div class="tab-pane fade" id="ordenes">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="m-0"><i class="fas fa-wrench text-success me-2"></i>Órdenes Activas</h5>
+                        <button class="btn btn-sm btn-neon" onclick="nuevaOrdenModal()"><i class="fas fa-plus"></i> Nueva</button>
+                    </div>
+
+                    <input type="text" id="searchOrders" class="form-control mb-3" placeholder="Buscar por cliente o vehículo..." onkeyup="renderOrdenes()">
+                    <div id="listaOrdenesContainer"></div>
+                </div>
+
+                <!-- HISTORIAL COMPROBANTES -->
+                <div class="tab-pane fade" id="historial">
+                    <h5 class="mb-3"><i class="fas fa-receipt text-info me-2"></i>Comprobantes Guardados</h5>
+                    <div id="historialComprobantesList"></div>
+                </div>
+
+                <!-- CONFIGURACIÓN PERSONALIZADA Y RESPALDOS -->
+                <div class="tab-pane fade" id="config">
+                    <!-- SESIÓN DE USUARIO EN LA NUBE -->
+                    <div class="card mb-3 border-info">
+                        <div class="card-header bg-dark text-info fw-bold"><i class="fas fa-cloud me-2"></i>Sincronización Automática</div>
+                        <div class="card-body text-center" id="userSessionCard">
+                            <p class="small text-muted mb-2">Iniciá sesión para respaldar tus datos automáticamente en tu cuenta de Google.</p>
+                            <button class="btn btn-sm btn-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
+                        </div>
+                    </div>
+
+                    <!-- EXPORTAR / IMPORTAR COPIA DE SEGURIDAD MANUAL -->
+                    <div class="card mb-3 border-warning">
+                        <div class="card-header bg-dark text-warning fw-bold"><i class="fas fa-hdd me-2"></i>Copia de Seguridad en Archivo (Manual)</div>
+                        <div class="card-body">
+                            <p class="small text-muted mb-3">Podés descargar una copia completa de tus datos en un archivo para guardarla en la memoria de tu celu o enviarla por WhatsApp/Drive.</p>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <button class="btn btn-sm btn-outline-warning w-100" onclick="exportarCopiaSeguridad()"><i class="fas fa-download me-1"></i> Exportar Copia</button>
+                                </div>
+                                <div class="col-6">
+                                    <input type="file" id="importFile" style="display:none" onchange="importarCopiaSeguridad(event)">
+                                    <button class="btn btn-sm btn-outline-info w-100" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload me-1"></i> Cargar Copia</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EDITOR DE DATOS DEL TALLER -->
+                    <div class="card mb-3 border-success">
+                        <div class="card-header bg-dark text-success fw-bold"><i class="fas fa-store me-2"></i>Datos del Taller / Comprobante</div>
+                        <div class="card-body">
+                            <div class="row g-2 mb-2">
+                                <div class="col-12">
+                                    <label class="small text-muted">Nombre del Taller / Negocio</label>
+                                    <input type="text" id="cfg_nombre" class="form-control" value="Taller Biker">
+                                </div>
+                                <div class="col-12">
+                                    <label class="small text-muted">Dirección / Ubicación</label>
+                                    <input type="text" id="cfg_direccion" class="form-control" value="Pablo Pizzurno 746 (Florencio Varela - Zona Sur)">
+                                </div>
+                                <div class="col-6">
+                                    <label class="small text-muted">Teléfono / WhatsApp</label>
+                                    <input type="text" id="cfg_telefono" class="form-control" value="11 2497-0838">
+                                </div>
+                                <div class="col-6">
+                                    <label class="small text-muted">Alias Mercado Pago</label>
+                                    <input type="text" id="cfg_alias" class="form-control" value="44807980.mp">
+                                </div>
+                                <div class="col-12">
+                                    <label class="small text-muted">Instagram / Redes</label>
+                                    <input type="text" id="cfg_ig" class="form-control" value="@tallerbiker_">
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-neon w-100 mt-2" onclick="guardarConfigTaller()"><i class="fas fa-save me-1"></i> Guardar Datos del Taller</button>
+                        </div>
+                    </div>
+
+                    <!-- PRESETS DE SERVICIOS -->
+                    <div class="card mb-3">
+                        <div class="card-header small text-uppercase fw-bold"><i class="fas fa-bolt text-warning me-2"></i>Editar Presets de Servicios</div>
+                        <div class="card-body">
+                            <div class="row g-2 mb-2">
+                                <div class="col-6"><input type="text" id="new_preset_name" class="form-control form-control-sm" placeholder="Nombre"></div>
+                                <div class="col-4"><input type="number" id="new_preset_price" class="form-control form-control-sm" placeholder="Precio $"></div>
+                                <div class="col-2"><button class="btn btn-sm btn-neon w-100" onclick="agregarPreset()">+</button></div>
+                            </div>
+                            <ul class="list-group list-group-flush" id="listaPresetsConfig"></ul>
+                        </div>
+                    </div>
+
+                    <!-- PRESETS DE DESCUENTOS -->
+                    <div class="card">
+                        <div class="card-header small text-uppercase fw-bold"><i class="fas fa-percentage text-warning me-2"></i>Editar Presets de Descuentos</div>
+                        <div class="card-body">
+                            <div class="row g-2 mb-2">
+                                <div class="col-6"><input type="text" id="new_disc_name" class="form-control form-control-sm" placeholder="Motivo"></div>
+                                <div class="col-4"><input type="number" id="new_disc_val" class="form-control form-control-sm" placeholder="Monto $"></div>
+                                <div class="col-2"><button class="btn btn-sm btn-neon w-100" onclick="agregarPresetDescuento()">+</button></div>
+                            </div>
+                            <ul class="list-group list-group-flush" id="listaPresetsDescuentosConfig"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="fab-mic" id="btnMic" onclick="toggleDictadoVoz()"><i class="fas fa-microphone"></i></button>
+    </div>
+
+    <!-- Modales -->
+    <div class="modal fade" id="aiModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title"><i class="fas fa-robot text-success me-2"></i>Asistente por Voz</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted">Dictá o escribí lo realizado (ej: <em>"Presupuesto para Bauti, service completo 25000 y repuesto de pedales 3000"</em>):</p>
+                    <textarea id="aiInputText" class="form-control mb-3" rows="3" placeholder="Esperando voz o texto..."></textarea>
+                    <button class="btn btn-neon w-100" onclick="procesarTextoIA()"><i class="fas fa-magic me-2"></i>Procesar y Rellenar Presupuesto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ordenModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Detalle de Trabajo</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="modal_orden_id">
+                    <div class="mb-2">
+                        <label class="small text-muted">Cliente</label>
+                        <input type="text" id="m_cliente" class="form-control">
+                    </div>
+                    <div class="mb-2">
+                        <label class="small text-muted">Vehículo / Bici</label>
+                        <input type="text" id="m_bici" class="form-control">
+                    </div>
+                    <div class="mb-2">
+                        <label class="small text-muted">Estado</label>
+                        <select id="m_estado" class="form-select">
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Listo">Listo para retirar</option>
+                            <option value="Entregado">Entregado</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="small text-muted">Tareas a realizar</label>
+                        <textarea id="m_tareas" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger me-auto" onclick="eliminarOrdenActual()">Eliminar</button>
+                    <button class="btn btn-sm btn-neon" onclick="guardarOrden()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9y6XngFzZzNlohlZSC0iRb6ntDY7Czeg",
+            authDomain: "taller-biker.firebaseapp.com",
+            projectId: "taller-biker",
+            storageBucket: "taller-biker.firebasestorage.app",
+            messagingSenderId: "462217611161",
+            appId: "1:462217611161:web:da58e1564e10f4e91ff508",
+            measurementId: "G-L9HK7S8L0M"
+        };
+
+        let db = null, auth = null, currentUser = null;
+
+        if (firebaseConfig.apiKey !== "TU_API_KEY") {
+            firebase.initializeApp(firebaseConfig);
+            firebase.firestore().enablePersistence({synchronizeTabs:true}).catch(()=>{});
+            db = firebase.firestore();
+            auth = firebase.auth();
+
+            // Mantiene la sesión activa
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    updateUserUI(user);
+                    sincronizarDesdeNube();
+                } else {
+                    currentUser = null;
+                    updateUserUI(null);
+                }
+            });
+        }
+
+        let configTaller = JSON.parse(localStorage.getItem('tb_cfg_taller')) || {
+            nombre: "Taller Biker",
+            direccion: "Pablo Pizzurno 746 (Florencio Varela - Zona Sur)",
+            telefono: "11 2497-0838",
+            alias: "44807980.mp",
+            ig: "@tallerbiker_"
+        };
+
+        let ordenes = JSON.parse(localStorage.getItem('tb_ordenes')) || [];
+        let presets = JSON.parse(localStorage.getItem('tb_presets')) || [
+            { nombre: "Service Completo", precio: 25000 },
+            { nombre: "Colocación Freno Trasero", precio: 6000 }
+        ];
+
+        let presetsDescuentos = JSON.parse(localStorage.getItem('tb_disc_presets')) || [
+            { nombre: "Promo Rider / Repartidor", monto: 2000 }
+        ];
+
+        let historialComprobantes = JSON.parse(localStorage.getItem('tb_historial')) || [];
+        let recognition = null;
+        let isRecording = false;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarInputsConfig();
+            renderOrdenes();
+            renderPresets();
+            renderPresetsDescuentos();
+            renderHistorial();
+            addServicioRow();
+            addRepuestoRow();
+            initSpeech();
+        });
+
+        function saveData() {
+            localStorage.setItem('tb_ordenes', JSON.stringify(ordenes));
+            localStorage.setItem('tb_presets', JSON.stringify(presets));
+            localStorage.setItem('tb_disc_presets', JSON.stringify(presetsDescuentos));
+            localStorage.setItem('tb_historial', JSON.stringify(historialComprobantes));
+            localStorage.setItem('tb_cfg_taller', JSON.stringify(configTaller));
+
+            if (currentUser && db && navigator.onLine) {
+                sincronizarHaciaNube();
+            }
+        }
+
+        function exportarCopiaSeguridad() {
+            const dataBackup = {
+                configTaller, ordenes, presets, presetsDescuentos, historialComprobantes,
+                fechaExportacion: new Date().toISOString()
+            };
+            const jsonStr = JSON.stringify(dataBackup, null, 2);
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `respaldo_taller_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert("¡Archivo de copia de seguridad descargado correctamente!");
+        }
+
+        function importarCopiaSeguridad(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const data = JSON.parse(evt.target.result);
+                    if(data.configTaller) configTaller = data.configTaller;
+                    if(data.ordenes) ordenes = data.ordenes;
+                    if(data.presets) presets = data.presets;
+                    if(data.presetsDescuentos) presetsDescuentos = data.presetsDescuentos;
+                    if(data.historialComprobantes) historialComprobantes = data.historialComprobantes;
+
+                    saveData();
+                    cargarInputsConfig();
+                    renderOrdenes();
+                    renderPresets();
+                    renderPresetsDescuentos();
+                    renderHistorial();
+                    alert("¡Copia de seguridad cargada y restaurada con éxito!");
+                } catch(err) {
+                    alert("El archivo seleccionado no tiene un formato válido de respaldo.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function sincronizarHaciaNube() {
+            if(!currentUser || !db) return;
+            db.collection('usuarios').doc(currentUser.uid).set({
+                ordenes, presets, presetsDescuentos, historialComprobantes, configTaller,
+                ultimaSync: new Date().toISOString()
+            }, { merge: true }).catch(err => {
+                console.log("No se pudo respaldar en la nube en este momento.");
+            });
+        }
+
+        function sincronizarDesdeNube() {
+            if(!currentUser || !db) return;
+            db.collection('usuarios').doc(currentUser.uid).get().then(doc => {
+                if(doc.exists) {
+                    const data = doc.data();
+                    if(data.ordenes) ordenes = data.ordenes;
+                    if(data.presets) presets = data.presets;
+                    if(data.presetsDescuentos) presetsDescuentos = data.presetsDescuentos;
+                    if(data.historialComprobantes) historialComprobantes = data.historialComprobantes;
+                    if(data.configTaller) configTaller = data.configTaller;
+                    
+                    saveData();
+                    cargarInputsConfig();
+                    renderOrdenes();
+                    renderPresets();
+                    renderPresetsDescuentos();
+                    renderHistorial();
+                }
+            });
+        }
+
+        function updateUserUI(user) {
+            const authContainer = document.getElementById('authContainer');
+            const userCard = document.getElementById('userSessionCard');
+
+            if(user) {
+                const name = user.displayName ? user.displayName.split(' ')[0] : 'Usuario';
+                authContainer.innerHTML = `<span class="badge bg-success"><i class="fas fa-cloud-check me-1"></i> ${name}</span>`;
+                userCard.innerHTML = `
+                    <div class="mb-2">
+                        <strong class="d-block text-success"><i class="fas fa-check-circle me-1"></i> Sincronización activa</strong>
+                        <small class="text-muted">${user.email}</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger" onclick="logoutGoogle()"><i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión</button>
+                `;
+            } else {
+                authContainer.innerHTML = `<button class="btn btn-sm btn-outline-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>`;
+                userCard.innerHTML = `
+                    <p class="small text-muted mb-2">Iniciá sesión para respaldar tus datos automáticamente en tu cuenta de Google.</p>
+                    <button class="btn btn-sm btn-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
+                `;
+            }
+        }
+
+        // Inicio de sesión por Popup (Pop-up directo sin perder sesión en Netlify)
+        function loginGoogle() {
+            if (!auth) return;
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).then(result => {
+                currentUser = result.user;
+                updateUserUI(result.user);
+                sincronizarDesdeNube();
+            }).catch(error => {
+                console.error("Error al iniciar sesión:", error);
+            });
+        }
+
+        function logoutGoogle() {
+            if(confirm("¿Seguro querés cerrar sesión?")) {
+                if(auth) auth.signOut();
+            }
+        }
+
+        function cargarInputsConfig() {
+            document.getElementById('cfg_nombre').value = configTaller.nombre;
+            document.getElementById('cfg_direccion').value = configTaller.direccion;
+            document.getElementById('cfg_telefono').value = configTaller.telefono;
+            document.getElementById('cfg_alias').value = configTaller.alias;
+            document.getElementById('cfg_ig').value = configTaller.ig;
+            document.getElementById('appTitleHeader').innerHTML = `<i class="fas fa-tools me-2"></i>${configTaller.nombre}`;
+        }
+
+        function guardarConfigTaller() {
+            configTaller.nombre = document.getElementById('cfg_nombre').value || "Mi Taller";
+            configTaller.direccion = document.getElementById('cfg_direccion').value || "";
+            configTaller.telefono = document.getElementById('cfg_telefono').value || "";
+            configTaller.alias = document.getElementById('cfg_alias').value || "";
+            configTaller.ig = document.getElementById('cfg_ig').value || "";
+            
+            saveData();
+            cargarInputsConfig();
+            alert("¡Datos del taller guardados correctamente!");
+        }
+
+        function initSpeech() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.lang = 'es-AR';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onresult = (e) => {
+                    const text = e.results[0][0].transcript;
+                    document.getElementById('aiInputText').value = text;
+                    stopRecording();
+                    procesarTextoIA();
+                };
+
+                recognition.onerror = stopRecording;
+                recognition.onend = stopRecording;
+            }
+        }
+
+        function toggleDictadoVoz() {
+            const aiModal = new bootstrap.Modal(document.getElementById('aiModal'));
+            aiModal.show();
+
+            if (recognition && !isRecording) {
+                try {
+                    recognition.start();
+                    isRecording = true;
+                    document.getElementById('btnMic').classList.add('recording');
+                } catch(e){}
+            }
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            document.getElementById('btnMic').classList.remove('recording');
+        }
+
+        function procesarTextoIA() {
+            const input = document.getElementById('aiInputText').value.toLowerCase();
+            if(!input) return;
+
+            const clienteMatch = input.match(/para\s+([a-zA-Záéíóúñ]+)/i);
+            if(clienteMatch) document.getElementById('p_cliente').value = clienteMatch[1];
+
+            document.getElementById('serviciosList').innerHTML = '';
+            document.getElementById('repuestosList').innerHTML = '';
+
+            presets.forEach(p => {
+                if(input.includes(p.nombre.toLowerCase()) || input.includes(p.nombre.split(' ')[0].toLowerCase())) {
+                    addServicioRow(p.nombre, p.precio);
+                }
+            });
+
+            presetsDescuentos.forEach(d => {
+                if(input.includes(d.nombre.toLowerCase()) || input.includes('descuento')) {
+                    document.getElementById('p_descuento_nombre').value = d.nombre;
+                    document.getElementById('p_descuento_monto').value = d.monto;
+                }
+            });
+
+            if(document.querySelectorAll('.s-row').length === 0) addServicioRow();
+            if(document.querySelectorAll('.r-row').length === 0) addRepuestoRow();
+
+            calcularPresupuestoVivo();
+            bootstrap.Modal.getInstance(document.getElementById('aiModal')).hide();
+        }
+
+        function addServicioRow(nombre = '', precio = '') {
+            const container = document.getElementById('serviciosList');
+            const div = document.createElement('div');
+            div.className = 'row g-1 mb-1 s-row';
+            div.innerHTML = `
+                <div class="col-7"><input type="text" class="form-control form-control-sm s-nombre" placeholder="Servicio" value="${nombre}" oninput="calcularPresupuestoVivo()"></div>
+                <div class="col-4"><input type="number" class="form-control form-control-sm s-precio" placeholder="$" value="${precio}" oninput="calcularPresupuestoVivo()"></div>
+                <div class="col-1"><button class="btn btn-sm btn-outline-danger p-0 w-100" onclick="this.parentElement.parentElement.remove(); calcularPresupuestoVivo();">×</button></div>
+            `;
+            container.appendChild(div);
+            calcularPresupuestoVivo();
+        }
+
+        function addRepuestoRow(nombre = '', precio = '') {
+            const container = document.getElementById('repuestosList');
+            const div = document.createElement('div');
+            div.className = 'row g-1 mb-1 r-row';
+            div.innerHTML = `
+                <div class="col-7"><input type="text" class="form-control form-control-sm r-nombre" placeholder="Material/Repuesto" value="${nombre}" oninput="calcularPresupuestoVivo()"></div>
+                <div class="col-4"><input type="number" class="form-control form-control-sm r-precio" placeholder="$" value="${precio}" oninput="calcularPresupuestoVivo()"></div>
+                <div class="col-1"><button class="btn btn-sm btn-outline-danger p-0 w-100" onclick="this.parentElement.parentElement.remove(); calcularPresupuestoVivo();">×</button></div>
+            `;
+            container.appendChild(div);
+            calcularPresupuestoVivo();
+        }
+
+        function calcularPresupuestoVivo() {
+            let subServicios = 0, subRepuestos = 0;
+            document.querySelectorAll('.s-row').forEach(r => subServicios += (parseFloat(r.querySelector('.s-precio').value) || 0));
+            document.querySelectorAll('.r-row').forEach(r => subRepuestos += (parseFloat(r.querySelector('.r-precio').value) || 0));
+            
+            const descuento = parseFloat(document.getElementById('p_descuento_monto').value) || 0;
+            const total = Math.max(0, (subServicios + subRepuestos) - descuento);
+
+            document.getElementById('subtotalServiciosDisplay').innerText = '$' + subServicios.toLocaleString();
+            document.getElementById('subtotalRepuestosDisplay').innerText = '$' + subRepuestos.toLocaleString();
+            document.getElementById('totalFinalDisplay').innerText = '$' + total.toLocaleString();
+
+            return { subServicios, subRepuestos, descuento, total };
+        }
+
+        function generarYCopiarComprobante() {
+            const cliente = document.getElementById('p_cliente').value || 'Cliente';
+            const bici = document.getElementById('p_bici').value || 'Vehículo';
+            const fecha = new Date().toLocaleDateString('es-AR');
+            const { subServicios, subRepuestos, descuento, total } = calcularPresupuestoVivo();
+
+            let txt = `🛠️ ${configTaller.nombre.toUpperCase()} - COMPROBANTE DE SERVICIO\n`;
+            txt += `──────────────────────────────\n`;
+            txt += `👤 Cliente: ${cliente}\n`;
+            txt += `📅 Fecha: ${fecha}\n`;
+            txt += `🔧 Trabajo: ${bici}\n`;
+            txt += `──────────────────────────────\n`;
+            
+            txt += `📦 DETALLE DE MATERIALES / REPUESTOS\n`;
+            let hasR = false;
+            document.querySelectorAll('.r-row').forEach(r => {
+                const n = r.querySelector('.r-nombre').value;
+                const p = r.querySelector('.r-precio').value;
+                if(n) { txt += `• ${n}: $${parseFloat(p||0).toLocaleString()}\n`; hasR = true; }
+            });
+            if(!hasR) txt += `• Sin repuestos adicionales\n`;
+            txt += `\n👉 Subtotal Repuestos: $${subRepuestos.toLocaleString()}\n\n`;
+
+            txt += `🛠️ DETALLE DE MANO DE OBRA\n`;
+            let hasS = false;
+            document.querySelectorAll('.s-row').forEach(s => {
+                const n = s.querySelector('.s-nombre').value;
+                const p = s.querySelector('.s-precio').value;
+                if(n) { txt += `• ${n}: $${parseFloat(p||0).toLocaleString()}\n`; hasS = true; }
+            });
+            if(!hasS) txt += `• Servicio general\n`;
+            txt += `\n👉 Subtotal Mano de Obra: $${subServicios.toLocaleString()}\n`;
+
+            txt += `──────────────────────────────\n`;
+            if(descuento > 0) {
+                const descNom = document.getElementById('p_descuento_nombre').value || 'Descuento';
+                txt += `🏷️ Descuento (${descNom}): -$${descuento.toLocaleString()}\n`;
+            }
+            txt += `💰 TOTAL A ABONAR: $${total.toLocaleString()}\n`;
+            txt += `──────────────────────────────\n`;
+            txt += `💳 Medios de pago: Efectivo / Transferencia\n`;
+            if(configTaller.alias) txt += `📌 Alias: ${configTaller.alias}\n\n`;
+            txt += `¡Gracias por la confianza!\n`;
+            txt += `──────────────────────────────\n`;
+            txt += `🔧 ${configTaller.nombre} | ${configTaller.ig}\n`;
+            if(configTaller.direccion) txt += `📍 ${configTaller.direccion}\n`;
+            if(configTaller.telefono) txt += `📲 Consultas: ${configTaller.telefono}`;
+
+            navigator.clipboard.writeText(txt);
+            alert("¡Comprobante copiado con éxito para WhatsApp!");
+
+            historialComprobantes.unshift({ id: Date.now(), cliente, bici, total, fecha, texto: txt });
+            saveData();
+            renderHistorial();
+        }
+
+        function limpiarPresupuesto() {
+            document.getElementById('p_cliente').value = '';
+            document.getElementById('p_bici').value = '';
+            document.getElementById('p_descuento_nombre').value = '';
+            document.getElementById('p_descuento_monto').value = '';
+            document.getElementById('serviciosList').innerHTML = '';
+            document.getElementById('repuestosList').innerHTML = '';
+            addServicioRow();
+            addRepuestoRow();
+            calcularPresupuestoVivo();
+        }
+
+        function renderPresets() {
+            const container = document.getElementById('presetsContainer');
+            const listConfig = document.getElementById('listaPresetsConfig');
+            container.innerHTML = ''; listConfig.innerHTML = '';
+
+            presets.forEach((p, idx) => {
+                container.innerHTML += `<span class="preset-badge" onclick="addServicioRow('${p.nombre}', ${p.precio})">+ ${p.nombre}</span>`;
+                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} - $${p.precio}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
+            });
+        }
+
+        function agregarPreset() {
+            const n = document.getElementById('new_preset_name').value;
+            const p = parseFloat(document.getElementById('new_preset_price').value);
+            if(n && p) { presets.push({nombre: n, precio: p}); saveData(); renderPresets(); }
+        }
+
+        function borrarPreset(idx) { presets.splice(idx,1); saveData(); renderPresets(); }
+
+        function renderPresetsDescuentos() {
+            const container = document.getElementById('discountPresetsContainer');
+            const listConfig = document.getElementById('listaPresetsDescuentosConfig');
+            container.innerHTML = ''; listConfig.innerHTML = '';
+
+            presetsDescuentos.forEach((d, idx) => {
+                container.innerHTML += `<span class="preset-badge text-warning border-warning" onclick="aplicarPresetDescuento('${d.nombre}', ${d.monto})">% ${d.nombre}</span>`;
+                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${d.nombre} - -$${d.monto}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPresetDescuento(${idx})">×</button></li>`;
+            });
+        }
+
+        function aplicarPresetDescuento(nombre, monto) {
+            document.getElementById('p_descuento_nombre').value = nombre;
+            document.getElementById('p_descuento_monto').value = monto;
+            calcularPresupuestoVivo();
+        }
+
+        function agregarPresetDescuento() {
+            const n = document.getElementById('new_disc_name').value;
+            const m = parseFloat(document.getElementById('new_disc_val').value);
+            if(n && m) { presetsDescuentos.push({nombre: n, monto: m}); saveData(); renderPresetsDescuentos(); }
+        }
+
+        function borrarPresetDescuento(idx) { presetsDescuentos.splice(idx,1); saveData(); renderPresetsDescuentos(); }
+
+        function renderOrdenes() {
+            const container = document.getElementById('listaOrdenesContainer');
+            const search = document.getElementById('searchOrders').value.toLowerCase();
+            container.innerHTML = '';
+
+            ordenes.filter(o => o.cliente.toLowerCase().includes(search) || o.bici.toLowerCase().includes(search)).forEach(o => {
+                let badgeClass = o.estado === 'En Proceso' ? 'status-proceso' : (o.estado === 'Listo' ? 'status-listo' : 'status-entregado');
+                container.innerHTML += `
+                    <div class="order-item-row d-flex justify-content-between align-items-center" onclick="abrirModalOrden(${o.id})">
+                        <div>
+                            <div class="fw-bold">${o.cliente}</div>
+                            <small class="text-muted">${o.bici}</small>
+                        </div>
+                        <span class="badge badge-status ${badgeClass}">${o.estado}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function abrirModalOrden(id) {
+            const o = ordenes.find(x => x.id === id);
+            if(!o) return;
+            document.getElementById('modal_orden_id').value = o.id;
+            document.getElementById('m_cliente').value = o.cliente;
+            document.getElementById('m_bici').value = o.bici;
+            document.getElementById('m_estado').value = o.estado;
+            document.getElementById('m_tareas').value = o.tareas;
+            new bootstrap.Modal(document.getElementById('ordenModal')).show();
+        }
+
+        function nuevaOrdenModal() {
+            document.getElementById('modal_orden_id').value = '';
+            document.getElementById('m_cliente').value = '';
+            document.getElementById('m_bici').value = '';
+            document.getElementById('m_tareas').value = '';
+            new bootstrap.Modal(document.getElementById('ordenModal')).show();
+        }
+
+        function guardarOrden() {
+            const id = document.getElementById('modal_orden_id').value;
+            const cliente = document.getElementById('m_cliente').value;
+            const bici = document.getElementById('m_bici').value;
+            const estado = document.getElementById('m_estado').value;
+            const tareas = document.getElementById('m_tareas').value;
+
+            if(!cliente) return;
+
+            if(id) {
+                const o = ordenes.find(x => x.id == id);
+                o.cliente = cliente; o.bici = bici; o.estado = estado; o.tareas = tareas;
+            } else {
+                ordenes.unshift({ id: Date.now(), cliente, bici, estado, tareas });
+            }
+            saveData(); renderOrdenes();
+            bootstrap.Modal.getInstance(document.getElementById('ordenModal')).hide();
+        }
+
+        function eliminarOrdenActual() {
+            const id = document.getElementById('modal_orden_id').value;
+            if(!id) return;
+            ordenes = ordenes.filter(o => o.id != id);
+            saveData(); renderOrdenes();
+            bootstrap.Modal.getInstance(document.getElementById('ordenModal')).hide();
+        }
+
+        function renderHistorial() {
+            const container = document.getElementById('historialComprobantesList');
+            container.innerHTML = '';
+            historialComprobantes.forEach(h => {
+                container.innerHTML += `
+                    <div class="card bg-dark border-secondary mb-2">
+                        <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong class="small d-block">${h.cliente} (${h.bici})</strong>
+                                <small class="text-muted" style="font-size:0.75rem;">${h.fecha}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="text-success fw-bold me-2 small">$${h.total.toLocaleString()}</span>
+                                <button class="btn btn-sm btn-outline-neon p-1 px-2" onclick="verComprobanteModal(${h.id})">Ver</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function verComprobanteModal(id) {
+            const item = historialComprobantes.find(h => h.id === id);
+            if(!item) return;
+            document.getElementById('comprobanteTextoView').innerText = item.texto;
+            new bootstrap.Modal(document.getElementById('comprobanteModal')).show();
+        }
+
+        function copiarComprobanteDesdeModal() {
+            navigator.clipboard.writeText(document.getElementById('comprobanteTextoView').innerText);
+            alert("Comprobante copiado.");
+        }
+    </script>
+</body>
+</html>
+
