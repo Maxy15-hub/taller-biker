@@ -6,7 +6,7 @@
     <title>Taller Biker - Gestión Profesional</title>
     
     <!-- Vinculación PWA Standalone -->
-    <meta name="theme-color" content="#0a0a0a">
+    <meta name="theme-color" content="#000000">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -25,8 +25,9 @@
         :root {
             --bg-dark: #0a0a0a;
             --bg-card: #141414;
-            --neon-green: #00ff88;
-            --neon-green-hover: #00cc6c;
+            --brand-yellow: #ffcc00;
+            --brand-yellow-hover: #e6b800;
+            --brand-blue: #0077ff;
             --text-light: #ffffff;
             --text-muted: #d0d0d0;
             --border-color: #333333;
@@ -48,22 +49,16 @@
         }
 
         .navbar-brand {
-            color: var(--neon-green) !important; font-weight: 800; font-size: 1.2rem;
+            color: var(--brand-yellow) !important; font-weight: 800; font-size: 1.2rem;
         }
 
         .user-profile-badge {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
+            background: transparent !important; border: none !important; box-shadow: none !important;
+            padding: 0 !important; display: flex; align-items: center; gap: 8px; cursor: pointer;
         }
 
         .user-avatar-nav {
-            width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--neon-green); object-fit: cover;
+            width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--brand-yellow); object-fit: cover;
         }
 
         .user-name-text {
@@ -80,14 +75,14 @@
             font-weight: 600; padding: 12px 16px;
         }
 
-        .btn-neon {
-            background-color: var(--neon-green); color: #000; font-weight: 700; border: none; border-radius: 10px; padding: 12px 16px;
+        .btn-brand {
+            background-color: var(--brand-yellow); color: #000; font-weight: 700; border: none; border-radius: 10px; padding: 12px 16px;
         }
 
-        .btn-neon:hover, .btn-neon:active { background-color: var(--neon-green-hover); color: #000; }
+        .btn-brand:hover, .btn-brand:active { background-color: var(--brand-yellow-hover); color: #000; }
 
-        .btn-outline-neon {
-            border: 1px solid var(--neon-green); color: var(--neon-green); background: transparent; border-radius: 10px; font-weight: 600;
+        .btn-outline-brand {
+            border: 1px solid var(--brand-yellow); color: var(--brand-yellow); background: transparent; border-radius: 10px; font-weight: 600;
         }
 
         .form-control, .form-select {
@@ -97,86 +92,60 @@
         .form-control::placeholder { color: #aaaaaa !important; opacity: 1; }
 
         .form-control:focus, .form-select:focus {
-            background-color: #2a2a30; color: #fff; border-color: var(--neon-green); box-shadow: 0 0 0 0.2rem rgba(0, 255, 136, 0.25);
+            background-color: #2a2a30; color: #fff; border-color: var(--brand-yellow); box-shadow: 0 0 0 0.2rem rgba(255, 204, 0, 0.25);
         }
 
         .text-muted { color: var(--text-muted) !important; }
 
         .preset-badge {
-            cursor: pointer; background-color: #1a2e23; color: var(--neon-green); border: 1px solid var(--neon-green);
+            cursor: pointer; background-color: #2e261a; color: var(--brand-yellow); border: 1px solid var(--brand-yellow);
             margin: 3px; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 0.8rem; font-weight: 700;
         }
 
         .modal-content { background-color: var(--bg-card); color: var(--text-light); border: 1px solid var(--border-color); border-radius: 16px; }
         
-        /* Solapas distribuidas */
         .nav-tabs { 
-            border-bottom: 1px solid var(--border-color); 
-            display: flex;
-            width: 100%;
+            border-bottom: 1px solid var(--border-color); display: flex; width: 100%;
         }
 
-        .nav-tabs .nav-item {
-            flex: 1;
-            text-align: center;
-        }
+        .nav-tabs .nav-item { flex: 1; text-align: center; }
 
         .nav-tabs .nav-link { 
-            color: #bbbbbb; 
-            border: none; 
-            padding: 10px 4px; 
-            font-size: 0.85rem; 
-            font-weight: 600; 
-            white-space: nowrap;
-            width: 100%;
+            color: #bbbbbb; border: none; padding: 10px 4px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; width: 100%;
         }
 
         .nav-tabs .nav-link.active { 
-            color: var(--neon-green); 
-            background-color: transparent; 
-            border-bottom: 3px solid var(--neon-green); 
+            color: var(--brand-yellow); background-color: transparent; border-bottom: 3px solid var(--brand-yellow); 
         }
 
+        /* Botón de micrófono estilo WhatsApp (Mantener presionado) */
         .fab-mic {
-            position: fixed; bottom: 85px; right: 20px; width: 58px; height: 58px; border-radius: 50%;
-            background-color: var(--neon-green); color: #000; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4); z-index: 1000; border: none; cursor: pointer;
+            position: fixed; bottom: 85px; right: 20px; width: 62px; height: 62px; border-radius: 50%;
+            background-color: var(--brand-yellow); color: #000; display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4); z-index: 1000; border: none; cursor: pointer;
+            user-select: none; -webkit-user-select: none; transition: transform 0.1s ease;
         }
 
-        .total-highlight { 
-            font-size: 1.15rem; 
-            font-weight: 800; 
-            color: var(--neon-green); 
-            white-space: nowrap;
-            display: block;
-        }
-        
-        .resta-highlight { 
-            font-size: 1.15rem; 
-            font-weight: 800; 
-            color: #ff9500; 
-            white-space: nowrap;
-            display: block;
+        .fab-mic.recording {
+            background-color: #ff3b30; color: #fff; transform: scale(1.15);
+            box-shadow: 0 0 20px rgba(255, 59, 48, 0.8);
+            animation: pulse-mic 1.2s infinite;
         }
 
-        .monto-subtotal {
-            font-size: 0.95rem;
-            font-weight: 700;
-            white-space: nowrap;
-            display: block;
+        @keyframes pulse-mic {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1.1); }
         }
+
+        .total-highlight { font-size: 1.15rem; font-weight: 800; color: var(--brand-yellow); white-space: nowrap; display: block; }
+        .resta-highlight { font-size: 1.15rem; font-weight: 800; color: #ff9500; white-space: nowrap; display: block; }
+        .monto-subtotal { font-size: 0.95rem; font-weight: 700; white-space: nowrap; display: block; }
         
         .receipt-preview-box {
-            background-color: #090d12;
-            border: 1px dashed var(--neon-green);
-            border-radius: 12px;
-            padding: 14px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            font-size: 0.85rem;
-            color: #00ff88;
-            max-height: 280px;
-            overflow-y: auto;
+            background-color: #090d12; border: 1px dashed var(--brand-yellow); border-radius: 12px;
+            padding: 14px; font-family: monospace; white-space: pre-wrap; font-size: 0.85rem; color: var(--brand-yellow);
+            max-height: 280px; overflow-y: auto;
         }
     </style>
 </head>
@@ -188,7 +157,7 @@
             <div class="container-fluid d-flex justify-content-between align-items-center">
                 <a class="navbar-brand m-0" href="#" id="appTitleHeader"><i class="fas fa-tools me-2"></i>Taller Biker</a>
                 <div id="authContainer">
-                    <button class="btn btn-sm btn-outline-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>
+                    <button class="btn btn-sm btn-outline-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>
                 </div>
             </div>
         </nav>
@@ -212,13 +181,13 @@
                 <div class="tab-pane fade show active" id="presupuesto">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-file-invoice-dollar me-2 text-success"></i>Emisión de Documentos</span>
+                            <span><i class="fas fa-file-invoice-dollar me-2" style="color:var(--brand-yellow);"></i>Emisión de Documentos</span>
                             <button class="btn btn-sm btn-outline-secondary text-light" onclick="limpiarPresupuesto()">Limpiar</button>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label small text-info fw-bold"><i class="fas fa-exchange-alt me-1"></i> Tipo de Documento a Generar:</label>
-                                <select id="p_tipo_doc" class="form-select border-info" onchange="calcularPresupuestoVivo()">
+                                <label class="form-label small fw-bold" style="color:var(--brand-yellow);"><i class="fas fa-exchange-alt me-1"></i> Tipo de Documento a Generar:</label>
+                                <select id="p_tipo_doc" class="form-select" onchange="calcularPresupuestoVivo()" style="border-color:var(--brand-yellow);">
                                     <option value="presupuesto" selected>📋 PRESUPUESTO ESTIMADO (Pre-servicio)</option>
                                     <option value="comprobante">🧾 COMPROBANTE DE PAGO Y ENTREGA (Final)</option>
                                 </select>
@@ -242,15 +211,15 @@
 
                             <div class="row g-3">
                                 <div class="col-12 col-md-6">
-                                    <h6 class="text-success small fw-bold">MANO DE OBRA / SERVICIOS</h6>
+                                    <h6 class="small fw-bold" style="color:var(--brand-yellow);">MANO DE OBRA / SERVICIOS</h6>
                                     <div id="serviciosList"></div>
-                                    <button class="btn btn-sm btn-outline-neon w-100 mt-1" onclick="addServicioRow()"><i class="fas fa-plus me-1"></i> Agregar Servicio</button>
+                                    <button class="btn btn-sm btn-outline-brand w-100 mt-1" onclick="addServicioRow()"><i class="fas fa-plus me-1"></i> Agregar Servicio</button>
                                 </div>
 
                                 <div class="col-12 col-md-6">
-                                    <h6 class="text-info small fw-bold">MATERIALES / REPUESTOS</h6>
+                                    <h6 class="small fw-bold" style="color:var(--brand-yellow);">MATERIALES / REPUESTOS</h6>
                                     <div id="repuestosList"></div>
-                                    <button class="btn btn-sm btn-outline-neon w-100 mt-1" onclick="addRepuestoRow()"><i class="fas fa-plus me-1"></i> Agregar Repuesto</button>
+                                    <button class="btn btn-sm btn-outline-brand w-100 mt-1" onclick="addRepuestoRow()"><i class="fas fa-plus me-1"></i> Agregar Repuesto</button>
                                 </div>
                             </div>
 
@@ -298,13 +267,13 @@
                             </div>
 
                             <div class="mt-3">
-                                <label class="form-label small text-info fw-bold"><i class="fas fa-eye me-1"></i> Vista Previa (WhatsApp):</label>
+                                <label class="form-label small fw-bold" style="color:var(--brand-yellow);"><i class="fas fa-eye me-1"></i> Vista Previa (WhatsApp):</label>
                                 <div id="receiptPreviewBox" class="receipt-preview-box">Cargá los datos arriba para ver el texto formateado...</div>
                             </div>
 
                             <!-- ÚNICO BOTÓN DE ENVÍO POR WHATSAPP -->
                             <div class="mt-3 mb-4">
-                                <button class="btn btn-neon w-100 py-3 btn-lg fw-bold" onclick="enviarPorWhatsApp()"><i class="fab fa-whatsapp me-2"></i> Enviar por WhatsApp</button>
+                                <button class="btn btn-brand w-100 py-3 btn-lg fw-bold" onclick="enviarPorWhatsApp()"><i class="fab fa-whatsapp me-2"></i> Enviar por WhatsApp</button>
                             </div>
                         </div>
                     </div>
@@ -331,7 +300,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label small text-muted">Detalle del Diagnóstico / Observaciones Técnicas (Independiente)</label>
-                                <textarea id="d_hallazgos" class="form-control" rows="5" placeholder="Dictá con el micrófono o escribí acá únicamente las fallas técnicas..." oninput="generarDiagnosticoTexto()"></textarea>
+                                <textarea id="d_hallazgos" class="form-control" rows="5" placeholder="Mantené presionado el botón del micrófono abajo a la derecha para dictar..." oninput="generarDiagnosticoTexto()"></textarea>
                             </div>
 
                             <div class="mt-3">
@@ -340,21 +309,25 @@
                             </div>
 
                             <div class="mt-3 mb-3">
-                                <button class="btn btn-neon w-100 py-3 btn-lg fw-bold" onclick="enviarDiagnosticoWhatsApp()"><i class="fab fa-whatsapp me-2"></i> Enviar por WhatsApp</button>
+                                <button class="btn btn-brand w-100 py-3 btn-lg fw-bold" onclick="enviarDiagnosticoWhatsApp()"><i class="fab fa-whatsapp me-2"></i> Enviar por WhatsApp</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- HISTORIAL COMPROBANTES -->
+                <!-- HISTORIAL POR CLIENTES -->
                 <div class="tab-pane fade" id="historial">
-                    <h5 class="mb-3"><i class="fas fa-receipt text-info me-2"></i>Comprobantes Guardados</h5>
-                    <div id="historialComprobantesList"></div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="m-0"><i class="fas fa-history me-2" style="color:var(--brand-yellow);"></i>Historial por Clientes</h5>
+                    </div>
+                    <input type="text" id="searchClientHistory" class="form-control mb-3" placeholder="Buscar cliente por nombre..." onkeyup="renderHistorialClientes()">
+                    <div id="historialClientesContainer"></div>
                 </div>
             </div>
         </div>
 
-        <button class="fab-mic" id="btnMic" onclick="toggleDictadoVoz()"><i class="fas fa-microphone"></i></button>
+        <!-- Botón Micrófono Estilo WhatsApp (Hold to talk) -->
+        <button class="fab-mic" id="btnMic" title="Mantené presionado para hablar"><i class="fas fa-microphone"></i></button>
     </div>
 
     <!-- Modales -->
@@ -362,7 +335,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title"><i class="fas fa-cog text-success me-2"></i>Configuración y Tarifario del Taller</h6>
+                    <h6 class="modal-title"><i class="fas fa-cog me-2" style="color:var(--brand-yellow);"></i>Configuración y Tarifario del Taller</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -370,23 +343,23 @@
                         <div class="card-header bg-dark text-info fw-bold"><i class="fas fa-cloud me-2"></i>Sincronización Automática</div>
                         <div class="card-body text-center" id="userSessionCard">
                             <p class="small text-muted mb-2">Iniciá sesión para respaldar tus datos automáticamente en tu cuenta de Google.</p>
-                            <button class="btn btn-sm btn-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
+                            <button class="btn btn-sm btn-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
                         </div>
                     </div>
 
                     <div class="card mb-3 border-success">
                         <div class="card-header bg-dark text-success fw-bold"><i class="fas fa-file-excel me-2"></i>Importar Tarifario / Precios desde Archivo</div>
                         <div class="card-body">
-                            <p class="small text-muted mb-2">Subí un archivo CSV o TXT con la lista de precios (formato: <em>Servicio,Precio</em>):</p>
+                            <p class="small text-muted mb-2">Subí un archivo CSV o TXT con la lista de precios:</p>
                             <input type="file" id="catalogFile" accept=".csv, .txt, .json" style="display:none" onchange="importarTarifarioArchivo(event)">
-                            <button class="btn btn-sm btn-outline-neon w-100" onclick="document.getElementById('catalogFile').click()"><i class="fas fa-file-upload me-1"></i> Cargar Archivo de Precios</button>
+                            <button class="btn btn-sm btn-outline-brand w-100" onclick="document.getElementById('catalogFile').click()"><i class="fas fa-file-upload me-1"></i> Cargar Archivo de Precios</button>
                         </div>
                     </div>
 
                     <div class="card mb-3 border-warning">
                         <div class="card-header bg-dark text-warning fw-bold"><i class="fas fa-hdd me-2"></i>Copia de Seguridad en Archivo (Manual)</div>
                         <div class="card-body">
-                            <p class="small text-muted mb-3">Podés descargar una copia completa de tus datos para guardarla en tu celular o Drive.</p>
+                            <p class="small text-muted mb-3">Podés descargar una copia completa de tus datos.</p>
                             <div class="row g-2">
                                 <div class="col-6">
                                     <button class="btn btn-sm btn-outline-warning w-100" onclick="exportarCopiaSeguridad()"><i class="fas fa-download me-1"></i> Exportar Copia</button>
@@ -424,29 +397,29 @@
                                     <input type="text" id="cfg_ig" class="form-control" value="@tallerbiker_">
                                 </div>
                             </div>
-                            <button class="btn btn-sm btn-neon w-100 mt-2" onclick="guardarConfigTaller()"><i class="fas fa-save me-1"></i> Guardar Datos del Taller</button>
+                            <button class="btn btn-sm btn-brand w-100 mt-2" onclick="guardarConfigTaller()"><i class="fas fa-save me-1"></i> Guardar Datos del Taller</button>
                         </div>
                     </div>
 
                     <div class="card mb-3">
-                        <div class="card-header small text-uppercase fw-bold"><i class="fas fa-bolt text-warning me-2"></i>Catálogo de Servicios y Precios</div>
+                        <div class="card-header small text-uppercase fw-bold text-warning"><i class="fas fa-bolt me-2"></i>Catálogo de Servicios y Precios</div>
                         <div class="card-body">
                             <div class="row g-2 mb-2">
                                 <div class="col-6"><input type="text" id="new_preset_name" class="form-control form-control-sm" placeholder="Nombre trabajo"></div>
                                 <div class="col-4"><input type="number" id="new_preset_price" class="form-control form-control-sm" placeholder="Precio $"></div>
-                                <div class="col-2"><button class="btn btn-sm btn-neon w-100" onclick="agregarPreset()">+</button></div>
+                                <div class="col-2"><button class="btn btn-sm btn-brand w-100" onclick="agregarPreset()">+</button></div>
                             </div>
                             <ul class="list-group list-group-flush" id="listaPresetsConfig" style="max-height: 200px; overflow-y: auto;"></ul>
                         </div>
                     </div>
 
                     <div class="card">
-                        <div class="card-header small text-uppercase fw-bold"><i class="fas fa-percentage text-warning me-2"></i>Catálogo de Descuentos</div>
+                        <div class="card-header small text-uppercase fw-bold text-warning"><i class="fas fa-percentage me-2"></i>Catálogo de Descuentos</div>
                         <div class="card-body">
                             <div class="row g-2 mb-2">
                                 <div class="col-6"><input type="text" id="new_disc_name" class="form-control form-control-sm" placeholder="Motivo"></div>
                                 <div class="col-4"><input type="number" id="new_disc_val" class="form-control form-control-sm" placeholder="Monto $"></div>
-                                <div class="col-2"><button class="btn btn-sm btn-neon w-100" onclick="agregarPresetDescuento()">+</button></div>
+                                <div class="col-2"><button class="btn btn-sm btn-brand w-100" onclick="agregarPresetDescuento()">+</button></div>
                             </div>
                             <ul class="list-group list-group-flush" id="listaPresetsDescuentosConfig"></ul>
                         </div>
@@ -456,17 +429,15 @@
         </div>
     </div>
 
-    <div class="modal fade" id="aiModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+    <div class="modal fade" id="clienteHistorialModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="aiModalTitle"><i class="fas fa-robot text-success me-2"></i>Asistente por Voz</h6>
+                    <h6 class="modal-title" id="modalClienteTitle"><i class="fas fa-user-circle text-warning me-2"></i>Historial del Cliente</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="small text-muted" id="aiModalSubtitle">Dictá o escribí lo realizado:</p>
-                    <textarea id="aiInputText" class="form-control mb-3" rows="3" placeholder="Esperando voz o texto..."></textarea>
-                    <button class="btn btn-neon w-100" onclick="procesarTextoIA()"><i class="fas fa-magic me-2"></i>Procesar Datos</button>
+                    <div id="clienteComprobantesList"></div>
                 </div>
             </div>
         </div>
@@ -476,14 +447,14 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title">Comprobante del Historial</h6>
+                    <h6 class="modal-title">Detalle del Comprobante</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div id="comprobanteTextoView" class="receipt-preview-box"></div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-neon w-100" onclick="enviarComprobanteDesdeModal()"><i class="fab fa-whatsapp me-1"></i> Enviar por WhatsApp</button>
+                    <button class="btn btn-sm btn-brand w-100" onclick="enviarComprobanteDesdeModal()"><i class="fab fa-whatsapp me-1"></i> Enviar por WhatsApp</button>
                 </div>
             </div>
         </div>
@@ -540,7 +511,6 @@
             ig: "@tallerbiker_"
         };
 
-        // Tarifario actualizado del taller
         let presets = JSON.parse(localStorage.getItem('tb_presets')) || [
             { nombre: "Emparchado y desarme de rueda y cámara", precio: 3000 },
             { nombre: "Inflado de ruedas + Lubricación rápida", precio: 3000 },
@@ -564,7 +534,7 @@
             { nombre: "Adaptación y cambio a rueda con rulemanes", precio: 7500 },
             { nombre: "Cambio de horquilla / suspensión recta", precio: 8000 },
             { nombre: "Cambio de caja pedalier (sellada o bolillas)", precio: 8000 },
-            { nombre: "Cambio de transmisión (Cadena y Piñón)", precio: 8000 },
+            { nombre: "Cambio de transmission (Cadena y Piñón)", precio: 8000 },
             { nombre: "Colocación y regulación de shifters integrados (par)", precio: 13500 },
             { nombre: "Adaptación de maza a rulemanes (modificación)", precio: 14000 },
             { nombre: "Puesta a Punto", precio: 15000 },
@@ -582,16 +552,15 @@
 
         let historialComprobantes = JSON.parse(localStorage.getItem('tb_historial')) || [];
         let recognition = null;
-        let isRecording = false;
 
         document.addEventListener("DOMContentLoaded", () => {
             cargarInputsConfig();
             renderPresets();
             renderPresetsDescuentos();
-            renderHistorial();
+            renderHistorialClientes();
             addServicioRow();
             addRepuestoRow();
-            initSpeech();
+            initSpeechHoldToTalk();
             calcularPresupuestoVivo();
             generarDiagnosticoTexto();
             gestionarVisibilidadMic();
@@ -618,6 +587,107 @@
                     btnMic.style.display = 'none';
                 }
             }, 50);
+        }
+
+        // Configuración Micrófono Estilo WhatsApp (Mantener presionado)
+        function initSpeechHoldToTalk() {
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return;
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            const btnMic = document.getElementById('btnMic');
+            
+            let isHolding = false;
+
+            const startListening = (e) => {
+                e.preventDefault();
+                if (isHolding) return;
+                isHolding = true;
+
+                // Reproducir sonido breve de inicio de escucha (beep sintético por Web Audio API)
+                playBeepSound();
+
+                btnMic.classList.add('recording');
+
+                recognition = new SpeechRecognition();
+                recognition.lang = 'es-AR';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+
+                let finalTranscript = '';
+
+                recognition.onresult = (event) => {
+                    let interim = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript + ' ';
+                        } else {
+                            interim += event.results[i][0].transcript;
+                        }
+                    }
+
+                    const activeTab = document.querySelector('.nav-link.active').id;
+                    if (activeTab === 'diag-tab') {
+                        const currentText = document.getElementById('d_hallazgos').value;
+                        document.getElementById('d_hallazgos').value = currentText + finalTranscript;
+                        finalTranscript = '';
+                        generarDiagnosticoTexto();
+                    } else {
+                        // Modo presupuesto / cliente
+                        const fullText = (finalTranscript + interim).toLowerCase();
+                        const clienteMatch = fullText.match(/para\s+([a-zA-Záéíóúñ]+)/i);
+                        if(clienteMatch) document.getElementById('p_cliente').value = clienteMatch[1];
+
+                        presets.forEach(p => {
+                            if(fullText.includes(p.nombre.toLowerCase()) || fullText.includes(p.nombre.split(' ')[0].toLowerCase())) {
+                                addServicioRow(p.nombre, p.precio);
+                            }
+                        });
+                        calcularPresupuestoVivo();
+                    }
+                };
+
+                recognition.onerror = () => { stopListening(); };
+                recognition.onend = () => { stopListening(); };
+
+                try {
+                    recognition.start();
+                } catch(err) {
+                    stopListening();
+                }
+            };
+
+            const stopListening = () => {
+                if (!isHolding) return;
+                isHolding = false;
+                btnMic.classList.remove('recording');
+                if (recognition) {
+                    try { recognition.stop(); } catch(e){}
+                }
+            };
+
+            // Eventos táctiles y de mouse
+            btnMic.addEventListener('mousedown', startListening);
+            btnMic.addEventListener('mouseup', stopListening);
+            btnMic.addEventListener('mouseleave', stopListening);
+
+            btnMic.addEventListener('touchstart', startListening, {passive: false});
+            btnMic.addEventListener('touchend', stopListening);
+            btnMic.addEventListener('touchcancel', stopListening);
+        }
+
+        function playBeepSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); // Frecuencia de tono beep
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.15); // Duración 150ms
+            } catch(e) {}
         }
 
         function abrirConfigModal() {
@@ -660,7 +730,7 @@
                     cargarInputsConfig();
                     renderPresets();
                     renderPresetsDescuentos();
-                    renderHistorial();
+                    renderHistorialClientes();
                     alert("¡Copia de seguridad cargada y restaurada con éxito!");
                 } catch(err) {
                     alert("El archivo seleccionado no tiene un formato válido de respaldo.");
@@ -724,7 +794,7 @@
                     cargarInputsConfig();
                     renderPresets();
                     renderPresetsDescuentos();
-                    renderHistorial();
+                    renderHistorialClientes();
                 }
             });
         }
@@ -735,7 +805,7 @@
 
             if(user) {
                 const fullName = user.displayName ? user.displayName : 'Maxi Esquivel';
-                const photo = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar-nav" alt="Profile">` : `<i class="fas fa-user-circle fa-lg text-success"></i>`;
+                const photo = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar-nav" alt="Profile">` : `<i class="fas fa-user-circle fa-lg text-warning"></i>`;
                 
                 authContainer.innerHTML = `
                     <div class="user-profile-badge" onclick="abrirConfigModal()">
@@ -751,10 +821,10 @@
                     <button class="btn btn-sm btn-outline-danger" onclick="logoutGoogle()"><i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión</button>
                 `;
             } else {
-                authContainer.innerHTML = `<button class="btn btn-sm btn-outline-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>`;
+                authContainer.innerHTML = `<button class="btn btn-sm btn-outline-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>`;
                 userCard.innerHTML = `
                     <p class="small text-muted mb-2">Iniciá sesión para respaldar tus datos automáticamente en tu cuenta de Google.</p>
-                    <button class="btn btn-sm btn-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
+                    <button class="btn btn-sm btn-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
                 `;
             }
         }
@@ -798,95 +868,6 @@
             calcularPresupuestoVivo();
             generarDiagnosticoTexto();
             alert("¡Datos del taller guardados correctamente!");
-        }
-
-        function initSpeech() {
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SpeechRecognition();
-                recognition.lang = 'es-AR';
-                recognition.continuous = false;
-                recognition.interimResults = false;
-
-                recognition.onresult = (e) => {
-                    const text = e.results[0][0].transcript;
-                    document.getElementById('aiInputText').value = text;
-                    stopRecording();
-                    procesarTextoIA();
-                };
-
-                recognition.onerror = stopRecording;
-                recognition.onend = stopRecording;
-            }
-        }
-
-        function toggleDictadoVoz() {
-            const activeTab = document.querySelector('.nav-link.active').id;
-            
-            if (activeTab === 'diag-tab') {
-                document.getElementById('aiModalTitle').innerHTML = `<i class="fas fa-stethoscope text-warning me-2"></i>Dictado de Diagnóstico`;
-                document.getElementById('aiModalSubtitle').innerText = "Dictá las fallas y observaciones para el informe técnico:";
-            } else {
-                document.getElementById('aiModalTitle').innerHTML = `<i class="fas fa-robot text-success me-2"></i>Dictado para Calculadora / Presupuesto`;
-                document.getElementById('aiModalSubtitle').innerText = "Dictá los trabajos y repuestos a cobrar:";
-            }
-
-            const aiModal = new bootstrap.Modal(document.getElementById('aiModal'));
-            aiModal.show();
-
-            if (recognition && !isRecording) {
-                try {
-                    recognition.start();
-                    isRecording = true;
-                    document.getElementById('btnMic').classList.add('recording');
-                } catch(e){}
-            }
-        }
-
-        function stopRecording() {
-            isRecording = false;
-            document.getElementById('btnMic').classList.remove('recording');
-        }
-
-        function procesarTextoIA() {
-            const input = document.getElementById('aiInputText').value.toLowerCase();
-            if(!input) return;
-
-            const activeTab = document.querySelector('.nav-link.active').id;
-
-            if (activeTab === 'diag-tab') {
-                const clienteMatch = input.match(/para\s+([a-zA-Záéíóúñ]+)/i);
-                if(clienteMatch) document.getElementById('d_cliente').value = clienteMatch[1];
-                document.getElementById('d_hallazgos').value = input;
-                generarDiagnosticoTexto();
-            } else {
-                const clienteMatch = input.match(/para\s+([a-zA-Záéíóúñ]+)/i);
-                if(clienteMatch) document.getElementById('p_cliente').value = clienteMatch[1];
-
-                document.getElementById('serviciosList').innerHTML = '';
-                document.getElementById('repuestosList').innerHTML = '';
-
-                presets.forEach(p => {
-                    if(input.includes(p.nombre.toLowerCase()) || input.includes(p.nombre.split(' ')[0].toLowerCase())) {
-                        addServicioRow(p.nombre, p.precio);
-                    }
-                });
-
-                presetsDescuentos.forEach(d => {
-                    if(input.includes(d.nombre.toLowerCase()) || input.includes('descuento')) {
-                        document.getElementById('p_descuento_nombre').value = d.nombre;
-                        document.getElementById('p_descuento_monto').value = d.monto;
-                    }
-                });
-
-                if(document.querySelectorAll('.s-row').length === 0) addServicioRow();
-                if(document.querySelectorAll('.r-row').length === 0) addRepuestoRow();
-
-                calcularPresupuestoVivo();
-            }
-
-            bootstrap.Modal.getInstance(document.getElementById('aiModal')).hide();
-            document.getElementById('aiInputText').value = '';
         }
 
         function addServicioRow(nombre = '', precio = '') {
@@ -1016,7 +997,7 @@
             
             historialComprobantes.unshift({ id: Date.now(), cliente, bici, total, fecha, texto: txt });
             saveData();
-            renderHistorial();
+            renderHistorialClientes();
 
             const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
             window.open(url, '_blank');
@@ -1117,28 +1098,73 @@
 
         function borrarPresetDescuento(idx) { presetsDescuentos.splice(idx,1); saveData(); renderPresetsDescuentos(); }
 
-        function renderHistorial() {
-            const container = document.getElementById('historialComprobantesList');
+        // Historial agrupado por Clientes
+        function renderHistorialClientes() {
+            const container = document.getElementById('historialClientesContainer');
+            const search = document.getElementById('searchClientHistory').value.toLowerCase();
             container.innerHTML = '';
+
+            // Agrupar comprobantes por cliente
+            let clientesMap = {};
             historialComprobantes.forEach(h => {
+                let nombreCliente = h.cliente ? h.cliente.trim() : 'Sin Nombre';
+                if(!clientesMap[nombreCliente]) {
+                    clientesMap[nombreCliente] = [];
+                }
+                clientesMap[nombreCliente].push(h);
+            });
+
+            const clientesKeys = Object.keys(clientesMap).filter(c => c.toLowerCase().includes(search));
+
+            if(clientesKeys.length === 0) {
+                container.innerHTML = `<p class="text-muted small text-center mt-3">No hay clientes en el historial.</p>`;
+                return;
+            }
+
+            clientesKeys.forEach(cliente => {
+                const trabajos = clientesMap[cliente];
                 container.innerHTML += `
-                    <div class="card bg-dark border-secondary mb-2">
-                        <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                    <div class="card bg-dark border-secondary mb-2" onclick="abrirHistorialCliente('${cliente.replace(/'/g, "\\'")}')" style="cursor:pointer;">
+                        <div class="card-body p-3 d-flex justify-content-between align-items-center">
                             <div>
-                                <strong class="small d-block">${h.cliente} (${h.bici})</strong>
-                                <small class="text-muted" style="font-size:0.75rem;">${h.fecha}</small>
+                                <strong class="text-warning"><i class="fas fa-user me-2"></i>${cliente}</strong>
+                                <small class="text-muted d-block">${trabajos.length} trabajo(s) registrado(s)</small>
                             </div>
-                            <div class="text-end">
-                                <span class="text-success fw-bold me-2 small">$${h.total.toLocaleString()}</span>
-                                <button class="btn btn-sm btn-outline-neon p-1 px-2" onclick="verComprobanteModal(${h.id})">Ver</button>
-                            </div>
+                            <span class="badge bg-secondary">Ver Historial <i class="fas fa-chevron-right ms-1"></i></span>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function verComprobanteModal(id) {
+        function abrirHistorialCliente(clienteNombre) {
+            document.getElementById('modalClienteTitle').innerHTML = `<i class="fas fa-user-circle text-warning me-2"></i>Historial de: ${clienteNombre}`;
+            const container = document.getElementById('clienteComprobantesList');
+            container.innerHTML = '';
+
+            const trabajosCliente = historialComprobantes.filter(h => (h.cliente ? h.cliente.trim() : 'Sin Nombre') === clienteNombre);
+
+            trabajosCliente.forEach(h => {
+                container.innerHTML += `
+                    <div class="card bg-black border-secondary mb-2">
+                        <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong class="small d-block text-light">🚲 ${h.bici}</strong>
+                                <small class="text-muted" style="font-size:0.75rem;">📅 ${h.fecha}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="text-warning fw-bold me-2 small">$${h.total.toLocaleString()}</span>
+                                <button class="btn btn-sm btn-outline-brand p-1 px-2" onclick="verComprobanteModalText(${h.id})">Ver</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            new bootstrap.Modal(document.getElementById('clienteHistorialModal')).show();
+        }
+
+        function verComprobanteModalText(id) {
             const item = historialComprobantes.find(h => h.id === id);
             if(!item) return;
             document.getElementById('comprobanteTextoView').innerText = item.texto;
