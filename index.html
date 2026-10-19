@@ -25,7 +25,7 @@
         :root {
             --bg-dark: #070707;
             --bg-card: #121216;
-            --brand-yellow: #d4a300; /* Amarillo más suave y equilibrado */
+            --brand-yellow: #d4a300;
             --brand-yellow-hover: #b08500;
             --brand-blue: #0077ff;
             --brand-blue-hover: #005bb5;
@@ -105,7 +105,6 @@
 
         .text-muted { color: var(--text-muted) !important; }
 
-        /* Estilo de selección múltiple tipo checklist para el tarifario */
         .catalog-container {
             max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color);
             padding: 10px; border-radius: 10px; background: #0c0c10;
@@ -135,7 +134,6 @@
             color: var(--brand-yellow); background-color: rgba(212, 163, 0, 0.04); border-bottom: 3px solid var(--brand-yellow); 
         }
 
-        /* Botón de micrófono estilo WhatsApp */
         .fab-mic {
             position: fixed; bottom: 85px; right: 20px; width: 62px; height: 62px; border-radius: 50%;
             background: linear-gradient(135deg, var(--brand-yellow), #b08500); color: #000; display: flex; align-items: center; justify-content: center;
@@ -512,6 +510,17 @@
             db = firebase.firestore();
             auth = firebase.auth();
 
+            // Manejar el resultado de la redirección de Google al volver
+            auth.getRedirectResult().then(result => {
+                if (result.user) {
+                    currentUser = result.user;
+                    updateUserUI(result.user);
+                    sincronizarDesdeNube();
+                }
+            }).catch(error => {
+                console.error("Error en redirección de login:", error);
+            });
+
             auth.onAuthStateChanged(user => {
                 if (user) {
                     currentUser = user;
@@ -845,15 +854,16 @@
             }
         }
 
+        // Método de Login por redirección para evitar bloqueos en celulares
         function loginGoogle() {
-            if (!auth) return;
+            if (!auth) {
+                alert("El sistema de autenticación de Firebase no está disponible.");
+                return;
+            }
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(result => {
-                currentUser = result.user;
-                updateUserUI(result.user);
-                sincronizarDesdeNube();
-            }).catch(error => {
+            auth.signInWithRedirect(provider).catch(error => {
                 console.error("Error al iniciar sesión:", error);
+                alert("No se pudo iniciar sesión: " + error.message);
             });
         }
 
@@ -923,10 +933,12 @@
                     <label class="catalog-item-check">
                         <div>
                             <input type="checkbox" class="preset-checkbox me-2" data-nombre="${p.nombre.replace(/"/g, '&quot;')}" data-precio="${p.precio}">
-                            <span>${p.nombre}</span> </div> <span class="text-warning fw-bold ms-2">$${p.precio.toLocaleString()}</span>
+                            <span>${p.nombre}</span>
+                        </div>
+                        <span class="text-warning fw-bold ms-2">$${p.precio.toLocaleString()}</span>
                     </label>
                 `;
-                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} -$${p.precio.toLocaleString()}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
+                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} - $${p.precio.toLocaleString()}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
             });
         }
 
@@ -962,7 +974,7 @@
             container.innerHTML = ''; listConfig.innerHTML = '';
 
             presetsDescuentos.forEach((d, idx) => {
-                container.innerHTML += `<span class="preset-badge" style="color:var(--brand-blue); border-color:var(--brand-blue); background:#091424;" onclick="aplicarPresetDescuento('${d.nombre}', ${d.monto})">\% ${d.nombre}</span>`;
+                container.innerHTML += `<span class="preset-badge" style="color:var(--brand-blue); border-color:var(--brand-blue); background:#091424;" onclick="aplicarPresetDescuento('${d.nombre}', ${d.monto})">% ${d.nombre}</span>`;
                 listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${d.nombre} - -$${d.monto}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPresetDescuento(${idx})">×</button></li>`;
             });
         }
@@ -1023,7 +1035,7 @@
             document.querySelectorAll('.r-row').forEach(r => {
                 const n = r.querySelector('.r-nombre').value;
                 const p = r.querySelector('.r-precio').value;
-                if(n) { txt += `• ${n}:$${parseFloat(p||0).toLocaleString()}\n`; hasR = true; }
+                if(n) { txt += `• ${n}: $${parseFloat(p||0).toLocaleString()}\n`; hasR = true; }
             });
             if(!hasR) txt += `• Sin repuestos adicionales\n`;
             txt += `\n👉 Subtotal Repuestos: $${subRepuestos.toLocaleString()}\n\n`;
@@ -1033,7 +1045,7 @@
             document.querySelectorAll('.s-row').forEach(s => {
                 const n = s.querySelector('.s-nombre').value;
                 const p = s.querySelector('.s-precio').value;
-                if(n) { txt += `• ${n}:$${parseFloat(p||0).toLocaleString()}\n`; hasS = true; }
+                if(n) { txt += `• ${n}: $${parseFloat(p||0).toLocaleString()}\n`; hasS = true; }
             });
             if(!hasS) txt += `• Servicio general\n`;
             txt += `\n👉 Subtotal Mano de Obra: $${subServicios.toLocaleString()}\n`;
@@ -1059,7 +1071,7 @@
                 txt += `──────────────────────────────\n`;
             }
             
-            txt += `🔧 ${configTaller.nombre} \vert{}${configTaller.ig}\n`;
+            txt += `🔧 ${configTaller.nombre} | ${configTaller.ig}\n`;
             if(configTaller.direccion) txt += `📍 ${configTaller.direccion}\n`;
             if(configTaller.telefono) txt += `📲 Consultas: ${configTaller.telefono}`;
 
@@ -1105,7 +1117,7 @@
             txt += `📌 NOTA TÉCNICA:\n`;
             txt += `Se sugiere realizar estos arreglos antes de rodar para evitar daños o desgastes mayores.\n`;
             txt += `──────────────────────────────\n`;
-            txt += `🔧 ${configTaller.nombre} \vert{}${configTaller.ig}\n`;
+            txt += `🔧 ${configTaller.nombre} | ${configTaller.ig}\n`;
             if(configTaller.direccion) txt += `📍 ${configTaller.direccion}\n`;
             if(configTaller.telefono) txt += `📲 Turnos y Consultas: ${configTaller.telefono}`;
 
@@ -1190,7 +1202,10 @@
                         <div class="card-body p-2 d-flex justify-content-between align-items-center">
                             <div>
                                 <strong class="small d-block text-light">🚲 ${h.bici}</strong>
-                                <small class="text-muted" style="font-size:0.75rem;">📅 ${h.fecha}</small> </div> <div class="text-end"> <span class="fw-bold me-2 small" style="color:var(--brand-yellow);">$${h.total.toLocaleString()}</span>
+                                <small class="text-muted" style="font-size:0.75rem;">📅 ${h.fecha}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="fw-bold me-2 small" style="color:var(--brand-yellow);">$${h.total.toLocaleString()}</span>
                                 <button class="btn btn-sm btn-outline-brand p-1 px-2" onclick="verComprobanteModalText(${h.id})">Ver</button>
                             </div>
                         </div>
@@ -1205,7 +1220,7 @@
             const item = historialComprobantes.find(h => h.id === id);
             if(!item) return;
             document.getElementById('comprobanteTextoView').innerText = item.texto;
-            new bootstrap.Modal(document.getElementById('comprobanteModal`).show();
+            new bootstrap.Modal(document.getElementById('comprobanteModal')).show();
         }
 
         function enviarComprobanteDesdeModal() {
