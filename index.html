@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Taller Biker - Gestión Profesional</title>
     
-    <!-- Vinculación PWA Standalone -->
-    <meta name="theme-color" content="#070707">
+    <!-- Meta etiquetas para ejecucion en Pantalla Completa (Modo App) -->
+    <meta name="theme-color" content="#0a0a0a">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Taller Biker">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Taller%20Biker%22,%22short_name%22:%22TallerBiker%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%230a0a0a%22,%22theme_color%22:%22%2300ff88%22}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,15 +23,15 @@
     
     <style>
         :root {
-            --bg-dark: #070707;
-            --bg-card: #121216;
-            --brand-yellow: #d4a300;
-            --brand-yellow-hover: #b08500;
-            --brand-blue: #0077ff;
-            --brand-blue-hover: #005bb5;
-            --text-light: #f0f0f0;
-            --text-muted: #aaaaaa;
-            --border-color: #26262c;
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --neon-green: #00ff88;
+            --neon-green-hover: #00cc6c;
+            --neon-yellow: #ffee00;
+            --neon-yellow-hover: #d4c600;
+            --text-light: #ffffff;
+            --text-muted: #d0d0d0;
+            --border-color: #2a2a2a;
         }
 
         html, body {
@@ -46,118 +46,110 @@
         }
 
         .navbar {
-            background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 10px 16px;
+            background-color: var(--bg-card); border-bottom: 2px solid var(--neon-green); padding: 10px 16px;
         }
 
         .navbar-brand {
-            color: var(--brand-yellow) !important; font-weight: 800; font-size: 1.2rem;
+            color: var(--neon-green) !important; font-weight: 800; font-size: 1.25rem; letter-spacing: 0.5px;
         }
 
         .user-profile-badge {
-            background: transparent !important; border: none !important; box-shadow: none !important;
-            padding: 0 !important; display: flex; align-items: center; gap: 8px; cursor: pointer;
+            background: transparent !important; border: none !important; padding: 0 !important;
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
         }
 
         .user-avatar-nav {
-            width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--brand-yellow); object-fit: cover;
+            width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--neon-yellow); object-fit: cover;
         }
 
         .user-name-text {
-            color: var(--text-light); font-weight: 700; font-size: 0.95rem;
+            color: var(--neon-yellow); font-weight: 700; font-size: 0.95rem;
         }
 
         .card {
             background-color: var(--bg-card); border: 1px solid var(--border-color);
             border-radius: 14px; color: var(--text-light); margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
 
         .card-header {
-            border-bottom: 1px solid var(--border-color); background-color: rgba(255, 255, 255, 0.02);
-            font-weight: 600; padding: 12px 16px; color: var(--brand-yellow);
+            border-bottom: 1px solid var(--border-color); background-color: rgba(255, 255, 255, 0.03);
+            font-weight: 700; padding: 12px 16px;
         }
 
-        .btn-brand {
-            background-color: var(--brand-yellow); color: #000; font-weight: 800; border: none; border-radius: 10px; padding: 12px 16px;
+        .btn-neon {
+            background-color: var(--neon-green); color: #000; font-weight: 800; border: none; border-radius: 10px; padding: 10px 16px;
         }
 
-        .btn-brand:hover, .btn-brand:active { background-color: var(--brand-yellow-hover); color: #000; }
+        .btn-neon:hover, .btn-neon:active { background-color: var(--neon-green-hover); color: #000; }
 
-        .btn-brand-blue {
-            background-color: var(--brand-blue); color: #fff; font-weight: 700; border: none; border-radius: 10px; padding: 10px 16px;
+        .btn-yellow {
+            background-color: var(--neon-yellow); color: #000; font-weight: 800; border: none; border-radius: 10px; padding: 10px 16px;
         }
-        .btn-brand-blue:hover { background-color: var(--brand-blue-hover); color: #fff; }
 
-        .btn-outline-brand {
-            border: 1px solid var(--brand-yellow); color: var(--brand-yellow); background: transparent; border-radius: 10px; font-weight: 600;
+        .btn-yellow:hover, .btn-yellow:active { background-color: var(--neon-yellow-hover); color: #000; }
+
+        .btn-outline-neon {
+            border: 1px solid var(--neon-green); color: var(--neon-green); background: transparent; border-radius: 10px; font-weight: 700;
         }
-        .btn-outline-brand:hover { background-color: rgba(212, 163, 0, 0.1); color: var(--brand-yellow); }
+
+        .btn-outline-yellow {
+            border: 1px solid var(--neon-yellow); color: var(--neon-yellow); background: transparent; border-radius: 10px; font-weight: 700;
+        }
 
         .form-control, .form-select {
-            background-color: #1a1a20; border: 1px solid #33333d; color: #ffffff !important; border-radius: 10px; padding: 10px;
+            background-color: #1a1a1e; border: 1px solid #333338; color: #ffffff !important; border-radius: 10px; padding: 10px;
         }
 
-        .form-control::placeholder { color: #777780 !important; opacity: 1; }
+        .form-control::placeholder { color: #888888 !important; }
 
         .form-control:focus, .form-select:focus {
-            background-color: #22222b; color: #fff; border-color: var(--brand-yellow); box-shadow: 0 0 0 0.2rem rgba(212, 163, 0, 0.2);
+            background-color: #222228; color: #fff; border-color: var(--neon-green); box-shadow: 0 0 0 0.2rem rgba(0, 255, 136, 0.2);
         }
 
-        .text-muted { color: var(--text-muted) !important; }
-
-        /* Items dentro del modal de selección múltiple */
-        .catalog-item-check {
-            display: flex; align-items: center; justify-content: space-between;
-            background: #181820; border: 1px solid #2d2d38; border-radius: 10px;
-            padding: 10px 14px; margin-bottom: 8px; font-size: 0.9rem; cursor: pointer;
-        }
-        .catalog-item-check:hover { background: #22222d; border-color: var(--brand-yellow); }
-        .catalog-item-check input[type="checkbox"] { accent-color: var(--brand-yellow); transform: scale(1.2); cursor: pointer; }
-
-        .modal-content { background-color: var(--bg-card); color: var(--text-light); border: 1px solid var(--border-color); border-radius: 16px; }
-        
-        .nav-tabs { 
-            border-bottom: 1px solid var(--border-color); display: flex; width: 100%;
+        .order-item-row {
+            background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer;
         }
 
-        .nav-tabs .nav-item { flex: 1; text-align: center; }
+        .badge-status { font-size: 0.75rem; padding: 6px 12px; border-radius: 20px; font-weight: 800; }
+        .status-proceso { background-color: var(--neon-yellow); color: #000; }
+        .status-listo { background-color: var(--neon-green); color: #000; }
+        .status-entregado { background-color: #0a84ff; color: #fff; }
 
-        .nav-tabs .nav-link { 
-            color: #888888; border: none; padding: 10px 4px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; width: 100%;
-        }
+        .modal-content { background-color: #111114; color: var(--text-light); border: 1px solid var(--border-color); border-radius: 16px; }
+        .nav-tabs { border-bottom: 1px solid var(--border-color); }
+        .nav-tabs .nav-link { color: #aaaaaa; border: none; padding: 10px 12px; font-size: 0.85rem; font-weight: 700; }
+        .nav-tabs .nav-link.active { color: var(--neon-green); background-color: transparent; border-bottom: 3px solid var(--neon-green); }
 
-        .nav-tabs .nav-link.active { 
-            color: var(--brand-yellow); background-color: rgba(212, 163, 0, 0.04); border-bottom: 3px solid var(--brand-yellow); 
-        }
-
-        /* Botón de micrófono estilo WhatsApp */
         .fab-mic {
-            position: fixed; bottom: 85px; right: 20px; width: 62px; height: 62px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--brand-yellow), #b08500); color: #000; display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; box-shadow: 0 4px 15px rgba(212, 163, 0, 0.3); z-index: 1000; border: 2px solid var(--brand-blue); cursor: pointer;
-            user-select: none; -webkit-user-select: none; transition: transform 0.1s ease;
+            position: fixed; bottom: 85px; right: 20px; width: 58px; height: 58px; border-radius: 50%;
+            background-color: var(--neon-green); color: #000; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4); z-index: 1000; border: none; cursor: pointer;
         }
 
-        .fab-mic.recording {
-            background: linear-gradient(135deg, #ff3b30, #cc0000); color: #fff; transform: scale(1.15);
-            border-color: #fff; box-shadow: 0 0 25px rgba(255, 59, 48, 0.8);
-            animation: pulse-mic 1.2s infinite;
-        }
-
-        @keyframes pulse-mic {
-            0% { transform: scale(1.1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1.1); }
-        }
-
-        .total-highlight { font-size: 1.15rem; font-weight: 800; color: var(--brand-yellow); white-space: nowrap; display: block; }
-        .resta-highlight { font-size: 1.15rem; font-weight: 800; color: var(--brand-blue); white-space: nowrap; display: block; }
-        .monto-subtotal { font-size: 0.95rem; font-weight: 700; white-space: nowrap; display: block; color: #fff; }
+        .total-highlight { font-size: 1.6rem; font-weight: 800; color: var(--neon-yellow); }
         
         .receipt-preview-box {
-            background-color: #040406; border: 1px dashed var(--brand-yellow); border-radius: 12px;
-            padding: 14px; font-family: monospace; white-space: pre-wrap; font-size: 0.85rem; color: var(--brand-yellow);
-            max-height: 280px; overflow-y: auto;
+            background-color: #080a0c; border: 1px dashed var(--neon-green); border-radius: 12px;
+            padding: 14px; font-family: monospace; white-space: pre-wrap; font-size: 0.85rem; color: #00ff88; max-height: 280px; overflow-y: auto;
+        }
+
+        /* Modal de Catálogo */
+        .catalog-item-check {
+            background-color: #18181c; border: 1px solid #333; border-radius: 10px; padding: 10px 14px;
+            margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .catalog-item-check:hover, .catalog-item-check.selected {
+            background-color: #1a2e23; border-color: var(--neon-green);
+        }
+
+        .catalog-item-check input[type="checkbox"] {
+            width: 20px; height: 20px; accent-color: var(--neon-green); cursor: pointer;
+        }
+
+        .price-tag-yellow {
+            color: var(--neon-yellow); font-weight: 800; font-size: 0.95rem;
         }
     </style>
 </head>
@@ -167,21 +159,23 @@
         <!-- Navbar con foto de perfil -->
         <nav class="navbar navbar-dark">
             <div class="container-fluid d-flex justify-content-between align-items-center">
-                <a class="navbar-brand m-0" href="#" id="appTitleHeader"><i class="fas fa-tools me-2"></i>Taller Biker</a>
+                <a class="navbar-brand m-0" href="#" id="appTitleHeader"><i class="fas fa-bicycle me-2"></i>Taller Biker</a>
                 <div id="authContainer">
-                    <button class="btn btn-sm btn-outline-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>
+                    <button class="btn btn-sm btn-outline-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>
                 </div>
             </div>
         </nav>
 
-        <div class="container-fluid pt-3 px-2">
-            <!-- 3 Pestañas de Navegación -->
+        <div class="container-fluid pt-3 px-3">
             <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
                 <li class="nav-item">
                     <button class="nav-link active" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-calculator me-1"></i> Caja / Doc</button>
                 </li>
                 <li class="nav-item">
                     <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-stethoscope me-1"></i> Diagnóstico</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="ordenes-tab" data-bs-toggle="tab" data-bs-target="#ordenes" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-tasks me-1"></i> Trabajos</button>
                 </li>
                 <li class="nav-item">
                     <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-history me-1"></i> Historial</button>
@@ -193,13 +187,19 @@
                 <div class="tab-pane fade show active" id="presupuesto">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-file-invoice-dollar me-2"></i>Emisión de Documentos</span>
+                            <span><i class="fas fa-file-invoice-dollar me-2 text-success"></i>Emisión de Documentos</span>
                             <button class="btn btn-sm btn-outline-secondary text-light" onclick="limpiarPresupuesto()">Limpiar</button>
                         </div>
                         <div class="card-body">
+                            <!-- BOTÓN DE CARGA RÁPIDA CATÁLOGO MODAL -->
+                            <button class="btn btn-yellow w-100 mb-3 btn-lg d-flex align-items-center justify-content-center" onclick="abrirModalCatalogPicker()">
+                                <i class="fas fa-th-list me-2"></i> ⚡ CATÁLOGOS Y SERVICIOS DE CARGA RÁPIDA
+                            </button>
+
+                            <!-- SELECCIÓN TIPO DOCUMENTO -->
                             <div class="mb-3">
-                                <label class="form-label small fw-bold" style="color:var(--brand-yellow);"><i class="fas fa-exchange-alt me-1"></i> Tipo de Documento a Generar:</label>
-                                <select id="p_tipo_doc" class="form-select" onchange="calcularPresupuestoVivo()" style="border-color:var(--brand-yellow);">
+                                <label class="form-label small text-info fw-bold"><i class="fas fa-exchange-alt me-1"></i> Tipo de Documento a Generar:</label>
+                                <select id="p_tipo_doc" class="form-select border-info" onchange="calcularPresupuestoVivo()">
                                     <option value="presupuesto" selected>📋 PRESUPUESTO ESTIMADO (Pre-servicio)</option>
                                     <option value="comprobante">🧾 COMPROBANTE DE PAGO Y ENTREGA (Final)</option>
                                 </select>
@@ -208,7 +208,7 @@
                             <div class="row g-2 mb-3">
                                 <div class="col-6">
                                     <label class="form-label small text-muted">Cliente</label>
-                                    <input type="text" id="p_cliente" class="form-control" placeholder="Ej: Matin" oninput="calcularPresupuestoVivo()">
+                                    <input type="text" id="p_cliente" class="form-control" placeholder="Ej: Bauti" oninput="calcularPresupuestoVivo()">
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label small text-muted">Vehículo / Bici</label>
@@ -216,79 +216,56 @@
                                 </div>
                             </div>
 
-                            <!-- Botón para abrir el Catálogo Rápido con Buscador (CalculDoc) -->
-                            <div class="mb-3">
-                                <button class="btn btn-brand w-100 py-2 fw-bold shadow-sm" onclick="abrirCatalogoModal()">
-                                    <i class="fas fa-search me-2"></i> 🔍 Carga Rápida / Tarifario (CalculDoc)
-                                </button>
-                            </div>
-
                             <div class="row g-3">
                                 <div class="col-12 col-md-6">
-                                    <h6 class="small fw-bold" style="color:var(--brand-yellow);">MANO DE OBRA / SERVICIOS</h6>
+                                    <h6 class="text-success small fw-bold">MANO DE OBRA / SERVICIOS (Editable)</h6>
                                     <div id="serviciosList"></div>
-                                    <button class="btn btn-sm btn-outline-brand w-100 mt-1" onclick="addServicioRow()"><i class="fas fa-plus me-1"></i> Agregar Servicio</button>
+                                    <button class="btn btn-sm btn-outline-neon w-100 mt-1" onclick="addServicioRow()"><i class="fas fa-plus me-1"></i> Agregar Servicio Manual</button>
                                 </div>
 
                                 <div class="col-12 col-md-6">
-                                    <h6 class="small fw-bold" style="color:var(--brand-blue);">MATERIALES / REPUESTOS</h6>
+                                    <h6 class="text-info small fw-bold">MATERIALES / REPUESTOS (Editable)</h6>
                                     <div id="repuestosList"></div>
-                                    <button class="btn btn-sm btn-brand-blue w-100 mt-1" onclick="addRepuestoRow()" style="border: 1px solid var(--brand-blue); background: transparent; color: var(--brand-blue);"><i class="fas fa-plus me-1"></i> Agregar Repuesto</button>
+                                    <button class="btn btn-sm btn-outline-neon w-100 mt-1" onclick="addRepuestoRow()"><i class="fas fa-plus me-1"></i> Agregar Repuesto Manual</button>
                                 </div>
                             </div>
 
                             <div class="mt-3 pt-2 border-top border-secondary">
-                                <label class="form-label small text-muted d-block">Descuentos y Pagos Adelantados:</label>
-                                <div id="discountPresetsContainer" class="mb-2"></div>
-                                <div class="row g-2 mb-2">
-                                    <div class="col-7">
-                                        <input type="text" id="p_descuento_nombre" class="form-control form-control-sm" placeholder="Motivo descuento" oninput="calcularPresupuestoVivo()">
-                                    </div>
-                                    <div class="col-5">
-                                        <input type="number" id="p_descuento_monto" class="form-control form-control-sm" placeholder="Descuento $" oninput="calcularPresupuestoVivo()">
-                                    </div>
-                                </div>
+                                <h6 class="text-warning small fw-bold">DESCUENTO / SEÑA / ADELANTO DE PAGO</h6>
                                 <div class="row g-2">
-                                    <div class="col-7">
-                                        <label class="form-label small text-info m-0">Adelanto de pago / Seña ($):</label>
+                                    <div class="col-6">
+                                        <input type="text" id="p_descuento_nombre" class="form-control form-control-sm" placeholder="Motivo o Seña/Adelanto" oninput="calcularPresupuestoVivo()">
                                     </div>
-                                    <div class="col-5">
-                                        <input type="number" id="p_adelanto_monto" class="form-control form-control-sm" placeholder="Monto abonado $" oninput="calcularPresupuestoVivo()" style="border-color:var(--brand-blue);">
+                                    <div class="col-6">
+                                        <input type="number" id="p_descuento_monto" class="form-control form-control-sm" placeholder="Monto Restado $" oninput="calcularPresupuestoVivo()">
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Tabla de Totales -->
                             <div class="p-3 border border-secondary rounded bg-black mt-3">
-                                <div class="row text-center align-items-center g-0">
-                                    <div class="col-3 border-end border-secondary">
-                                        <small class="text-muted d-block" style="font-size:0.65rem;">M. OBRA</small>
-                                        <span id="subtotalServiciosDisplay" class="monto-subtotal">$0</span>
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <small class="text-muted d-block" style="font-size:0.75rem;">M. Obra</small>
+                                        <span id="subtotalServiciosDisplay" class="fw-bold">$0</span>
                                     </div>
-                                    <div class="col-3 border-end border-secondary">
-                                        <small class="text-muted d-block" style="font-size:0.65rem;">REPUESTOS</small>
-                                        <span id="subtotalRepuestosDisplay" class="monto-subtotal" style="color:var(--brand-blue);">$0</span>
+                                    <div class="col-4">
+                                        <small class="text-muted d-block" style="font-size:0.75rem;">Repuestos</small>
+                                        <span id="subtotalRepuestosDisplay" class="fw-bold">$0</span>
                                     </div>
-                                    <div class="col-3 border-end border-secondary">
-                                        <small class="text-muted d-block" style="font-size:0.65rem;">TOTAL</small>
+                                    <div class="col-4">
+                                        <small class="text-muted d-block" style="font-size:0.75rem;">TOTAL</small>
                                         <span id="totalFinalDisplay" class="total-highlight">$0</span>
                                     </div>
-                                    <div class="col-3">
-                                        <small class="d-block" style="font-size:0.65rem; color:var(--brand-blue);">RESTA</small>
-                                        <span id="restaFinalDisplay" class="resta-highlight">$0</span>
-                                    </div>
                                 </div>
                             </div>
 
+                            <!-- VISTA PREVIA EN VIVO -->
                             <div class="mt-3">
-                                <label class="form-label small fw-bold" style="color:var(--brand-yellow);"><i class="fas fa-eye me-1"></i> Vista Previa (WhatsApp):</label>
+                                <label class="form-label small text-info fw-bold"><i class="fas fa-eye me-1"></i> Vista Previa (WhatsApp):</label>
                                 <div id="receiptPreviewBox" class="receipt-preview-box">Cargá los datos arriba para ver el texto formateado...</div>
                             </div>
 
-                            <!-- BOTÓN DE ENVÍO POR WHATSAPP -->
-                            <div class="mt-3 mb-4">
-                                <button class="btn btn-brand w-100 py-3 btn-lg fw-bold" onclick="enviarPorWhatsApp()"><i class="fab fa-whatsapp me-2"></i> Enviar por WhatsApp</button>
-                            </div>
+                            <button class="btn btn-neon w-100 mt-3 btn-lg mb-4" onclick="generarYCopiarComprobante()"><i class="fab fa-whatsapp me-2"></i>Copiar para WhatsApp</button>
                         </div>
                     </div>
                 </div>
@@ -296,9 +273,9 @@
                 <!-- DIAGNÓSTICO TÉCNICO -->
                 <div class="tab-pane fade" id="diag">
                     <div class="card">
-                        <div class="card-header bg-dark fw-bold d-flex justify-content-between align-items-center" style="color:var(--brand-yellow);">
+                        <div class="card-header bg-dark text-warning fw-bold d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-stethoscope me-2"></i>Informe de Diagnóstico IA / Voz</span>
-                            <button class="btn btn-sm btn-outline-brand" onclick="limpiarDiagnostico()"><i class="fas fa-eraser me-1"></i> Limpiar</button>
+                            <button class="btn btn-sm btn-outline-warning" onclick="limpiarDiagnostico()"><i class="fas fa-eraser me-1"></i> Limpiar</button>
                         </div>
                         <div class="card-body">
                             <div class="row g-2 mb-3">
@@ -313,91 +290,98 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label small text-muted">Detalle del Diagnóstico / Observaciones Técnicas (Independiente)</label>
-                                <textarea id="d_hallazgos" class="form-control" rows="5" placeholder="Mantené presionado el botón del micrófono abajo a la derecha para dictar..." oninput="generarDiagnosticoTexto()"></textarea>
+                                <label class="form-label small text-muted">Detalle del Diagnóstico / Observaciones Técnicas</label>
+                                <textarea id="d_hallazgos" class="form-control" rows="5" placeholder="Dictá con el micrófono o escribí acá únicamente las fallas técnicas..." oninput="generarDiagnosticoTexto()"></textarea>
                             </div>
 
                             <div class="mt-3">
-                                <label class="form-label small fw-bold" style="color:var(--brand-yellow);"><i class="fas fa-eye me-1"></i> Vista Previa Diagnóstico (WhatsApp):</label>
+                                <label class="form-label small text-warning fw-bold"><i class="fas fa-eye me-1"></i> Vista Previa Diagnóstico (WhatsApp):</label>
                                 <div id="diagPreviewBox" class="receipt-preview-box">Escribí o dictá el diagnóstico para ver el informe...</div>
                             </div>
 
-                            <div class="mt-3 mb-3">
-                                <button class="btn btn-brand w-100 py-3 btn-lg fw-bold" onclick="enviarDiagnosticoWhatsApp()"><i class="fab fa-whatsapp me-2"></i> Enviar por WhatsApp</button>
-                            </div>
+                            <button class="btn btn-neon w-100 mt-3 btn-lg mb-3" onclick="copiarDiagnostico()"><i class="fab fa-whatsapp me-2"></i>Copiar Diagnóstico para WhatsApp</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- HISTORIAL POR CLIENTES -->
-                <div class="tab-pane fade" id="historial">
+                <!-- TRABAJOS / ÓRDENES -->
+                <div class="tab-pane fade" id="ordenes">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="m-0" style="color:var(--brand-yellow);"><i class="fas fa-history me-2"></i>Historial por Clientes</h5>
+                        <h5 class="m-0"><i class="fas fa-wrench text-success me-2"></i>Órdenes Activas</h5>
+                        <button class="btn btn-sm btn-neon" onclick="nuevaOrdenModal()"><i class="fas fa-plus"></i> Nueva</button>
                     </div>
-                    <input type="text" id="searchClientHistory" class="form-control mb-3" placeholder="Buscar cliente por nombre..." onkeyup="renderHistorialClientes()">
-                    <div id="historialClientesContainer"></div>
+
+                    <input type="text" id="searchOrders" class="form-control mb-3" placeholder="Buscar por cliente o vehículo..." onkeyup="renderOrdenes()">
+                    <div id="listaOrdenesContainer"></div>
+                </div>
+
+                <!-- HISTORIAL COMPROBANTES -->
+                <div class="tab-pane fade" id="historial">
+                    <h5 class="mb-3"><i class="fas fa-receipt text-info me-2"></i>Comprobantes Guardados</h5>
+                    <div id="historialComprobantesList"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Botón Micrófono Estilo WhatsApp (Hold to talk) -->
-        <button class="fab-mic" id="btnMic" title="Mantené presionado para hablar"><i class="fas fa-microphone"></i></button>
+        <button class="fab-mic" id="btnMic" onclick="toggleDictadoVoz()"><i class="fas fa-microphone"></i></button>
     </div>
 
-    <!-- MODAL DE CARGA RÁPIDA CON BUSCADOR INTELIGENTE -->
-    <div class="modal fade" id="catalogoModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <!-- MODAL SELECCIÓN PANTALLA COMPLETA CATÁLOGOS / SERVICIOS -->
+    <div class="modal fade" id="catalogPickerModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" style="color:var(--brand-yellow);"><i class="fas fa-search me-2"></i>Selección Rápida de Tarifario</h5>
+                <div class="modal-header border-bottom border-secondary">
+                    <h6 class="modal-title fw-bold text-warning"><i class="fas fa-th-list me-2"></i>Seleccionar Servicios del Catálogo</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <input type="text" id="searchCatalogInput" class="form-control" placeholder="🔍 Escribí para buscar servicio o repuesto (ej: cubierta, cambio...)" onkeyup="filtrarCatalogoModal()">
-                    </div>
-                    <div id="modalPresetsContainer" style="max-height: 350px; overflow-y: auto;">
-                        <!-- Se llena dinámicamente -->
-                    </div>
+                    <p class="small text-muted mb-3">Marcá los trabajos realizados. Al confirmar se sumarán a la Caja y podrás editarlos individualmente.</p>
+                    <div id="catalogChecklistContainer"></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary w-25" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-brand w-70 py-2 fw-bold" onclick="agregarServiciosSeleccionadosModal()"><i class="fas fa-check-circle me-1"></i> Aceptar y Agregar</button>
+                <div class="modal-footer border-top border-secondary d-flex justify-content-between">
+                    <div>
+                        <small class="text-muted d-block" style="font-size:0.75rem;">Suma Seleccionada:</small>
+                        <span id="pickerRunningTotal" class="fw-bold text-warning fs-5">$0</span>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary me-1" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-sm btn-neon" onclick="confirmarSeleccionCatalogo()"><i class="fas fa-check me-1"></i> Cargar a Caja</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modales de Configuración e Historial -->
+    <!-- Modales -->
     <div class="modal fade" id="configModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" style="color:var(--brand-yellow);"><i class="fas fa-cog me-2"></i>Configuración y Tarifario del Taller</h6>
+                    <h6 class="modal-title"><i class="fas fa-cog text-success me-2"></i>Configuración y Tarifario del Taller</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="card mb-3" style="border-color:var(--brand-blue);">
-                        <div class="card-header bg-dark fw-bold" style="color:var(--brand-blue);"><i class="fas fa-cloud me-2"></i>Sincronización Automática</div>
+                    <div class="card mb-3 border-info">
+                        <div class="card-header bg-dark text-info fw-bold"><i class="fas fa-cloud me-2"></i>Sincronización Automática</div>
                         <div class="card-body text-center" id="userSessionCard">
                             <p class="small text-muted mb-2">Iniciá sesión para respaldar tus datos automáticamente en tu cuenta de Google.</p>
-                            <button class="btn btn-sm btn-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
+                            <button class="btn btn-sm btn-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
                         </div>
                     </div>
 
                     <div class="card mb-3 border-success">
                         <div class="card-header bg-dark text-success fw-bold"><i class="fas fa-file-excel me-2"></i>Importar Tarifario / Precios desde Archivo</div>
                         <div class="card-body">
-                            <p class="small text-muted mb-2">Subí un archivo CSV o TXT con la lista de precios:</p>
+                            <p class="small text-muted mb-2">Subí un archivo CSV o TXT con la lista de precios (formato: <em>Servicio,Precio</em>):</p>
                             <input type="file" id="catalogFile" accept=".csv, .txt, .json" style="display:none" onchange="importarTarifarioArchivo(event)">
-                            <button class="btn btn-sm btn-outline-brand w-100" onclick="document.getElementById('catalogFile').click()"><i class="fas fa-file-upload me-1"></i> Cargar Archivo de Precios</button>
+                            <button class="btn btn-sm btn-outline-neon w-100" onclick="document.getElementById('catalogFile').click()"><i class="fas fa-file-upload me-1"></i> Cargar Archivo de Precios</button>
                         </div>
                     </div>
 
                     <div class="card mb-3 border-warning">
                         <div class="card-header bg-dark text-warning fw-bold"><i class="fas fa-hdd me-2"></i>Copia de Seguridad en Archivo (Manual)</div>
                         <div class="card-body">
-                            <p class="small text-muted mb-3">Podés descargar una copia completa de tus datos.</p>
+                            <p class="small text-muted mb-3">Podés descargar una copia completa de tus datos para guardarla en tu celular o Drive.</p>
                             <div class="row g-2">
                                 <div class="col-6">
                                     <button class="btn btn-sm btn-outline-warning w-100" onclick="exportarCopiaSeguridad()"><i class="fas fa-download me-1"></i> Exportar Copia</button>
@@ -435,29 +419,29 @@
                                     <input type="text" id="cfg_ig" class="form-control" value="@tallerbiker_">
                                 </div>
                             </div>
-                            <button class="btn btn-sm btn-brand w-100 mt-2" onclick="guardarConfigTaller()"><i class="fas fa-save me-1"></i> Guardar Datos del Taller</button>
+                            <button class="btn btn-sm btn-neon w-100 mt-2" onclick="guardarConfigTaller()"><i class="fas fa-save me-1"></i> Guardar Datos del Taller</button>
                         </div>
                     </div>
 
                     <div class="card mb-3">
-                        <div class="card-header small text-uppercase fw-bold" style="color:var(--brand-yellow);"><i class="fas fa-bolt me-2"></i>Catálogo de Servicios y Precios</div>
+                        <div class="card-header small text-uppercase fw-bold"><i class="fas fa-bolt text-warning me-2"></i>Catálogo de Servicios y Precios Base</div>
                         <div class="card-body">
                             <div class="row g-2 mb-2">
                                 <div class="col-6"><input type="text" id="new_preset_name" class="form-control form-control-sm" placeholder="Nombre trabajo"></div>
                                 <div class="col-4"><input type="number" id="new_preset_price" class="form-control form-control-sm" placeholder="Precio $"></div>
-                                <div class="col-2"><button class="btn btn-sm btn-brand w-100" onclick="agregarPreset()">+</button></div>
+                                <div class="col-2"><button class="btn btn-sm btn-neon w-100" onclick="agregarPreset()">+</button></div>
                             </div>
-                            <ul class="list-group list-group-flush" id="listaPresetsConfig" style="max-height: 200px; overflow-y: auto;"></ul>
+                            <ul class="list-group list-group-flush" id="listaPresetsConfig"></ul>
                         </div>
                     </div>
 
                     <div class="card">
-                        <div class="card-header small text-uppercase fw-bold" style="color:var(--brand-blue);"><i class="fas fa-percentage me-2"></i>Catálogo de Descuentos</div>
+                        <div class="card-header small text-uppercase fw-bold"><i class="fas fa-percentage text-warning me-2"></i>Catálogo de Descuentos Base</div>
                         <div class="card-body">
                             <div class="row g-2 mb-2">
                                 <div class="col-6"><input type="text" id="new_disc_name" class="form-control form-control-sm" placeholder="Motivo"></div>
                                 <div class="col-4"><input type="number" id="new_disc_val" class="form-control form-control-sm" placeholder="Monto $"></div>
-                                <div class="col-2"><button class="btn btn-sm btn-brand-blue w-100" onclick="agregarPresetDescuento()" style="background:var(--brand-blue); color:#fff;">+</button></div>
+                                <div class="col-2"><button class="btn btn-sm btn-neon w-100" onclick="agregarPresetDescuento()">+</button></div>
                             </div>
                             <ul class="list-group list-group-flush" id="listaPresetsDescuentosConfig"></ul>
                         </div>
@@ -467,15 +451,55 @@
         </div>
     </div>
 
-    <div class="modal fade" id="clienteHistorialModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal fade" id="aiModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="modalClienteTitle" style="color:var(--brand-yellow);"><i class="fas fa-user-circle me-2"></i>Historial del Cliente</h6>
+                    <h6 class="modal-title" id="aiModalTitle"><i class="fas fa-robot text-success me-2"></i>Asistente por Voz</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="clienteComprobantesList"></div>
+                    <p class="small text-muted" id="aiModalSubtitle">Dictá o escribí lo realizado:</p>
+                    <textarea id="aiInputText" class="form-control mb-3" rows="3" placeholder="Esperando voz o texto..."></textarea>
+                    <button class="btn btn-neon w-100" onclick="procesarTextoIA()"><i class="fas fa-magic me-2"></i>Procesar Datos</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ordenModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Detalle de Trabajo</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="modal_orden_id">
+                    <div class="mb-2">
+                        <label class="small text-muted">Cliente</label>
+                        <input type="text" id="m_cliente" class="form-control">
+                    </div>
+                    <div class="mb-2">
+                        <label class="small text-muted">Vehículo / Bici</label>
+                        <input type="text" id="m_bici" class="form-control">
+                    </div>
+                    <div class="mb-2">
+                        <label class="small text-muted">Estado</label>
+                        <select id="m_estado" class="form-select">
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Listo">Listo para retirar</option>
+                            <option value="Entregado">Entregado</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="small text-muted">Tareas a realizar</label>
+                        <textarea id="m_tareas" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger me-auto" onclick="eliminarOrdenActual()">Eliminar</button>
+                    <button class="btn btn-sm btn-neon" onclick="guardarOrden()">Guardar</button>
                 </div>
             </div>
         </div>
@@ -485,14 +509,14 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" style="color:var(--brand-yellow);">Detalle del Comprobante</h6>
+                    <h6 class="modal-title">Comprobante del Historial</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div id="comprobanteTextoView" class="receipt-preview-box"></div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-brand w-100" onclick="enviarComprobanteDesdeModal()"><i class="fab fa-whatsapp me-1"></i> Enviar por WhatsApp</button>
+                    <button class="btn btn-sm btn-neon w-100" onclick="copiarComprobanteDesdeModal()"><i class="fab fa-whatsapp me-1"></i> Copiar Comprobante</button>
                 </div>
             </div>
         </div>
@@ -500,17 +524,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Registro del Service Worker para PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(reg => {
-                    console.log('Service Worker registrado correctamente');
-                }).catch(err => {
-                    console.log('Error al registrar Service Worker:', err);
-                });
-            });
-        }
-
         const firebaseConfig = {
             apiKey: "AIzaSyA9y6XngFzZzNlohlZSC0iRb6ntDY7Czeg",
             authDomain: "taller-biker.firebaseapp.com",
@@ -528,9 +541,6 @@
             firebase.firestore().enablePersistence({synchronizeTabs:true}).catch(()=>{});
             db = firebase.firestore();
             auth = firebase.auth();
-
-            // Usamos popup con persistencia local para asegurar que la sesión se guarde correctamente
-            auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 
             auth.onAuthStateChanged(user => {
                 if (user) {
@@ -552,12 +562,15 @@
             ig: "@tallerbiker_"
         };
 
+        let ordenes = JSON.parse(localStorage.getItem('tb_ordenes')) || [];
+        
+        // Tarifario Oficial de Taller Biker
         let presets = JSON.parse(localStorage.getItem('tb_presets')) || [
             { nombre: "Emparchado y desarme de rueda y cámara", precio: 3000 },
             { nombre: "Inflado de ruedas + Lubricación rápida", precio: 3000 },
             { nombre: "Colocación de asiento / espejos", precio: 3000 },
             { nombre: "Cambio de cámara o cubierta (por rueda)", precio: 3500 },
-            { nombre: "Apriete y ajuste general de seguridad / bulonería", precio: 4000 },
+            { nombre: "Apriete y ajuste general de seguridad", precio: 4000 },
             { nombre: "Cambio de cable y funda de freno (por rueda)", precio: 4000 },
             { nombre: "Cambio de patines o pastillas de freno (por rueda)", precio: 4500 },
             { nombre: "Cambio de eje y engrase de maza (por rueda)", precio: 5000 },
@@ -583,31 +596,35 @@
             { nombre: "Armado de bicicleta en caja desde cero", precio: 19000 },
             { nombre: "Colocación e instalación de frenos hidráulicos", precio: 20000 },
             { nombre: "Puesta a Punto + Lavado", precio: 22000 },
-            { nombre: "Trasvasado / Mudar componentes de cuadro a cuadro", precio: 25000 },
-            { nombre: "Recargo Fijo Servicio a Domicilio", precio: 6000 }
+            { nombre: "Trasvasado / Mudar componentes de cuadro a cuadro", precio: 25000 }
         ];
 
         let presetsDescuentos = JSON.parse(localStorage.getItem('tb_disc_presets')) || [
-            { nombre: "Descuento Especial Riders / Repartidores", monto: 2500 }
+            { nombre: "Descuento Especial Riders / Repartidores", monto: 2500 },
+            { nombre: "Descuento Cliente Frecuente / 2da Bici (30%)", monto: 4500 },
+            { nombre: "Promo Amigos (2x1 en Lubricación)", monto: 2000 }
         ];
 
         let historialComprobantes = JSON.parse(localStorage.getItem('tb_historial')) || [];
         let recognition = null;
+        let isRecording = false;
 
         document.addEventListener("DOMContentLoaded", () => {
             cargarInputsConfig();
-            renderPresetsModal();
+            renderOrdenes();
+            renderPresets();
             renderPresetsDescuentos();
-            renderHistorialClientes();
+            renderHistorial();
             addServicioRow();
             addRepuestoRow();
-            initSpeechHoldToTalk();
+            initSpeech();
             calcularPresupuestoVivo();
             generarDiagnosticoTexto();
             gestionarVisibilidadMic();
         });
 
         function saveData() {
+            localStorage.setItem('tb_ordenes', JSON.stringify(ordenes));
             localStorage.setItem('tb_presets', JSON.stringify(presets));
             localStorage.setItem('tb_disc_presets', JSON.stringify(presetsDescuentos));
             localStorage.setItem('tb_historial', JSON.stringify(historialComprobantes));
@@ -630,109 +647,94 @@
             }, 50);
         }
 
-        // Micrófono Estilo WhatsApp (Mantener presionado)
-        function initSpeechHoldToTalk() {
-            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return;
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            
-            const btnMic = document.getElementById('btnMic');
-            let isHolding = false;
-
-            const startListening = (e) => {
-                e.preventDefault();
-                if (isHolding) return;
-                isHolding = true;
-
-                playBeepSound();
-                btnMic.classList.add('recording');
-
-                recognition = new SpeechRecognition();
-                recognition.lang = 'es-AR';
-                recognition.continuous = true;
-                recognition.interimResults = true;
-
-                let finalTranscript = '';
-
-                recognition.onresult = (event) => {
-                    let interim = '';
-                    for (let i = event.resultIndex; i < event.results.length; ++i) {
-                        if (event.results[i].isFinal) {
-                            finalTranscript += event.results[i][0].transcript + ' ';
-                        } else {
-                            interim += event.results[i][0].transcript;
-                        }
-                    }
-
-                    const activeTab = document.querySelector('.nav-link.active').id;
-                    if (activeTab === 'diag-tab') {
-                        const currentText = document.getElementById('d_hallazgos').value;
-                        document.getElementById('d_hallazgos').value = currentText + finalTranscript;
-                        finalTranscript = '';
-                        generarDiagnosticoTexto();
-                    } else {
-                        const fullText = (finalTranscript + interim).toLowerCase();
-                        const clienteMatch = fullText.match(/para\s+([a-zA-Záéíóúñ]+)/i);
-                        if(clienteMatch) document.getElementById('p_cliente').value = clienteMatch[1];
-
-                        presets.forEach(p => {
-                            if(fullText.includes(p.nombre.toLowerCase()) || fullText.includes(p.nombre.split(' ')[0].toLowerCase())) {
-                                addServicioRow(p.nombre, p.precio);
-                            }
-                        });
-                        calcularPresupuestoVivo();
-                    }
-                };
-
-                recognition.onerror = () => { stopListening(); };
-                recognition.onend = () => { stopListening(); };
-
-                try {
-                    recognition.start();
-                } catch(err) {
-                    stopListening();
-                }
-            };
-
-            const stopListening = () => {
-                if (!isHolding) return;
-                isHolding = false;
-                btnMic.classList.remove('recording');
-                if (recognition) {
-                    try { recognition.stop(); } catch(e){}
-                }
-            };
-
-            btnMic.addEventListener('mousedown', startListening);
-            btnMic.addEventListener('mouseup', stopListening);
-            btnMic.addEventListener('mouseleave', stopListening);
-
-            btnMic.addEventListener('touchstart', startListening, {passive: false});
-            btnMic.addEventListener('touchend', stopListening);
-            btnMic.addEventListener('touchcancel', stopListening);
-        }
-
-        function playBeepSound() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.15);
-            } catch(e) {}
-        }
-
         function abrirConfigModal() {
             new bootstrap.Modal(document.getElementById('configModal')).show();
         }
 
+        /* MODAL CATALOG PICKER DE PANTALLA COMPLETA */
+        function abrirModalCatalogPicker() {
+            const container = document.getElementById('catalogChecklistContainer');
+            container.innerHTML = '';
+
+            container.innerHTML += `<div class="fw-bold text-success small mb-2"><i class="fas fa-tools me-1"></i> TRABAJOS Y SERVICIOS</div>`;
+            presets.forEach((p, idx) => {
+                container.innerHTML += `
+                    <div class="catalog-item-check" onclick="toggleCatalogItemCheck(this, ${p.precio})">
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="checkbox" data-nombre="${p.nombre}" data-precio="${p.precio}" onclick="event.stopPropagation(); updatePickerRunningTotal();">
+                            <span class="small fw-semibold">${p.nombre}</span>
+                        </div>
+                        <span class="price-tag-yellow">$${p.precio.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML += `<div class="fw-bold text-warning small mt-3 mb-2"><i class="fas fa-percentage me-1"></i> DESCUENTOS BASE</div>`;
+            presetsDescuentos.forEach((d, idx) => {
+                container.innerHTML += `
+                    <div class="catalog-item-check border-warning" onclick="toggleCatalogItemCheck(this, -${d.monto})">
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="checkbox" data-discount="true" data-nombre="${d.nombre}" data-monto="${d.monto}" onclick="event.stopPropagation(); updatePickerRunningTotal();">
+                            <span class="small fw-semibold text-warning">${d.nombre}</span>
+                        </div>
+                        <span class="text-danger fw-bold">-$${d.monto.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+
+            updatePickerRunningTotal();
+            new bootstrap.Modal(document.getElementById('catalogPickerModal')).show();
+        }
+
+        function toggleCatalogItemCheck(elem, precio) {
+            const chk = elem.querySelector('input[type="checkbox"]');
+            chk.checked = !chk.checked;
+            if(chk.checked) elem.classList.add('selected');
+            else elem.classList.remove('selected');
+            updatePickerRunningTotal();
+        }
+
+        function updatePickerRunningTotal() {
+            let total = 0;
+            document.querySelectorAll('#catalogChecklistContainer input[type="checkbox"]:checked').forEach(chk => {
+                if(chk.dataset.discount) {
+                    total -= parseFloat(chk.dataset.monto || 0);
+                } else {
+                    total += parseFloat(chk.dataset.precio || 0);
+                }
+            });
+            document.getElementById('pickerRunningTotal').innerText = '$' + total.toLocaleString();
+        }
+
+        function confirmarSeleccionCatalogo() {
+            const checkedServicios = document.querySelectorAll('#catalogChecklistContainer input[type="checkbox"]:checked');
+            
+            if(checkedServicios.length === 0) {
+                bootstrap.Modal.getInstance(document.getElementById('catalogPickerModal')).hide();
+                return;
+            }
+
+            document.getElementById('serviciosList').innerHTML = '';
+
+            checkedServicios.forEach(chk => {
+                if(chk.dataset.discount) {
+                    document.getElementById('p_descuento_nombre').value = chk.dataset.nombre;
+                    document.getElementById('p_descuento_monto').value = chk.dataset.monto;
+                } else {
+                    addServicioRow(chk.dataset.nombre, chk.dataset.precio);
+                }
+            });
+
+            if(document.querySelectorAll('.s-row').length === 0) addServicioRow();
+            if(document.querySelectorAll('.r-row').length === 0) addRepuestoRow();
+
+            calcularPresupuestoVivo();
+            bootstrap.Modal.getInstance(document.getElementById('catalogPickerModal')).hide();
+        }
+
         function exportarCopiaSeguridad() {
             const dataBackup = {
-                configTaller, presets, presetsDescuentos, historialComprobantes,
+                configTaller, ordenes, presets, presetsDescuentos, historialComprobantes,
                 fechaExportacion: new Date().toISOString()
             };
             const jsonStr = JSON.stringify(dataBackup, null, 2);
@@ -758,15 +760,17 @@
                 try {
                     const data = JSON.parse(evt.target.result);
                     if(data.configTaller) configTaller = data.configTaller;
+                    if(data.ordenes) ordenes = data.ordenes;
                     if(data.presets) presets = data.presets;
                     if(data.presetsDescuentos) presetsDescuentos = data.presetsDescuentos;
                     if(data.historialComprobantes) historialComprobantes = data.historialComprobantes;
 
                     saveData();
                     cargarInputsConfig();
-                    renderPresetsModal();
+                    renderOrdenes();
+                    renderPresets();
                     renderPresetsDescuentos();
-                    renderHistorialClientes();
+                    renderHistorial();
                     alert("¡Copia de seguridad cargada y restaurada con éxito!");
                 } catch(err) {
                     alert("El archivo seleccionado no tiene un formato válido de respaldo.");
@@ -785,19 +789,18 @@
                     const lines = evt.target.result.split('\n');
                     let agregados = 0;
                     lines.forEach(line => {
-                        let lineClean = line.replace(/•/g, '').replace(/\./g, '').trim();
-                        const parts = lineClean.split(/[:$]/);
+                        const parts = line.split(',');
                         if (parts.length >= 2) {
                             const nombre = parts[0].trim();
-                            const precioVal = parseFloat(parts[parts.length - 1].replace(/\./g, '').trim());
-                            if (nombre && !isNaN(precioVal)) {
-                                presets.push({ nombre, precio: precioVal });
+                            const precio = parseFloat(parts[1].trim());
+                            if (nombre && !isNaN(precio)) {
+                                presets.push({ nombre, precio });
                                 agregados++;
                             }
                         }
                     });
                     saveData();
-                    renderPresetsModal();
+                    renderPresets();
                     alert(`¡Tarifario importado! Se agregaron ${agregados} precios al catálogo del taller.`);
                 } catch(err) {
                     alert("Error al leer el archivo de precios.");
@@ -809,7 +812,7 @@
         function sincronizarHaciaNube() {
             if(!currentUser || !db) return;
             db.collection('usuarios').doc(currentUser.uid).set({
-                presets, presetsDescuentos, historialComprobantes, configTaller,
+                ordenes, presets, presetsDescuentos, historialComprobantes, configTaller,
                 ultimaSync: new Date().toISOString()
             }, { merge: true }).catch(err => {
                 console.log("No se pudo respaldar en la nube.");
@@ -821,6 +824,7 @@
             db.collection('usuarios').doc(currentUser.uid).get().then(doc => {
                 if(doc.exists) {
                     const data = doc.data();
+                    if(data.ordenes) ordenes = data.ordenes;
                     if(data.presets) presets = data.presets;
                     if(data.presetsDescuentos) presetsDescuentos = data.presetsDescuentos;
                     if(data.historialComprobantes) historialComprobantes = data.historialComprobantes;
@@ -828,9 +832,10 @@
                     
                     saveData();
                     cargarInputsConfig();
-                    renderPresetsModal();
+                    renderOrdenes();
+                    renderPresets();
                     renderPresetsDescuentos();
-                    renderHistorialClientes();
+                    renderHistorial();
                 }
             });
         }
@@ -841,7 +846,7 @@
 
             if(user) {
                 const fullName = user.displayName ? user.displayName : 'Maxi Esquivel';
-                const photo = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar-nav" alt="Profile">` : `<i class="fas fa-user-circle fa-lg" style="color:var(--brand-yellow);"></i>`;
+                const photo = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar-nav" alt="Profile">` : `<i class="fas fa-user-circle fa-lg text-success"></i>`;
                 
                 authContainer.innerHTML = `
                     <div class="user-profile-badge" onclick="abrirConfigModal()">
@@ -851,35 +856,29 @@
                 `;
                 userCard.innerHTML = `
                     <div class="mb-2">
-                        <strong class="d-block" style="color:var(--brand-yellow);"><i class="fas fa-check-circle me-1"></i> Sincronización activa</strong>
+                        <strong class="d-block text-success"><i class="fas fa-check-circle me-1"></i> Sincronización activa</strong>
                         <small class="text-muted">${user.email}</small>
                     </div>
                     <button class="btn btn-sm btn-outline-danger" onclick="logoutGoogle()"><i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión</button>
                 `;
             } else {
-                authContainer.innerHTML = `<button class="btn btn-sm btn-outline-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>`;
+                authContainer.innerHTML = `<button class="btn btn-sm btn-outline-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>`;
                 userCard.innerHTML = `
                     <p class="small text-muted mb-2">Iniciá sesión para respaldar tus datos automáticamente en tu cuenta de Google.</p>
-                    <button class="btn btn-sm btn-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
+                    <button class="btn btn-sm btn-neon" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
                 `;
             }
         }
 
-        // Login por Popup con persistencia local asegurada
         function loginGoogle() {
-            if (!auth) {
-                alert("El sistema de autenticación de Firebase no está disponible.");
-                return;
-            }
+            if (!auth) return;
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).then(result => {
                 currentUser = result.user;
                 updateUserUI(result.user);
                 sincronizarDesdeNube();
-                alert("¡Sesión iniciada con éxito!");
             }).catch(error => {
                 console.error("Error al iniciar sesión:", error);
-                alert("No se pudo iniciar sesión: " + error.message);
             });
         }
 
@@ -895,7 +894,7 @@
             document.getElementById('cfg_telefono').value = configTaller.telefono;
             document.getElementById('cfg_alias').value = configTaller.alias;
             document.getElementById('cfg_ig').value = configTaller.ig;
-            document.getElementById('appTitleHeader').innerHTML = `<i class="fas fa-tools me-2"></i>${configTaller.nombre}`;
+            document.getElementById('appTitleHeader').innerHTML = `<i class="fas fa-bicycle me-2"></i>${configTaller.nombre}`;
         }
 
         function guardarConfigTaller() {
@@ -910,6 +909,95 @@
             calcularPresupuestoVivo();
             generarDiagnosticoTexto();
             alert("¡Datos del taller guardados correctamente!");
+        }
+
+        function initSpeech() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.lang = 'es-AR';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onresult = (e) => {
+                    const text = e.results[0][0].transcript;
+                    document.getElementById('aiInputText').value = text;
+                    stopRecording();
+                    procesarTextoIA();
+                };
+
+                recognition.onerror = stopRecording;
+                recognition.onend = stopRecording;
+            }
+        }
+
+        function toggleDictadoVoz() {
+            const activeTab = document.querySelector('.nav-link.active').id;
+            
+            if (activeTab === 'diag-tab') {
+                document.getElementById('aiModalTitle').innerHTML = `<i class="fas fa-stethoscope text-warning me-2"></i>Dictado de Diagnóstico`;
+                document.getElementById('aiModalSubtitle').innerText = "Dictá las fallas y observaciones para el informe técnico:";
+            } else {
+                document.getElementById('aiModalTitle').innerHTML = `<i class="fas fa-robot text-success me-2"></i>Dictado para Calculadora / Presupuesto`;
+                document.getElementById('aiModalSubtitle').innerText = "Dictá los trabajos y repuestos a cobrar:";
+            }
+
+            const aiModal = new bootstrap.Modal(document.getElementById('aiModal'));
+            aiModal.show();
+
+            if (recognition && !isRecording) {
+                try {
+                    recognition.start();
+                    isRecording = true;
+                    document.getElementById('btnMic').classList.add('recording');
+                } catch(e){}
+            }
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            document.getElementById('btnMic').classList.remove('recording');
+        }
+
+        function procesarTextoIA() {
+            const input = document.getElementById('aiInputText').value.toLowerCase();
+            if(!input) return;
+
+            const activeTab = document.querySelector('.nav-link.active').id;
+
+            if (activeTab === 'diag-tab') {
+                const clienteMatch = input.match(/para\s+([a-zA-Záéíóúñ]+)/i);
+                if(clienteMatch) document.getElementById('d_cliente').value = clienteMatch[1];
+                document.getElementById('d_hallazgos').value = input;
+                generarDiagnosticoTexto();
+            } else {
+                const clienteMatch = input.match(/para\s+([a-zA-Záéíóúñ]+)/i);
+                if(clienteMatch) document.getElementById('p_cliente').value = clienteMatch[1];
+
+                document.getElementById('serviciosList').innerHTML = '';
+                document.getElementById('repuestosList').innerHTML = '';
+
+                presets.forEach(p => {
+                    if(input.includes(p.nombre.toLowerCase()) || input.includes(p.nombre.split(' ')[0].toLowerCase())) {
+                        addServicioRow(p.nombre, p.precio);
+                    }
+                });
+
+                presetsDescuentos.forEach(d => {
+                    if(input.includes(d.nombre.toLowerCase()) || input.includes('descuento')) {
+                        document.getElementById('p_descuento_nombre').value = d.nombre;
+                        document.getElementById('p_descuento_monto').value = d.monto;
+                    }
+                });
+
+                if(document.querySelectorAll('.s-row').length === 0) addServicioRow();
+                if(document.querySelectorAll('.r-row').length === 0) addRepuestoRow();
+
+                calcularPresupuestoVivo();
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('aiModal')).hide();
+            document.getElementById('aiInputText').value = '';
         }
 
         function addServicioRow(nombre = '', precio = '') {
@@ -938,102 +1026,6 @@
             calcularPresupuestoVivo();
         }
 
-        // --- CATÁLOGO Y MODAL DE CARGA RÁPIDA (CON BUSCADOR INTELIGENTE / LUPITA) ---
-        function abrirCatalogoModal() {
-            document.getElementById('searchCatalogInput').value = '';
-            renderPresetsModal();
-            new bootstrap.Modal(document.getElementById('catalogoModal')).show();
-        }
-
-        function renderPresetsModal(filtro = '') {
-            const container = document.getElementById('modalPresetsContainer');
-            const listConfig = document.getElementById('listaPresetsConfig');
-            container.innerHTML = ''; 
-            if(listConfig) listConfig.innerHTML = '';
-
-            const filtroLower = filtro.toLowerCase().trim();
-
-            presets.forEach((p, idx) => {
-                const nombreMatch = p.nombre.toLowerCase().includes(filtroLower);
-                if (nombreMatch) {
-                    container.innerHTML += `
-                        <label class="catalog-item-check">
-                            <div>
-                                <input type="checkbox" class="preset-checkbox me-2" data-nombre="${p.nombre.replace(/"/g, '&quot;')}" data-precio="${p.precio}">
-                                <span>${p.nombre}</span>
-                            </div>
-                            <span class="text-warning fw-bold ms-2">$${p.precio.toLocaleString()}</span>
-                        </label>
-                    `;
-                }
-
-                if(listConfig) {
-                    listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} - $${p.precio.toLocaleString()}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
-                }
-            });
-        }
-
-        function filtrarCatalogoModal() {
-            const texto = document.getElementById('searchCatalogInput').value;
-            renderPresetsModal(texto);
-        }
-
-        function agregarServiciosSeleccionadosModal() {
-            const checkboxes = document.querySelectorAll('.preset-checkbox:checked');
-            if (checkboxes.length === 0) {
-                alert("Por favor, tildá al menos un servicio del catálogo.");
-                return;
-            }
-
-            checkboxes.forEach(chk => {
-                const nombre = chk.getAttribute('data-nombre');
-                const precio = parseFloat(chk.getAttribute('data-precio'));
-                addServicioRow(nombre, precio);
-            });
-
-            calcularPresupuestoVivo();
-            
-            // Cerrar el modal
-            const modalEl = document.getElementById('catalogoModal');
-            const modalObj = bootstrap.Modal.getInstance(modalEl);
-            if(modalObj) modalObj.hide();
-
-            alert(`¡Se agregaron ${checkboxes.length} servicio(s) a la calculadora!`);
-        }
-
-        function agregarPreset() {
-            const n = document.getElementById('new_preset_name').value;
-            const p = parseFloat(document.getElementById('new_preset_price').value);
-            if(n && p) { presets.push({nombre: n, precio: p}); saveData(); renderPresetsModal(); }
-        }
-
-        function borrarPreset(idx) { presets.splice(idx,1); saveData(); renderPresetsModal(); }
-
-        function renderPresetsDescuentos() {
-            const container = document.getElementById('discountPresetsContainer');
-            const listConfig = document.getElementById('listaPresetsDescuentosConfig');
-            container.innerHTML = ''; listConfig.innerHTML = '';
-
-            presetsDescuentos.forEach((d, idx) => {
-                container.innerHTML += `<span class="preset-badge" style="color:var(--brand-blue); border-color:var(--brand-blue); background:#091424; cursor:pointer; padding:6px 12px; border-radius:20px; display:inline-block; font-size:0.8rem; font-weight:700; margin:3px;" onclick="aplicarPresetDescuento('${d.nombre}', ${d.monto})">% ${d.nombre}</span>`;
-                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${d.nombre} - -$${d.monto}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPresetDescuento(${idx})">×</button></li>`;
-            });
-        }
-
-        function aplicarPresetDescuento(nombre, monto) {
-            document.getElementById('p_descuento_nombre').value = nombre;
-            document.getElementById('p_descuento_monto').value = monto;
-            calcularPresupuestoVivo();
-        }
-
-        function agregarPresetDescuento() {
-            const n = document.getElementById('new_disc_name').value;
-            const m = parseFloat(document.getElementById('new_disc_val').value);
-            if(n && m) { presetsDescuentos.push({nombre: n, monto: m}); saveData(); renderPresetsDescuentos(); }
-        }
-
-        function borrarPresetDescuento(idx) { presetsDescuentos.splice(idx,1); saveData(); renderPresetsDescuentos(); }
-
         function construirTextoComprobante() {
             const tipoDoc = document.getElementById('p_tipo_doc').value;
             const cliente = document.getElementById('p_cliente').value || 'Cliente';
@@ -1045,10 +1037,7 @@
             document.querySelectorAll('.r-row').forEach(r => subRepuestos += (parseFloat(r.querySelector('.r-precio').value) || 0));
             
             const descuento = parseFloat(document.getElementById('p_descuento_monto').value) || 0;
-            const adelanto = parseFloat(document.getElementById('p_adelanto_monto').value) || 0;
-
             const total = Math.max(0, (subServicios + subRepuestos) - descuento);
-            const resta = Math.max(0, total - adelanto);
 
             let txt = "";
             if(tipoDoc === "presupuesto") {
@@ -1058,7 +1047,7 @@
                 txt += `👤 Cliente: ${cliente}\n`;
                 txt += `📅 Fecha: ${fecha}\n`;
                 txt += `🚲 Trabajo: ${bici}\n`;
-                txt += `📌 Estado: ⏳ PRESUPUESTO PREVIO\n`;
+                txt += `📌 Estado: ⏳ PRESUPUESTO PREVIO (SUJETO A REVISIÓN)\n`;
                 txt += `──────────────────────────────\n`;
             } else {
                 txt += `🧾 COMPROBANTE DE SERVICIO Y ENTREGA\n`;
@@ -1093,52 +1082,46 @@
 
             txt += `──────────────────────────────\n`;
             if(descuento > 0) {
-                const descNom = document.getElementById('p_descuento_nombre').value || 'Descuento';
-                txt += `🏷️ Descuento (${descNom}): -$${descuento.toLocaleString()}\n`;
+                const descNom = document.getElementById('p_descuento_nombre').value || 'Descuento / Adelanto';
+                txt += `🏷️ Descuento / Adelanto (${descNom}): -$${descuento.toLocaleString()}\n`;
             }
-            txt += `💰 TOTAL SERVICIO: $${total.toLocaleString()}\n`;
-
-            if(adelanto > 0) {
-                txt += `💵 Adelanto de pago / Seña: -$${adelanto.toLocaleString()}\n`;
-                txt += `🔻 RESTA SALDO A PAGAR: $${resta.toLocaleString()}\n`;
-            }
-
+            txt += `💰 TOTAL ${tipoDoc === "presupuesto" ? "ESTIMADO" : "ABONADO"}: $${total.toLocaleString()}\n`;
             txt += `──────────────────────────────\n`;
             
-            if(tipoDoc === "comprobante") {
+            if(tipoDoc === "presupuesto") {
+                txt += `ℹ️ *Este documento es una estimación previa. El valor final puede variar si se detectan fallas ocultas con previo aviso.*\n\n`;
+            } else {
                 txt += `💳 Medios de pago: Efectivo / Transferencia\n`;
                 if(configTaller.alias) txt += `📌 Alias: ${configTaller.alias}\n\n`;
                 txt += `¡Gracias por la confianza! Cuidá tu bici. 🚲💨\n`;
-                txt += `──────────────────────────────\n`;
             }
-            
+            txt += `──────────────────────────────\n`;
             txt += `🔧 ${configTaller.nombre} | ${configTaller.ig}\n`;
             if(configTaller.direccion) txt += `📍 ${configTaller.direccion}\n`;
             if(configTaller.telefono) txt += `📲 Consultas: ${configTaller.telefono}`;
 
-            return { txt, subServicios, subRepuestos, descuento, adelanto, total, resta, cliente, bici, fecha };
+            return { txt, subServicios, subRepuestos, descuento, total, cliente, bici, fecha };
         }
 
         function calcularPresupuestoVivo() {
-            const { txt, subServicios, subRepuestos, total, resta } = construirTextoComprobante();
+            const { txt, subServicios, subRepuestos, total } = construirTextoComprobante();
 
             document.getElementById('subtotalServiciosDisplay').innerText = '$' + subServicios.toLocaleString();
             document.getElementById('subtotalRepuestosDisplay').innerText = '$' + subRepuestos.toLocaleString();
             document.getElementById('totalFinalDisplay').innerText = '$' + total.toLocaleString();
-            document.getElementById('restaFinalDisplay').innerText = '$' + resta.toLocaleString();
 
             document.getElementById('receiptPreviewBox').innerText = txt;
         }
 
-        function enviarPorWhatsApp() {
+        function generarYCopiarComprobante() {
             const { txt, cliente, bici, total, fecha } = construirTextoComprobante();
-            
+
+            navigator.clipboard.writeText(txt);
+            alert("¡Documento copiado con éxito para WhatsApp!");
+
             historialComprobantes.unshift({ id: Date.now(), cliente, bici, total, fecha, texto: txt });
             saveData();
-            renderHistorialClientes();
-
-            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
-            window.open(url, '_blank');
+            renderHistorial();
         }
 
         function generarDiagnosticoTexto() {
@@ -1166,10 +1149,10 @@
             return txt;
         }
 
-        function enviarDiagnosticoWhatsApp() {
+        function copiarDiagnostico() {
             const txt = generarDiagnosticoTexto();
-            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
-            window.open(url, '_blank');
+            navigator.clipboard.writeText(txt);
+            alert("¡Informe de Diagnóstico copiado con éxito para WhatsApp!");
         }
 
         function limpiarDiagnostico() {
@@ -1184,7 +1167,6 @@
             document.getElementById('p_bici').value = '';
             document.getElementById('p_descuento_nombre').value = '';
             document.getElementById('p_descuento_monto').value = '';
-            document.getElementById('p_adelanto_monto').value = '';
             document.getElementById('serviciosList').innerHTML = '';
             document.getElementById('repuestosList').innerHTML = '';
             addServicioRow();
@@ -1192,82 +1174,138 @@
             calcularPresupuestoVivo();
         }
 
-        // Historial agrupado por Clientes
-        function renderHistorialClientes() {
-            const container = document.getElementById('historialClientesContainer');
-            const search = document.getElementById('searchClientHistory').value.toLowerCase();
+        function renderPresets() {
+            const listConfig = document.getElementById('listaPresetsConfig');
+            if(!listConfig) return;
+            listConfig.innerHTML = '';
+
+            presets.forEach((p, idx) => {
+                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} - $${p.precio}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
+            });
+        }
+
+        function agregarPreset() {
+            const n = document.getElementById('new_preset_name').value;
+            const p = parseFloat(document.getElementById('new_preset_price').value);
+            if(n && p) { presets.push({nombre: n, precio: p}); saveData(); renderPresets(); }
+        }
+
+        function borrarPreset(idx) { presets.splice(idx,1); saveData(); renderPresets(); }
+
+        function renderPresetsDescuentos() {
+            const listConfig = document.getElementById('listaPresetsDescuentosConfig');
+            if(!listConfig) return;
+            listConfig.innerHTML = '';
+
+            presetsDescuentos.forEach((d, idx) => {
+                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${d.nombre} - -$${d.monto}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPresetDescuento(${idx})">×</button></li>`;
+            });
+        }
+
+        function agregarPresetDescuento() {
+            const n = document.getElementById('new_disc_name').value;
+            const m = parseFloat(document.getElementById('new_disc_val').value);
+            if(n && m) { presetsDescuentos.push({nombre: n, monto: m}); saveData(); renderPresetsDescuentos(); }
+        }
+
+        function borrarPresetDescuento(idx) { presetsDescuentos.splice(idx,1); saveData(); renderPresetsDescuentos(); }
+
+        function renderOrdenes() {
+            const container = document.getElementById('listaOrdenesContainer');
+            const search = document.getElementById('searchOrders').value.toLowerCase();
             container.innerHTML = '';
 
-            let clientesMap = {};
-            historialComprobantes.forEach(h => {
-                let nombreCliente = h.cliente ? h.cliente.trim() : 'Sin Nombre';
-                if(!clientesMap[nombreCliente]) {
-                    clientesMap[nombreCliente] = [];
-                }
-                clientesMap[nombreCliente].push(h);
-            });
-
-            const clientesKeys = Object.keys(clientesMap).filter(c => c.toLowerCase().includes(search));
-
-            if(clientesKeys.length === 0) {
-                container.innerHTML = `<p class="text-muted small text-center mt-3">No hay clientes en el historial.</p>`;
-                return;
-            }
-
-            clientesKeys.forEach(cliente => {
-                const trabajos = clientesMap[cliente];
+            ordenes.filter(o => o.cliente.toLowerCase().includes(search) || o.bici.toLowerCase().includes(search)).forEach(o => {
+                let badgeClass = o.estado === 'En Proceso' ? 'status-proceso' : (o.estado === 'Listo' ? 'status-listo' : 'status-entregado');
                 container.innerHTML += `
-                    <div class="card bg-dark border-secondary mb-2" onclick="abrirHistorialCliente('${cliente.replace(/'/g, "\\'")}')" style="cursor:pointer;">
-                        <div class="card-body p-3 d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong style="color:var(--brand-yellow);"><i class="fas fa-user me-2"></i>${cliente}</strong>
-                                <small class="text-muted d-block">${trabajos.length} trabajo(s) registrado(s)</small>
-                            </div>
-                            <span class="badge" style="background:#222; color:var(--brand-yellow);">Ver Historial <i class="fas fa-chevron-right ms-1"></i></span>
+                    <div class="order-item-row d-flex justify-content-between align-items-center" onclick="abrirModalOrden(${o.id})">
+                        <div>
+                            <div class="fw-bold">${o.cliente}</div>
+                            <small class="text-muted">${o.bici}</small>
                         </div>
+                        <span class="badge badge-status ${badgeClass}">${o.estado}</span>
                     </div>
                 `;
             });
         }
 
-        function abrirHistorialCliente(clienteNombre) {
-            document.getElementById('modalClienteTitle').innerHTML = `<i class="fas fa-user-circle me-2" style="color:var(--brand-yellow);"></i>Historial de: ${clienteNombre}`;
-            const container = document.getElementById('clienteComprobantesList');
+        function abrirModalOrden(id) {
+            const o = ordenes.find(x => x.id === id);
+            if(!o) return;
+            document.getElementById('modal_orden_id').value = o.id;
+            document.getElementById('m_cliente').value = o.cliente;
+            document.getElementById('m_bici').value = o.bici;
+            document.getElementById('m_estado').value = o.estado;
+            document.getElementById('m_tareas').value = o.tareas;
+            new bootstrap.Modal(document.getElementById('ordenModal')).show();
+        }
+
+        function nuevaOrdenModal() {
+            document.getElementById('modal_orden_id').value = '';
+            document.getElementById('m_cliente').value = '';
+            document.getElementById('m_bici').value = '';
+            document.getElementById('m_tareas').value = '';
+            new bootstrap.Modal(document.getElementById('ordenModal')).show();
+        }
+
+        function guardarOrden() {
+            const id = document.getElementById('modal_orden_id').value;
+            const cliente = document.getElementById('m_cliente').value;
+            const bici = document.getElementById('m_bici').value;
+            const estado = document.getElementById('m_estado').value;
+            const tareas = document.getElementById('m_tareas').value;
+
+            if(!cliente) return;
+
+            if(id) {
+                const o = ordenes.find(x => x.id == id);
+                o.cliente = cliente; o.bici = bici; o.estado = estado; o.tareas = tareas;
+            } else {
+                ordenes.unshift({ id: Date.now(), cliente, bici, estado, tareas });
+            }
+            saveData(); renderOrdenes();
+            bootstrap.Modal.getInstance(document.getElementById('ordenModal')).hide();
+        }
+
+        function eliminarOrdenActual() {
+            const id = document.getElementById('modal_orden_id').value;
+            if(!id) return;
+            ordenes = ordenes.filter(o => o.id != id);
+            saveData(); renderOrdenes();
+            bootstrap.Modal.getInstance(document.getElementById('ordenModal')).hide();
+        }
+
+        function renderHistorial() {
+            const container = document.getElementById('historialComprobantesList');
             container.innerHTML = '';
-
-            const trabajosCliente = historialComprobantes.filter(h => (h.cliente ? h.cliente.trim() : 'Sin Nombre') === clienteNombre);
-
-            trabajosCliente.forEach(h => {
+            historialComprobantes.forEach(h => {
                 container.innerHTML += `
-                    <div class="card bg-black border-secondary mb-2">
+                    <div class="card bg-dark border-secondary mb-2">
                         <div class="card-body p-2 d-flex justify-content-between align-items-center">
                             <div>
-                                <strong class="small d-block text-light">🚲 ${h.bici}</strong>
-                                <small class="text-muted" style="font-size:0.75rem;">📅 ${h.fecha}</small>
+                                <strong class="small d-block">${h.cliente} (${h.bici})</strong>
+                                <small class="text-muted" style="font-size:0.75rem;">${h.fecha}</small>
                             </div>
                             <div class="text-end">
-                                <span class="fw-bold me-2 small" style="color:var(--brand-yellow);">$${h.total.toLocaleString()}</span>
-                                <button class="btn btn-sm btn-outline-brand p-1 px-2" onclick="verComprobanteModalText(${h.id})">Ver</button>
+                                <span class="text-success fw-bold me-2 small">$${h.total.toLocaleString()}</span>
+                                <button class="btn btn-sm btn-outline-neon p-1 px-2" onclick="verComprobanteModal(${h.id})">Ver</button>
                             </div>
                         </div>
                     </div>
                 `;
             });
-
-            new bootstrap.Modal(document.getElementById('clienteHistorialModal')).show();
         }
 
-        function verComprobanteModalText(id) {
+        function verComprobanteModal(id) {
             const item = historialComprobantes.find(h => h.id === id);
             if(!item) return;
             document.getElementById('comprobanteTextoView').innerText = item.texto;
             new bootstrap.Modal(document.getElementById('comprobanteModal')).show();
         }
 
-        function enviarComprobanteDesdeModal() {
-            const txt = document.getElementById('comprobanteTextoView').innerText;
-            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
-            window.open(url, '_blank');
+        function copiarComprobanteDesdeModal() {
+            navigator.clipboard.writeText(document.getElementById('comprobanteTextoView').innerText);
+            alert("Comprobante copiado.");
         }
     </script>
 </body>
