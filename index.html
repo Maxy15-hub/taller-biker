@@ -717,12 +717,13 @@
             alert("¡Datos del taller guardados correctamente!");
         }
 
-        function addServicioRow(nombre = '', precio = '') {
+        function addServicioRow(nombre = '', precio = '', cantidad = 1) {
             const container = document.getElementById('serviciosList');
             const div = document.createElement('div');
-            div.className = 'row g-1 mb-1 s-row';
+            div.className = 'row g-1 mb-1 s-row align-items-center';
             div.innerHTML = `
-                <div class="col-7"><input type="text" class="form-control form-control-sm s-nombre" placeholder="Servicio" value="${nombre}" oninput="calcularPresupuestoVivo()"></div>
+                <div class="col-5"><input type="text" class="form-control form-control-sm s-nombre" placeholder="Servicio" value="${nombre}" oninput="calcularPresupuestoVivo()"></div>
+                <div class="col-2 px-1"><input type="number" class="form-control form-control-sm s-cant text-center" placeholder="Cant" value="${cantidad}" min="1" oninput="calcularPresupuestoVivo()" title="Cantidad"></div>
                 <div class="col-4"><input type="number" class="form-control form-control-sm s-precio" placeholder="$" value="${precio}" oninput="calcularPresupuestoVivo()"></div>
                 <div class="col-1"><button class="btn btn-sm btn-outline-danger p-0 w-100" onclick="this.parentElement.parentElement.remove(); calcularPresupuestoVivo();">×</button></div>
             `;
@@ -730,7 +731,7 @@
             calcularPresupuestoVivo();
         }
 
-        function addRepuestoRow(nombre = '', precio = '') {
+        function addRepuestoRow(nombre = '', precio = '', cantidad = 1) {
             const container = document.getElementById('repuestosList');
             const datalistId = 'dl_repuestos_' + Date.now() + Math.floor(Math.random()*1000);
             
@@ -740,12 +741,13 @@
             });
 
             const div = document.createElement('div');
-            div.className = 'row g-1 mb-1 r-row';
+            div.className = 'row g-1 mb-1 r-row align-items-center';
             div.innerHTML = `
-                <div class="col-7">
-                    <input type="text" class="form-control form-control-sm r-nombre" placeholder="Material/Repuesto" value="${nombre}" list="${datalistId}" oninput="onRepuestoInput(this); calcularPresupuestoVivo();">
+                <div class="col-5">
+                    <input type="text" class="form-control form-control-sm r-nombre" placeholder="Repuesto" value="${nombre}" list="${datalistId}" oninput="onRepuestoInput(this); calcularPresupuestoVivo();">
                     <datalist id="${datalistId}">${optionsHtml}</datalist>
                 </div>
+                <div class="col-2 px-1"><input type="number" class="form-control form-control-sm r-cant text-center" placeholder="Cant" value="${cantidad}" min="1" oninput="calcularPresupuestoVivo()" title="Cantidad"></div>
                 <div class="col-4"><input type="number" class="form-control form-control-sm r-precio" placeholder="$" value="${precio}" oninput="calcularPresupuestoVivo()"></div>
                 <div class="col-1"><button class="btn btn-sm btn-outline-danger p-0 w-100" onclick="this.parentElement.parentElement.remove(); calcularPresupuestoVivo();">×</button></div>
             `;
@@ -872,7 +874,7 @@
             checkboxes.forEach(chk => {
                 const nombre = chk.getAttribute('data-nombre');
                 const precio = parseFloat(chk.getAttribute('data-precio'));
-                addServicioRow(nombre, precio);
+                addServicioRow(nombre, precio, 1);
             });
 
             calcularPresupuestoVivo();
@@ -923,8 +925,18 @@
             const fecha = new Date().toLocaleDateString('es-AR');
             
             let subServicios = 0, subRepuestos = 0;
-            document.querySelectorAll('.s-row').forEach(r => subServicios += (parseFloat(r.querySelector('.s-precio').value) || 0));
-            document.querySelectorAll('.r-row').forEach(r => subRepuestos += (parseFloat(r.querySelector('.r-precio').value) || 0));
+            
+            document.querySelectorAll('.s-row').forEach(r => {
+                const cant = parseInt(r.querySelector('.s-cant').value) || 1;
+                const precioUnit = parseFloat(r.querySelector('.s-precio').value) || 0;
+                subServicios += (cant * precioUnit);
+            });
+
+            document.querySelectorAll('.r-row').forEach(r => {
+                const cant = parseInt(r.querySelector('.r-cant').value) || 1;
+                const precioUnit = parseFloat(r.querySelector('.r-precio').value) || 0;
+                subRepuestos += (cant * precioUnit);
+            });
             
             const descuento = parseFloat(document.getElementById('p_descuento_monto').value) || 0;
             const adelanto = parseFloat(document.getElementById('p_adelanto_monto').value) || 0;
@@ -957,8 +969,17 @@
             let hasR = false;
             document.querySelectorAll('.r-row').forEach(r => {
                 const n = r.querySelector('.r-nombre').value;
-                const p = r.querySelector('.r-precio').value;
-                if(n) { txt += `• ${n}: $${parseFloat(p||0).toLocaleString()}\n`; hasR = true; }
+                const cant = parseInt(r.querySelector('.r-cant').value) || 1;
+                const pUnit = parseFloat(r.querySelector('.r-precio').value) || 0;
+                const subTotalItem = cant * pUnit;
+                if(n) { 
+                    if(cant > 1) {
+                        txt += `• ${n} (x${cant}): $${subTotalItem.toLocaleString()} ($${pUnit.toLocaleString()} c/u)\n`;
+                    } else {
+                        txt += `• ${n}: $${subTotalItem.toLocaleString()}\n`;
+                    }
+                    hasR = true; 
+                }
             });
             if(!hasR) txt += `• Sin repuestos adicionales\n`;
             txt += `\n👉 Subtotal Repuestos: $${subRepuestos.toLocaleString()}\n\n`;
@@ -967,8 +988,17 @@
             let hasS = false;
             document.querySelectorAll('.s-row').forEach(s => {
                 const n = s.querySelector('.s-nombre').value;
-                const p = s.querySelector('.s-precio').value;
-                if(n) { txt += `• ${n}: $${parseFloat(p||0).toLocaleString()}\n`; hasS = true; }
+                const cant = parseInt(s.querySelector('.s-cant').value) || 1;
+                const pUnit = parseFloat(s.querySelector('.s-precio').value) || 0;
+                const subTotalItem = cant * pUnit;
+                if(n) { 
+                    if(cant > 1) {
+                        txt += `• ${n} (x${cant}): $${subTotalItem.toLocaleString()} ($${pUnit.toLocaleString()} c/u)\n`;
+                    } else {
+                        txt += `• ${n}: $${subTotalItem.toLocaleString()}\n`;
+                    }
+                    hasS = true; 
+                }
             });
             if(!hasS) txt += `• Servicio general\n`;
             txt += `\n👉 Subtotal Mano de Obra: $${subServicios.toLocaleString()}\n`;
@@ -1152,7 +1182,6 @@
                 saveData();
                 renderHistorialClientes();
                 
-                // Actualizar la vista del modal del cliente o cerrarlo si ya no quedan
                 const restantes = historialComprobantes.filter(h => (h.cliente ? h.cliente.trim() : 'Sin Nombre') === clienteActualAbierto);
                 if(restantes.length > 0) {
                     abrirHistorialCliente(clienteActualAbierto);
