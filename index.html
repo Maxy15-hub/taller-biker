@@ -42,7 +42,7 @@
         }
 
         .app-container {
-            min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 160px;
+            min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 120px;
         }
 
         .navbar {
@@ -129,26 +129,6 @@
             color: var(--brand-yellow); background-color: rgba(212, 163, 0, 0.04); border-bottom: 3px solid var(--brand-yellow); 
         }
 
-        /* Botón de micrófono estilo WhatsApp */
-        .fab-mic {
-            position: fixed; bottom: 85px; right: 20px; width: 62px; height: 62px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--brand-yellow), #b08500); color: #000; display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; box-shadow: 0 4px 15px rgba(212, 163, 0, 0.3); z-index: 1000; border: 2px solid var(--brand-blue); cursor: pointer;
-            user-select: none; -webkit-user-select: none; transition: transform 0.1s ease;
-        }
-
-        .fab-mic.recording {
-            background: linear-gradient(135deg, #ff3b30, #cc0000); color: #fff; transform: scale(1.15);
-            border-color: #fff; box-shadow: 0 0 25px rgba(255, 59, 48, 0.8);
-            animation: pulse-mic 1.2s infinite;
-        }
-
-        @keyframes pulse-mic {
-            0% { transform: scale(1.1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1.1); }
-        }
-
         .total-highlight { font-size: 1.15rem; font-weight: 800; color: var(--brand-yellow); white-space: nowrap; display: block; }
         .resta-highlight { font-size: 1.15rem; font-weight: 800; color: var(--brand-blue); white-space: nowrap; display: block; }
         .monto-subtotal { font-size: 0.95rem; font-weight: 700; white-space: nowrap; display: block; color: #fff; }
@@ -163,12 +143,15 @@
 <body>
 
     <div class="app-container">
-        <!-- Navbar con foto de perfil -->
+        <!-- Navbar con botón de Configuración (Tuerca) -->
         <nav class="navbar navbar-dark">
             <div class="container-fluid d-flex justify-content-between align-items-center">
                 <a class="navbar-brand m-0" href="#" id="appTitleHeader"><i class="fas fa-tools me-2"></i>Taller Biker</a>
-                <div id="authContainer">
-                    <button class="btn btn-sm btn-outline-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-brand" onclick="abrirConfigModal()" title="Configuración y Tarifarios"><i class="fas fa-cog"></i></button>
+                    <div id="authContainer">
+                        <button class="btn btn-sm btn-outline-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Ingresar</button>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -177,13 +160,13 @@
             <!-- 3 Pestañas de Navegación -->
             <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
                 <li class="nav-item">
-                    <button class="nav-link active" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-calculator me-1"></i> Caja / Doc</button>
+                    <button class="nav-link active" id="presupuesto-tab" data-bs-toggle="tab" data-bs-target="#presupuesto" type="button"><i class="fas fa-calculator me-1"></i> Caja / Doc</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-stethoscope me-1"></i> Diagnóstico</button>
+                    <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button"><i class="fas fa-stethoscope me-1"></i> Diagnóstico</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button" onclick="gestionarVisibilidadMic()"><i class="fas fa-history me-1"></i> Historial</button>
+                    <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button"><i class="fas fa-history me-1"></i> Historial</button>
                 </li>
             </ul>
 
@@ -207,11 +190,11 @@
                             <div class="row g-2 mb-3">
                                 <div class="col-6">
                                     <label class="form-label small text-muted">Cliente</label>
-                                    <input type="text" id="p_cliente" class="form-control" placeholder="Ej: Matin" oninput="calcularPresupuestoVivo()">
+                                    <input type="text" id="p_cliente" class="form-control" placeholder="Ej: Maxi" oninput="calcularPresupuestoVivo()">
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label small text-muted">Vehículo / Bici</label>
-                                    <input type="text" id="p_bici" class="form-control" placeholder="Ej: Gravity R29" oninput="calcularPresupuestoVivo()">
+                                    <input type="text" id="p_bici" class="form-control" placeholder="Ej: MTB R29" oninput="calcularPresupuestoVivo()">
                                 </div>
                             </div>
 
@@ -296,7 +279,7 @@
                 <div class="tab-pane fade" id="diag">
                     <div class="card">
                         <div class="card-header bg-dark fw-bold d-flex justify-content-between align-items-center" style="color:var(--brand-yellow);">
-                            <span><i class="fas fa-stethoscope me-2"></i>Informe de Diagnóstico IA / Voz</span>
+                            <span><i class="fas fa-stethoscope me-2"></i>Informe de Diagnóstico</span>
                             <button class="btn btn-sm btn-outline-brand" onclick="limpiarDiagnostico()"><i class="fas fa-eraser me-1"></i> Limpiar</button>
                         </div>
                         <div class="card-body">
@@ -312,13 +295,13 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label small text-muted">Detalle del Diagnóstico / Observaciones Técnicas (Independiente)</label>
-                                <textarea id="d_hallazgos" class="form-control" rows="5" placeholder="Mantené presionado el botón del micrófono abajo a la derecha para dictar..." oninput="generarDiagnosticoTexto()"></textarea>
+                                <label class="form-label small text-muted">Detalle del Diagnóstico / Observaciones Técnicas</label>
+                                <textarea id="d_hallazgos" class="form-control" rows="5" placeholder="Escribí aquí el diagnóstico o fallas encontradas..." oninput="generarDiagnosticoTexto()"></textarea>
                             </div>
 
                             <div class="mt-3">
                                 <label class="form-label small fw-bold" style="color:var(--brand-yellow);"><i class="fas fa-eye me-1"></i> Vista Previa Diagnóstico (WhatsApp):</label>
-                                <div id="diagPreviewBox" class="receipt-preview-box">Escribí o dictá el diagnóstico para ver el informe...</div>
+                                <div id="diagPreviewBox" class="receipt-preview-box">Escribí el diagnóstico para ver el informe...</div>
                             </div>
 
                             <div class="mt-3 mb-3">
@@ -338,9 +321,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Botón Micrófono Estilo WhatsApp (Hold to talk) -->
-        <button class="fab-mic" id="btnMic" title="Mantené presionado para hablar"><i class="fas fa-microphone"></i></button>
     </div>
 
     <!-- MODAL DE CARGA RÁPIDA CON BUSCADOR INTELIGENTE -->
@@ -367,45 +347,20 @@
         </div>
     </div>
 
-    <!-- Modales de Configuración e Historial -->
+    <!-- MODAL DE CONFIGURACIÓN Y MEMORIA DE MATERIALES/SERVICIOS -->
     <div class="modal fade" id="configModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" style="color:var(--brand-yellow);"><i class="fas fa-cog me-2"></i>Configuración y Tarifario del Taller</h6>
+                    <h6 class="modal-title" style="color:var(--brand-yellow);"><i class="fas fa-cog me-2"></i>Configuración y Memoria del Taller</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="card mb-3" style="border-color:var(--brand-blue);">
-                        <div class="card-header bg-dark fw-bold" style="color:var(--brand-blue);"><i class="fas fa-cloud me-2"></i>Sincronización Automática</div>
+                        <div class="card-header bg-dark fw-bold" style="color:var(--brand-blue);"><i class="fas fa-cloud me-2"></i>Sincronización en la Nube</div>
                         <div class="card-body text-center" id="userSessionCard">
                             <p class="small text-muted mb-2">Iniciá sesión para respaldar tus datos automáticamente en tu cuenta de Google.</p>
                             <button class="btn btn-sm btn-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
-                        </div>
-                    </div>
-
-                    <div class="card mb-3 border-success">
-                        <div class="card-header bg-dark text-success fw-bold"><i class="fas fa-file-excel me-2"></i>Importar Tarifario / Precios desde Archivo</div>
-                        <div class="card-body">
-                            <p class="small text-muted mb-2">Subí un archivo CSV o TXT con la lista de precios:</p>
-                            <input type="file" id="catalogFile" accept=".csv, .txt, .json" style="display:none" onchange="importarTarifarioArchivo(event)">
-                            <button class="btn btn-sm btn-outline-brand w-100" onclick="document.getElementById('catalogFile').click()"><i class="fas fa-file-upload me-1"></i> Cargar Archivo de Precios</button>
-                        </div>
-                    </div>
-
-                    <div class="card mb-3 border-warning">
-                        <div class="card-header bg-dark text-warning fw-bold"><i class="fas fa-hdd me-2"></i>Copia de Seguridad en Archivo (Manual)</div>
-                        <div class="card-body">
-                            <p class="small text-muted mb-3">Podés descargar una copia completa de tus datos.</p>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <button class="btn btn-sm btn-outline-warning w-100" onclick="exportarCopiaSeguridad()"><i class="fas fa-download me-1"></i> Exportar Copia</button>
-                                </div>
-                                <div class="col-6">
-                                    <input type="file" id="importFile" style="display:none" onchange="importarCopiaSeguridad(event)">
-                                    <button class="btn btn-sm btn-outline-info w-100" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload me-1"></i> Cargar Copia</button>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -438,6 +393,21 @@
                         </div>
                     </div>
 
+                    <!-- MEMORIA DE MATERIALES Y REPUESTOS -->
+                    <div class="card mb-3 border-info">
+                        <div class="card-header bg-dark text-info fw-bold"><i class="fas fa-boxes me-2"></i>Memoria de Materiales / Repuestos Guardados</div>
+                        <div class="card-body">
+                            <p class="small text-muted mb-2">Aquí podés ver, editar o eliminar los repuestos que el sistema guardó automáticamente al usarlos:</p>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6"><input type="text" id="new_rep_name" class="form-control form-control-sm" placeholder="Nombre repuesto"></div>
+                                <div class="col-4"><input type="number" id="new_rep_price" class="form-control form-control-sm" placeholder="Precio $"></div>
+                                <div class="col-2"><button class="btn btn-sm btn-brand-blue w-100" onclick="agregarRepuestoMemoria()" style="background:var(--brand-blue); color:#fff;">+</button></div>
+                            </div>
+                            <ul class="list-group list-group-flush" id="listaRepuestosConfig" style="max-height: 200px; overflow-y: auto;"></ul>
+                        </div>
+                    </div>
+
+                    <!-- MEMORIA DE MANO DE OBRA -->
                     <div class="card mb-3">
                         <div class="card-header small text-uppercase fw-bold" style="color:var(--brand-yellow);"><i class="fas fa-bolt me-2"></i>Catálogo de Servicios y Precios</div>
                         <div class="card-body">
@@ -450,6 +420,7 @@
                         </div>
                     </div>
 
+                    <!-- MEMORIA DE DESCUENTOS -->
                     <div class="card">
                         <div class="card-header small text-uppercase fw-bold" style="color:var(--brand-blue);"><i class="fas fa-percentage me-2"></i>Catálogo de Descuentos</div>
                         <div class="card-body">
@@ -598,17 +569,15 @@
         ];
 
         let historialComprobantes = JSON.parse(localStorage.getItem('tb_historial')) || [];
-        let recognition = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             cargarInputsConfig();
             renderPresetsModal();
+            renderRepuestosConfigList();
             renderPresetsDescuentos();
             renderHistorialClientes();
-            // ¡ATENCIÓN: Listas 100% limpias al iniciar (sin filas vacías iniciales)!
             calcularPresupuestoVivo();
             generarDiagnosticoTexto();
-            gestionarVisibilidadMic();
         });
 
         function saveData() {
@@ -623,203 +592,11 @@
             }
         }
 
-        function gestionarVisibilidadMic() {
-            setTimeout(() => {
-                const activeTab = document.querySelector('.nav-link.active');
-                const btnMic = document.getElementById('btnMic');
-                if (activeTab && (activeTab.id === 'presupuesto-tab' || activeTab.id === 'diag-tab')) {
-                    btnMic.style.display = 'flex';
-                } else {
-                    btnMic.style.display = 'none';
-                }
-            }, 50);
-        }
-
-        function limpiarTextoVoz(texto) {
-            if (!texto) return '';
-            const palabras = texto.trim().split(/\s+/);
-            const resultado = [];
-            for (let i = 0; i < palabras.length; i++) {
-                if (i === 0 || palabras[i].toLowerCase() !== palabras[i - 1].toLowerCase()) {
-                    resultado.push(palabras[i]);
-                }
-            }
-            return resultado.join(' ');
-        }
-
-        function initSpeechHoldToTalk() {
-            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return;
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            
-            const btnMic = document.getElementById('btnMic');
-            let isHolding = false;
-
-            const startListening = (e) => {
-                e.preventDefault();
-                if (isHolding) return;
-                isHolding = true;
-
-                playBeepSound();
-                btnMic.classList.add('recording');
-
-                recognition = new SpeechRecognition();
-                recognition.lang = 'es-AR';
-                recognition.continuous = true;
-                recognition.interimResults = true;
-
-                let transcriptAcumulada = '';
-
-                recognition.onresult = (event) => {
-                    let interim = '';
-                    for (let i = event.resultIndex; i < event.results.length; ++i) {
-                        if (event.results[i].isFinal) {
-                            transcriptAcumulada += event.results[i][0].transcript + ' ';
-                        } else {
-                            interim += event.results[i][0].transcript;
-                        }
-                    }
-
-                    const activeTab = document.querySelector('.nav-link.active').id;
-                    if (activeTab === 'diag-tab') {
-                        let textoLimpio = limpiarTextoVoz(transcriptAcumulada + interim);
-                        document.getElementById('d_hallazgos').value = textoLimpio;
-                        generarDiagnosticoTexto();
-                    } else {
-                        const fullText = (transcriptAcumulada + interim).toLowerCase();
-                        const clienteMatch = fullText.match(/para\s+([a-zA-Záéíóúñ]+)/i);
-                        if(clienteMatch) document.getElementById('p_cliente').value = clienteMatch[1];
-
-                        presets.forEach(p => {
-                            if(fullText.includes(p.nombre.toLowerCase()) || fullText.includes(p.nombre.split(' ')[0].toLowerCase())) {
-                                addServicioRow(p.nombre, p.precio);
-                            }
-                        });
-                        calcularPresupuestoVivo();
-                    }
-                };
-
-                recognition.onerror = () => { stopListening(); };
-                recognition.onend = () => { stopListening(); };
-
-                try {
-                    recognition.start();
-                } catch(err) {
-                    stopListening();
-                }
-            };
-
-            const stopListening = () => {
-                if (!isHolding) return;
-                isHolding = false;
-                btnMic.classList.remove('recording');
-                if (recognition) {
-                    try { recognition.stop(); } catch(e){}
-                }
-            };
-
-            btnMic.addEventListener('mousedown', startListening);
-            btnMic.addEventListener('mouseup', stopListening);
-            btnMic.addEventListener('mouseleave', stopListening);
-
-            btnMic.addEventListener('touchstart', startListening, {passive: false});
-            btnMic.addEventListener('touchend', stopListening);
-            btnMic.addEventListener('touchcancel', stopListening);
-        }
-
-        function playBeepSound() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.15);
-            } catch(e) {}
-        }
-
         function abrirConfigModal() {
+            renderPresetsModal();
+            renderRepuestosConfigList();
+            renderPresetsDescuentos();
             new bootstrap.Modal(document.getElementById('configModal')).show();
-        }
-
-        function exportarCopiaSeguridad() {
-            const dataBackup = {
-                configTaller, presets, repuestosGuardados, presetsDescuentos, historialComprobantes,
-                fechaExportacion: new Date().toISOString()
-            };
-            const jsonStr = JSON.stringify(dataBackup, null, 2);
-            const blob = new Blob([jsonStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `respaldo_taller_${new Date().toISOString().slice(0,10)}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            alert("¡Archivo de copia de seguridad descargado correctamente!");
-        }
-
-        function importarCopiaSeguridad(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const data = JSON.parse(evt.target.result);
-                    if(data.configTaller) configTaller = data.configTaller;
-                    if(data.presets) presets = data.presets;
-                    if(data.repuestosGuardados) repuestosGuardados = data.repuestosGuardados;
-                    if(data.presetsDescuentos) presetsDescuentos = data.presetsDescuentos;
-                    if(data.historialComprobantes) historialComprobantes = data.historialComprobantes;
-
-                    saveData();
-                    cargarInputsConfig();
-                    renderPresetsModal();
-                    renderPresetsDescuentos();
-                    renderHistorialClientes();
-                    alert("¡Copia de seguridad cargada y restaurada con éxito!");
-                } catch(err) {
-                    alert("El archivo seleccionado no tiene un formato válido de respaldo.");
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function importarTarifarioArchivo(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const lines = evt.target.result.split('\n');
-                    let agregados = 0;
-                    lines.forEach(line => {
-                        let lineClean = line.replace(/•/g, '').replace(/\./g, '').trim();
-                        const parts = lineClean.split(/[:$]/);
-                        if (parts.length >= 2) {
-                            const nombre = parts[0].trim();
-                            const precioVal = parseFloat(parts[parts.length - 1].replace(/\./g, '').trim());
-                            if (nombre && !isNaN(precioVal)) {
-                                presets.push({ nombre, precio: precioVal });
-                                agregados++;
-                            }
-                        }
-                    });
-                    saveData();
-                    renderPresetsModal();
-                    alert(`¡Tarifario importado! Se agregaron ${agregados} precios al catálogo.`);
-                } catch(err) {
-                    alert("Error al leer el archivo de precios.");
-                }
-            };
-            reader.readAsText(file);
         }
 
         function sincronizarHaciaNube() {
@@ -846,6 +623,7 @@
                     saveData();
                     cargarInputsConfig();
                     renderPresetsModal();
+                    renderRepuestosConfigList();
                     renderPresetsDescuentos();
                     renderHistorialClientes();
                 }
@@ -857,7 +635,7 @@
             const userCard = document.getElementById('userSessionCard');
 
             if(user) {
-                const fullName = user.displayName ? user.displayName : 'Maxi Esquivel';
+                const fullName = user.displayName ? user.displayName : 'Maxi';
                 const photo = user.photoURL ? `<img src="${user.photoURL}" class="user-avatar-nav" alt="Profile">` : `<i class="fas fa-user-circle fa-lg" style="color:var(--brand-yellow);"></i>`;
                 
                 authContainer.innerHTML = `
@@ -874,7 +652,7 @@
                     <button class="btn btn-sm btn-outline-danger" onclick="logoutGoogle()"><i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión</button>
                 `;
             } else {
-                authContainer.innerHTML = `<button class="btn btn-sm btn-outline-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión</button>`;
+                authContainer.innerHTML = `<button class="btn btn-sm btn-outline-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Ingresar</button>`;
                 userCard.innerHTML = `
                     <p class="small text-muted mb-2">Iniciá sesión para respaldar tus datos automáticamente en tu cuenta de Google.</p>
                     <button class="btn btn-sm btn-brand" onclick="loginGoogle()"><i class="fab fa-google me-1"></i> Iniciar Sesión con Google</button>
@@ -884,7 +662,7 @@
 
         function loginGoogle() {
             if (!auth) {
-                alert("El sistema de autenticación de Firebase no está disponible.");
+                alert("El sistema de autenticación no está disponible.");
                 return;
             }
             const provider = new firebase.auth.GoogleAuthProvider();
@@ -894,7 +672,6 @@
                 sincronizarDesdeNube();
                 alert("¡Sesión iniciada con éxito!");
             }).catch(error => {
-                console.error("Error al iniciar sesión:", error);
                 alert("No se pudo iniciar sesión: " + error.message);
             });
         }
@@ -990,6 +767,48 @@
                 }
             });
             saveData();
+            renderRepuestosConfigList();
+        }
+
+        function agregarRepuestoMemoria() {
+            const n = document.getElementById('new_rep_name').value.trim();
+            const p = parseFloat(document.getElementById('new_rep_price').value);
+            if(n && !isNaN(p)) {
+                const existente = repuestosGuardados.find(r => r.nombre.toLowerCase() === n.toLowerCase());
+                if(existente) {
+                    existente.precio = p;
+                } else {
+                    repuestosGuardados.push({ nombre: n, precio: p });
+                }
+                document.getElementById('new_rep_name').value = '';
+                document.getElementById('new_rep_price').value = '';
+                saveData();
+                renderRepuestosConfigList();
+                alert(`¡Material "${n}" guardado en memoria con éxito!`);
+            } else {
+                alert("Ingresá un nombre y un precio válido.");
+            }
+        }
+
+        function borrarRepuestoMemoria(idx) {
+            repuestosGuardados.splice(idx, 1);
+            saveData();
+            renderRepuestosConfigList();
+        }
+
+        function renderRepuestosConfigList() {
+            const listConfig = document.getElementById('listaRepuestosConfig');
+            if(!listConfig) return;
+            listConfig.innerHTML = '';
+
+            repuestosGuardados.forEach((r, idx) => {
+                listConfig.innerHTML += `
+                    <li class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center p-2 small">
+                        <span><strong>${r.nombre}</strong> - $${r.precio.toLocaleString()}</span>
+                        <button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarRepuestoMemoria(${idx})">×</button>
+                    </li>
+                `;
+            });
         }
 
         function abrirCatalogoModal() {
@@ -1001,14 +820,14 @@
         function renderPresetsModal(filtro = '') {
             const container = document.getElementById('modalPresetsContainer');
             const listConfig = document.getElementById('listaPresetsConfig');
-            container.innerHTML = ''; 
+            if(container) container.innerHTML = ''; 
             if(listConfig) listConfig.innerHTML = '';
 
             const filtroLower = filtro.toLowerCase().trim();
 
             presets.forEach((p, idx) => {
                 const nombreMatch = p.nombre.toLowerCase().includes(filtroLower);
-                if (nombreMatch) {
+                if (nombreMatch && container) {
                     container.innerHTML += `
                         <label class="catalog-item-check">
                             <div>
@@ -1049,8 +868,6 @@
             const modalEl = document.getElementById('catalogoModal');
             const modalObj = bootstrap.Modal.getInstance(modalEl);
             if(modalObj) modalObj.hide();
-
-            alert(`¡Se agregaron ${checkboxes.length} servicio(s) a la calculadora!`);
         }
 
         function agregarPreset() {
@@ -1064,6 +881,7 @@
         function renderPresetsDescuentos() {
             const container = document.getElementById('discountPresetsContainer');
             const listConfig = document.getElementById('listaPresetsDescuentosConfig');
+            if(!container || !listConfig) return;
             container.innerHTML = ''; listConfig.innerHTML = '';
 
             presetsDescuentos.forEach((d, idx) => {
@@ -1246,7 +1064,9 @@
 
         function renderHistorialClientes() {
             const container = document.getElementById('historialClientesContainer');
-            const search = document.getElementById('searchClientHistory').value.toLowerCase();
+            const searchInput = document.getElementById('searchClientHistory');
+            if(!container || !searchInput) return;
+            const search = searchInput.value.toLowerCase();
             container.innerHTML = '';
 
             let clientesMap = {};
