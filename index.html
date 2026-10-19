@@ -103,7 +103,6 @@
             background-color: #22222b; color: #fff; border-color: var(--brand-yellow); box-shadow: 0 0 0 0.2rem rgba(212, 163, 0, 0.2);
         }
 
-        /* Estilo sutil y chico para el selector de tipo de documento */
         .select-tipo-doc {
             font-size: 0.85rem !important;
             padding: 8px 12px !important;
@@ -462,18 +461,20 @@
         </div>
     </div>
 
+    <!-- MODAL VER / RE-EDITAR COMPROBANTE -->
     <div class="modal fade" id="comprobanteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" style="color:var(--brand-yellow);">Detalle del Comprobante</h6>
+                    <h6 class="modal-title" style="color:var(--brand-yellow);"><i class="fas fa-file-invoice me-2"></i>Detalle del Comprobante</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="comprobanteTextoView" class="receipt-preview-box"></div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-sm btn-brand w-100" onclick="enviarComprobanteDesdeModal()"><i class="fab fa-whatsapp me-1"></i> Enviar por WhatsApp</button>
+                    <div id="comprobanteTextoView" class="receipt-preview-box mb-3"></div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-sm btn-brand py-2 fw-bold" onclick="enviarComprobanteDesdeModal()"><i class="fab fa-whatsapp me-1"></i> Enviar por WhatsApp</button>
+                        <button class="btn btn-sm btn-brand-blue py-2 fw-bold" onclick="reEditarComprobanteModal()" style="background:var(--brand-blue); border:none;"><i class="fas fa-pen-to-square me-1"></i> ✏️ Re-editar en Caja / Doc</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -581,6 +582,7 @@
 
         let historialComprobantes = JSON.parse(localStorage.getItem('tb_historial')) || [];
         let clienteActualAbierto = null;
+        let itemComprobanteSeleccionado = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             cargarInputsConfig();
@@ -1047,12 +1049,36 @@
 
             const { txt, cliente, bici, total, fecha } = construirTextoComprobante();
             
-            historialComprobantes.unshift({ id: Date.now(), cliente, bici, total, fecha, texto: txt });
+            historialComprobantes.unshift({ id: Date.now(), cliente, bici, total, fecha, texto: txt, itemsServicios: obtenerServiciosActuales(), itemsRepuestos: obtenerRepuestosActuales() });
             saveData();
             renderHistorialClientes();
 
             const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
             window.open(url, '_blank');
+        }
+
+        function obtenerServiciosActuales() {
+            const arr = [];
+            document.querySelectorAll('.s-row').forEach(r => {
+                arr.push({
+                    nombre: r.querySelector('.s-nombre').value,
+                    cant: r.querySelector('.s-cant').value,
+                    precio: r.querySelector('.s-precio').value
+                });
+            });
+            return arr;
+        }
+
+        function obtenerRepuestosActuales() {
+            const arr = [];
+            document.querySelectorAll('.r-row').forEach(r => {
+                arr.push({
+                    nombre: r.querySelector('.r-nombre').value,
+                    cant: r.querySelector('.r-cant').value,
+                    precio: r.querySelector('.r-precio').value
+                });
+            });
+            return arr;
         }
 
         function generarDiagnosticoTexto() {
@@ -1165,8 +1191,9 @@
                                 <small class="text-muted" style="font-size:0.75rem;">📅 ${h.fecha} | Total: <span style="color:var(--brand-yellow);">$${h.total.toLocaleString()}</span></small>
                             </div>
                             <div class="d-flex gap-1">
-                                <button class="btn btn-sm btn-outline-brand p-1 px-2" onclick="verComprobanteModalText(${h.id})">Ver</button>
-                                <button class="btn btn-sm btn-outline-danger p-1 px-2" onclick="eliminarComprobanteHistorial(${h.id})" title="Eliminar registro"><i class="fas fa-trash-alt"></i></button>
+                                <button class="btn btn-sm btn-outline-brand p-1 px-2" onclick="verComprobanteModalText(${h.id})" title="Ver detalle"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-brand-blue p-1 px-2" onclick="reEditarDesdeHistorial(${h.id})" style="background:var(--brand-blue); border:none;" title="Re-editar"><i class="fas fa-pen"></i></button>
+                                <button class="btn btn-sm btn-outline-danger p-1 px-2" onclick="eliminarComprobanteHistorial(${h.id})" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
                     </div>
@@ -1196,14 +1223,61 @@
         function verComprobanteModalText(id) {
             const item = historialComprobantes.find(h => h.id === id);
             if(!item) return;
+            itemComprobanteSeleccionado = item;
             document.getElementById('comprobanteTextoView').innerText = item.texto;
             new bootstrap.Modal(document.getElementById('comprobanteModal')).show();
         }
 
         function enviarComprobanteDesdeModal() {
-            const txt = document.getElementById('comprobanteTextoView').innerText;
-            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
+            if(!itemComprobanteSeleccionado) return;
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(itemComprobanteSeleccionado.texto)}`;
             window.open(url, '_blank');
+        }
+
+        function reEditarComprobanteModal() {
+            if(!itemComprobanteSeleccionado) return;
+            cargarDatosEnPantallaPrincipal(itemComprobanteSeleccionado);
+            
+            bootstrap.Modal.getInstance(document.getElementById('comprobanteModal')).hide();
+            const clienteModalEl = document.getElementById('clienteHistorialModal');
+            const clienteModalObj = bootstrap.Modal.getInstance(clienteModalEl);
+            if(clienteModalObj) clienteModalObj.hide();
+
+            document.getElementById('presupuesto-tab').click();
+        }
+
+        function reEditarDesdeHistorial(id) {
+            const item = historialComprobantes.find(h => h.id === id);
+            if(!item) return;
+            cargarDatosEnPantallaPrincipal(item);
+
+            const clienteModalEl = document.getElementById('clienteHistorialModal');
+            const clienteModalObj = bootstrap.Modal.getInstance(clienteModalEl);
+            if(clienteModalObj) clienteModalObj.hide();
+
+            document.getElementById('presupuesto-tab').click();
+        }
+
+        function cargarDatosEnPantallaPrincipal(item) {
+            document.getElementById('p_cliente').value = item.cliente || '';
+            document.getElementById('p_bici').value = item.bici || '';
+            
+            document.getElementById('serviciosList').innerHTML = '';
+            document.getElementById('repuestosList').innerHTML = '';
+
+            if(item.itemsServicios && item.itemsServicios.length > 0) {
+                item.itemsServicios.forEach(s => {
+                    addServicioRow(s.nombre, s.precio, s.cant);
+                });
+            }
+
+            if(item.itemsRepuestos && item.itemsRepuestos.length > 0) {
+                item.itemsRepuestos.forEach(r => {
+                    addRepuestoRow(r.nombre, r.precio, r.cant);
+                });
+            }
+
+            calcularPresupuestoVivo();
         }
     </script>
 </body>
