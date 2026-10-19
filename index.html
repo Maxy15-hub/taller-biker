@@ -1049,7 +1049,20 @@
 
             const { txt, cliente, bici, total, fecha } = construirTextoComprobante();
             
-            historialComprobantes.unshift({ id: Date.now(), cliente, bici, total, fecha, texto: txt, itemsServicios: obtenerServiciosActuales(), itemsRepuestos: obtenerRepuestosActuales() });
+            historialComprobantes.unshift({ 
+                id: Date.now(), 
+                cliente, 
+                bici, 
+                total, 
+                fecha, 
+                texto: txt, 
+                itemsServicios: obtenerServiciosActuales(), 
+                itemsRepuestos: obtenerRepuestosActuales(),
+                descuentoNombre: document.getElementById('p_descuento_nombre').value,
+                descuentoMonto: document.getElementById('p_descuento_monto').value,
+                adelantoMonto: document.getElementById('p_adelanto_monto').value,
+                tipoDoc: document.getElementById('p_tipo_doc').value
+            });
             saveData();
             renderHistorialClientes();
 
@@ -1261,6 +1274,10 @@
         function cargarDatosEnPantallaPrincipal(item) {
             document.getElementById('p_cliente').value = item.cliente || '';
             document.getElementById('p_bici').value = item.bici || '';
+            if(item.tipoDoc) document.getElementById('p_tipo_doc').value = item.tipoDoc;
+            document.getElementById('p_descuento_nombre').value = item.descuentoNombre || '';
+            document.getElementById('p_descuento_monto').value = item.descuentoMonto || '';
+            document.getElementById('p_adelanto_monto').value = item.adelantoMonto || '';
             
             document.getElementById('serviciosList').innerHTML = '';
             document.getElementById('repuestosList').innerHTML = '';
