@@ -105,7 +105,6 @@
 
         .text-muted { color: var(--text-muted) !important; }
 
-        /* Items dentro del modal de selección múltiple */
         .catalog-item-check {
             display: flex; align-items: center; justify-content: space-between;
             background: #181820; border: 1px solid #2d2d38; border-radius: 10px;
@@ -529,7 +528,6 @@
             db = firebase.firestore();
             auth = firebase.auth();
 
-            // Usamos popup con persistencia local para asegurar que la sesión se guarde correctamente
             auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 
             auth.onAuthStateChanged(user => {
@@ -587,6 +585,14 @@
             { nombre: "Recargo Fijo Servicio a Domicilio", precio: 6000 }
         ];
 
+        let repuestosGuardados = JSON.parse(localStorage.getItem('tb_repuestos_guardados')) || [
+            { nombre: "Cámara R29", precio: 4500 },
+            { nombre: "Parches x 6", precio: 1500 },
+            { nombre: "Cable de freno", precio: 2000 },
+            { nombre: "Pastillas de freno disco", precio: 5000 },
+            { nombre: "Cadena velocidades", precio: 9000 }
+        ];
+
         let presetsDescuentos = JSON.parse(localStorage.getItem('tb_disc_presets')) || [
             { nombre: "Descuento Especial Riders / Repartidores", monto: 2500 }
         ];
@@ -599,9 +605,7 @@
             renderPresetsModal();
             renderPresetsDescuentos();
             renderHistorialClientes();
-            addServicioRow();
-            addRepuestoRow();
-            initSpeechHoldToTalk();
+            // ¡ATENCIÓN: Listas 100% limpias al iniciar (sin filas vacías iniciales)!
             calcularPresupuestoVivo();
             generarDiagnosticoTexto();
             gestionarVisibilidadMic();
@@ -609,6 +613,7 @@
 
         function saveData() {
             localStorage.setItem('tb_presets', JSON.stringify(presets));
+            localStorage.setItem('tb_repuestos_guardados', JSON.stringify(repuestosGuardados));
             localStorage.setItem('tb_disc_presets', JSON.stringify(presetsDescuentos));
             localStorage.setItem('tb_historial', JSON.stringify(historialComprobantes));
             localStorage.setItem('tb_cfg_taller', JSON.stringify(configTaller));
@@ -630,7 +635,18 @@
             }, 50);
         }
 
-        // Micrófono Estilo WhatsApp (Mantener presionado)
+        function limpiarTextoVoz(texto) {
+            if (!texto) return '';
+            const palabras = texto.trim().split(/\s+/);
+            const resultado = [];
+            for (let i = 0; i < palabras.length; i++) {
+                if (i === 0 || palabras[i].toLowerCase() !== palabras[i - 1].toLowerCase()) {
+                    resultado.push(palabras[i]);
+                }
+            }
+            return resultado.join(' ');
+        }
+
         function initSpeechHoldToTalk() {
             if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return;
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -651,13 +667,13 @@
                 recognition.continuous = true;
                 recognition.interimResults = true;
 
-                let finalTranscript = '';
+                let transcriptAcumulada = '';
 
                 recognition.onresult = (event) => {
                     let interim = '';
                     for (let i = event.resultIndex; i < event.results.length; ++i) {
                         if (event.results[i].isFinal) {
-                            finalTranscript += event.results[i][0].transcript + ' ';
+                            transcriptAcumulada += event.results[i][0].transcript + ' ';
                         } else {
                             interim += event.results[i][0].transcript;
                         }
@@ -665,12 +681,11 @@
 
                     const activeTab = document.querySelector('.nav-link.active').id;
                     if (activeTab === 'diag-tab') {
-                        const currentText = document.getElementById('d_hallazgos').value;
-                        document.getElementById('d_hallazgos').value = currentText + finalTranscript;
-                        finalTranscript = '';
+                        let textoLimpio = limpiarTextoVoz(transcriptAcumulada + interim);
+                        document.getElementById('d_hallazgos').value = textoLimpio;
                         generarDiagnosticoTexto();
                     } else {
-                        const fullText = (finalTranscript + interim).toLowerCase();
+                        const fullText = (transcriptAcumulada + interim).toLowerCase();
                         const clienteMatch = fullText.match(/para\s+([a-zA-Záéíóúñ]+)/i);
                         if(clienteMatch) document.getElementById('p_cliente').value = clienteMatch[1];
 
@@ -732,7 +747,7 @@
 
         function exportarCopiaSeguridad() {
             const dataBackup = {
-                configTaller, presets, presetsDescuentos, historialComprobantes,
+                configTaller, presets, repuestosGuardados, presetsDescuentos, historialComprobantes,
                 fechaExportacion: new Date().toISOString()
             };
             const jsonStr = JSON.stringify(dataBackup, null, 2);
@@ -759,6 +774,7 @@
                     const data = JSON.parse(evt.target.result);
                     if(data.configTaller) configTaller = data.configTaller;
                     if(data.presets) presets = data.presets;
+                    if(data.repuestosGuardados) repuestosGuardados = data.repuestosGuardados;
                     if(data.presetsDescuentos) presetsDescuentos = data.presetsDescuentos;
                     if(data.historialComprobantes) historialComprobantes = data.historialComprobantes;
 
@@ -798,7 +814,7 @@
                     });
                     saveData();
                     renderPresetsModal();
-                    alert(`¡Tarifario importado! Se agregaron ${agregados} precios al catálogo del taller.`);
+                    alert(`¡Tarifario importado! Se agregaron ${agregados} precios al catálogo.`);
                 } catch(err) {
                     alert("Error al leer el archivo de precios.");
                 }
@@ -809,7 +825,7 @@
         function sincronizarHaciaNube() {
             if(!currentUser || !db) return;
             db.collection('usuarios').doc(currentUser.uid).set({
-                presets, presetsDescuentos, historialComprobantes, configTaller,
+                presets, repuestosGuardados, presetsDescuentos, historialComprobantes, configTaller,
                 ultimaSync: new Date().toISOString()
             }, { merge: true }).catch(err => {
                 console.log("No se pudo respaldar en la nube.");
@@ -822,6 +838,7 @@
                 if(doc.exists) {
                     const data = doc.data();
                     if(data.presets) presets = data.presets;
+                    if(data.repuestosGuardados) repuestosGuardados = data.repuestosGuardados;
                     if(data.presetsDescuentos) presetsDescuentos = data.presetsDescuentos;
                     if(data.historialComprobantes) historialComprobantes = data.historialComprobantes;
                     if(data.configTaller) configTaller = data.configTaller;
@@ -865,7 +882,6 @@
             }
         }
 
-        // Login por Popup con persistencia local asegurada
         function loginGoogle() {
             if (!auth) {
                 alert("El sistema de autenticación de Firebase no está disponible.");
@@ -927,10 +943,20 @@
 
         function addRepuestoRow(nombre = '', precio = '') {
             const container = document.getElementById('repuestosList');
+            const datalistId = 'dl_repuestos_' + Date.now() + Math.floor(Math.random()*1000);
+            
+            let optionsHtml = '';
+            repuestosGuardados.forEach(r => {
+                optionsHtml += `<option value="${r.nombre}" data-precio="${r.precio}">`;
+            });
+
             const div = document.createElement('div');
             div.className = 'row g-1 mb-1 r-row';
             div.innerHTML = `
-                <div class="col-7"><input type="text" class="form-control form-control-sm r-nombre" placeholder="Material/Repuesto" value="${nombre}" oninput="calcularPresupuestoVivo()"></div>
+                <div class="col-7">
+                    <input type="text" class="form-control form-control-sm r-nombre" placeholder="Material/Repuesto" value="${nombre}" list="${datalistId}" oninput="onRepuestoInput(this); calcularPresupuestoVivo();">
+                    <datalist id="${datalistId}">${optionsHtml}</datalist>
+                </div>
                 <div class="col-4"><input type="number" class="form-control form-control-sm r-precio" placeholder="$" value="${precio}" oninput="calcularPresupuestoVivo()"></div>
                 <div class="col-1"><button class="btn btn-sm btn-outline-danger p-0 w-100" onclick="this.parentElement.parentElement.remove(); calcularPresupuestoVivo();">×</button></div>
             `;
@@ -938,7 +964,34 @@
             calcularPresupuestoVivo();
         }
 
-        // --- CATÁLOGO Y MODAL DE CARGA RÁPIDA (CON BUSCADOR INTELIGENTE / LUPITA) ---
+        function onRepuestoInput(inputEl) {
+            const val = inputEl.value;
+            const row = inputEl.closest('.r-row');
+            const precioInput = row.querySelector('.r-precio');
+
+            const match = repuestosGuardados.find(r => r.nombre.toLowerCase() === val.toLowerCase());
+            if (match) {
+                precioInput.value = match.precio;
+            }
+        }
+
+        function aprenderRepuestosNuevos() {
+            document.querySelectorAll('.r-row').forEach(row => {
+                const nombre = row.querySelector('.r-nombre').value.trim();
+                const precio = parseFloat(row.querySelector('.r-precio').value) || 0;
+
+                if (nombre && precio > 0) {
+                    const existente = repuestosGuardados.find(r => r.nombre.toLowerCase() === nombre.toLowerCase());
+                    if (existente) {
+                        existente.precio = precio;
+                    } else {
+                        repuestosGuardados.push({ nombre, precio });
+                    }
+                }
+            });
+            saveData();
+        }
+
         function abrirCatalogoModal() {
             document.getElementById('searchCatalogInput').value = '';
             renderPresetsModal();
@@ -993,7 +1046,6 @@
 
             calcularPresupuestoVivo();
             
-            // Cerrar el modal
             const modalEl = document.getElementById('catalogoModal');
             const modalObj = bootstrap.Modal.getInstance(modalEl);
             if(modalObj) modalObj.hide();
@@ -1131,6 +1183,8 @@
         }
 
         function enviarPorWhatsApp() {
+            aprenderRepuestosNuevos();
+
             const { txt, cliente, bici, total, fecha } = construirTextoComprobante();
             
             historialComprobantes.unshift({ id: Date.now(), cliente, bici, total, fecha, texto: txt });
@@ -1187,12 +1241,9 @@
             document.getElementById('p_adelanto_monto').value = '';
             document.getElementById('serviciosList').innerHTML = '';
             document.getElementById('repuestosList').innerHTML = '';
-            addServicioRow();
-            addRepuestoRow();
             calcularPresupuestoVivo();
         }
 
-        // Historial agrupado por Clientes
         function renderHistorialClientes() {
             const container = document.getElementById('historialClientesContainer');
             const search = document.getElementById('searchClientHistory').value.toLowerCase();
