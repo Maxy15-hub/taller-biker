@@ -6,7 +6,7 @@
     <title>Taller Biker - Gestión Profesional</title>
     
     <!-- Vinculación PWA Standalone -->
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#070707">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -24,14 +24,14 @@
     <style>
         :root {
             --bg-dark: #070707;
-            --bg-card: #121212;
-            --brand-yellow: #ffcc00;
-            --brand-yellow-hover: #e6b800;
+            --bg-card: #121216;
+            --brand-yellow: #d4a300; /* Amarillo más suave y equilibrado */
+            --brand-yellow-hover: #b08500;
             --brand-blue: #0077ff;
             --brand-blue-hover: #005bb5;
-            --text-light: #ffffff;
-            --text-muted: #c0c0c0;
-            --border-color: #262626;
+            --text-light: #f0f0f0;
+            --text-muted: #aaaaaa;
+            --border-color: #26262c;
         }
 
         html, body {
@@ -51,7 +51,6 @@
 
         .navbar-brand {
             color: var(--brand-yellow) !important; font-weight: 800; font-size: 1.2rem;
-            text-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
         }
 
         .user-profile-badge {
@@ -70,23 +69,20 @@
         .card {
             background-color: var(--bg-card); border: 1px solid var(--border-color);
             border-radius: 14px; color: var(--text-light); margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
 
         .card-header {
-            border-bottom: 1px solid var(--border-color); background-color: rgba(255, 204, 0, 0.03);
+            border-bottom: 1px solid var(--border-color); background-color: rgba(255, 255, 255, 0.02);
             font-weight: 600; padding: 12px 16px; color: var(--brand-yellow);
         }
 
-        /* Botones principales con el Amarillo del logo */
         .btn-brand {
             background-color: var(--brand-yellow); color: #000; font-weight: 800; border: none; border-radius: 10px; padding: 12px 16px;
-            box-shadow: 0 4px 10px rgba(255, 204, 0, 0.2);
         }
 
         .btn-brand:hover, .btn-brand:active { background-color: var(--brand-yellow-hover); color: #000; }
 
-        /* Botones secundarios con el Azul del logo */
         .btn-brand-blue {
             background-color: var(--brand-blue); color: #fff; font-weight: 700; border: none; border-radius: 10px; padding: 10px 16px;
         }
@@ -95,25 +91,33 @@
         .btn-outline-brand {
             border: 1px solid var(--brand-yellow); color: var(--brand-yellow); background: transparent; border-radius: 10px; font-weight: 600;
         }
-        .btn-outline-brand:hover { background-color: rgba(255, 204, 0, 0.1); color: var(--brand-yellow); }
+        .btn-outline-brand:hover { background-color: rgba(212, 163, 0, 0.1); color: var(--brand-yellow); }
 
         .form-control, .form-select {
-            background-color: #1a1a1e; border: 1px solid #333338; color: #ffffff !important; border-radius: 10px; padding: 10px;
+            background-color: #1a1a20; border: 1px solid #33333d; color: #ffffff !important; border-radius: 10px; padding: 10px;
         }
 
-        .form-control::placeholder { color: #888888 !important; opacity: 1; }
+        .form-control::placeholder { color: #777780 !important; opacity: 1; }
 
         .form-control:focus, .form-select:focus {
-            background-color: #222228; color: #fff; border-color: var(--brand-yellow); box-shadow: 0 0 0 0.2rem rgba(255, 204, 0, 0.25);
+            background-color: #22222b; color: #fff; border-color: var(--brand-yellow); box-shadow: 0 0 0 0.2rem rgba(212, 163, 0, 0.2);
         }
 
         .text-muted { color: var(--text-muted) !important; }
 
-        .preset-badge {
-            cursor: pointer; background-color: #1c1912; color: var(--brand-yellow); border: 1px solid rgba(255, 204, 0, 0.3);
-            margin: 3px; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 0.8rem; font-weight: 700;
+        /* Estilo de selección múltiple tipo checklist para el tarifario */
+        .catalog-container {
+            max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color);
+            padding: 10px; border-radius: 10px; background: #0c0c10;
         }
-        .preset-badge:hover { border-color: var(--brand-yellow); background-color: #2b2413; }
+        
+        .catalog-item-check {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #15151c; border: 1px solid #22222d; border-radius: 8px;
+            padding: 8px 12px; margin-bottom: 6px; font-size: 0.85rem; cursor: pointer;
+        }
+        .catalog-item-check:hover { background: #1c1c26; border-color: var(--brand-yellow); }
+        .catalog-item-check input[type="checkbox"] { accent-color: var(--brand-yellow); transform: scale(1.1); cursor: pointer; }
 
         .modal-content { background-color: var(--bg-card); color: var(--text-light); border: 1px solid var(--border-color); border-radius: 16px; }
         
@@ -124,24 +128,24 @@
         .nav-tabs .nav-item { flex: 1; text-align: center; }
 
         .nav-tabs .nav-link { 
-            color: #999999; border: none; padding: 10px 4px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; width: 100%;
+            color: #888888; border: none; padding: 10px 4px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; width: 100%;
         }
 
         .nav-tabs .nav-link.active { 
-            color: var(--brand-yellow); background-color: rgba(255, 204, 0, 0.05); border-bottom: 3px solid var(--brand-yellow); 
+            color: var(--brand-yellow); background-color: rgba(212, 163, 0, 0.04); border-bottom: 3px solid var(--brand-yellow); 
         }
 
-        /* Botón de micrófono estilo WhatsApp con detalles en Azul y Amarillo */
+        /* Botón de micrófono estilo WhatsApp */
         .fab-mic {
             position: fixed; bottom: 85px; right: 20px; width: 62px; height: 62px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--brand-yellow), #e6b800); color: #000; display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4); z-index: 1000; border: 2px solid var(--brand-blue); cursor: pointer;
+            background: linear-gradient(135deg, var(--brand-yellow), #b08500); color: #000; display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; box-shadow: 0 4px 15px rgba(212, 163, 0, 0.3); z-index: 1000; border: 2px solid var(--brand-blue); cursor: pointer;
             user-select: none; -webkit-user-select: none; transition: transform 0.1s ease;
         }
 
         .fab-mic.recording {
             background: linear-gradient(135deg, #ff3b30, #cc0000); color: #fff; transform: scale(1.15);
-            border-color: #fff; box-shadow: 0 0 25px rgba(255, 59, 48, 0.9);
+            border-color: #fff; box-shadow: 0 0 25px rgba(255, 59, 48, 0.8);
             animation: pulse-mic 1.2s infinite;
         }
 
@@ -156,7 +160,7 @@
         .monto-subtotal { font-size: 0.95rem; font-weight: 700; white-space: nowrap; display: block; color: #fff; }
         
         .receipt-preview-box {
-            background-color: #050505; border: 1px dashed var(--brand-yellow); border-radius: 12px;
+            background-color: #040406; border: 1px dashed var(--brand-yellow); border-radius: 12px;
             padding: 14px; font-family: monospace; white-space: pre-wrap; font-size: 0.85rem; color: var(--brand-yellow);
             max-height: 280px; overflow-y: auto;
         }
@@ -194,7 +198,7 @@
                 <div class="tab-pane fade show active" id="presupuesto">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-file-invoice-dollar me-2" style="color:var(--brand-yellow);"></i>Emisión de Documentos</span>
+                            <span><i class="fas fa-file-invoice-dollar me-2"></i>Emisión de Documentos</span>
                             <button class="btn btn-sm btn-outline-secondary text-light" onclick="limpiarPresupuesto()">Limpiar</button>
                         </div>
                         <div class="card-body">
@@ -217,9 +221,13 @@
                                 </div>
                             </div>
 
+                            <!-- Catálogo de Carga Rápida con Selección Múltiple -->
                             <div class="mb-3">
-                                <label class="form-label small text-muted d-block">Carga Rápida (Catálogo Tarifario Taller):</label>
-                                <div id="presetsContainer" style="max-height: 180px; overflow-y: auto; border: 1px solid var(--border-color); padding: 8px; border-radius: 10px; background: #050505;"></div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label small text-muted m-0">Selección Rápida de Tarifario (CalculDoc):</label>
+                                    <button class="btn btn-sm btn-brand py-1 px-3" style="font-size: 0.75rem;" onclick="agregarServiciosSeleccionados()"><i class="fas fa-plus-circle me-1"></i> Agregar Seleccionados</button>
+                                </div>
+                                <div id="presetsContainer" class="catalog-container"></div>
                             </div>
 
                             <div class="row g-3">
@@ -904,6 +912,75 @@
             calcularPresupuestoVivo();
         }
 
+        // Selección múltiple desde el checklist del tarifario
+        function renderPresets() {
+            const container = document.getElementById('presetsContainer');
+            const listConfig = document.getElementById('listaPresetsConfig');
+            container.innerHTML = ''; listConfig.innerHTML = '';
+
+            presets.forEach((p, idx) => {
+                container.innerHTML += `
+                    <label class="catalog-item-check">
+                        <div>
+                            <input type="checkbox" class="preset-checkbox me-2" data-nombre="${p.nombre.replace(/"/g, '&quot;')}" data-precio="${p.precio}">
+                            <span>${p.nombre}</span> </div> <span class="text-warning fw-bold ms-2">$${p.precio.toLocaleString()}</span>
+                    </label>
+                `;
+                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} -$${p.precio.toLocaleString()}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
+            });
+        }
+
+        function agregarServiciosSeleccionados() {
+            const checkboxes = document.querySelectorAll('.preset-checkbox:checked');
+            if (checkboxes.length === 0) {
+                alert("Por favor, tildá al menos un servicio del catálogo.");
+                return;
+            }
+
+            checkboxes.forEach(chk => {
+                const nombre = chk.getAttribute('data-nombre');
+                const precio = parseFloat(chk.getAttribute('data-precio'));
+                addServicioRow(nombre, precio);
+                chk.checked = false; // Desmarcar después de agregar
+            });
+
+            calcularPresupuestoVivo();
+            alert(`¡Se agregaron ${checkboxes.length} servicio(s) a la calculadora!`);
+        }
+
+        function agregarPreset() {
+            const n = document.getElementById('new_preset_name').value;
+            const p = parseFloat(document.getElementById('new_preset_price').value);
+            if(n && p) { presets.push({nombre: n, precio: p}); saveData(); renderPresets(); }
+        }
+
+        function borrarPreset(idx) { presets.splice(idx,1); saveData(); renderPresets(); }
+
+        function renderPresetsDescuentos() {
+            const container = document.getElementById('discountPresetsContainer');
+            const listConfig = document.getElementById('listaPresetsDescuentosConfig');
+            container.innerHTML = ''; listConfig.innerHTML = '';
+
+            presetsDescuentos.forEach((d, idx) => {
+                container.innerHTML += `<span class="preset-badge" style="color:var(--brand-blue); border-color:var(--brand-blue); background:#091424;" onclick="aplicarPresetDescuento('${d.nombre}', ${d.monto})">\% ${d.nombre}</span>`;
+                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${d.nombre} - -$${d.monto}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPresetDescuento(${idx})">×</button></li>`;
+            });
+        }
+
+        function aplicarPresetDescuento(nombre, monto) {
+            document.getElementById('p_descuento_nombre').value = nombre;
+            document.getElementById('p_descuento_monto').value = monto;
+            calcularPresupuestoVivo();
+        }
+
+        function agregarPresetDescuento() {
+            const n = document.getElementById('new_disc_name').value;
+            const m = parseFloat(document.getElementById('new_disc_val').value);
+            if(n && m) { presetsDescuentos.push({nombre: n, monto: m}); saveData(); renderPresetsDescuentos(); }
+        }
+
+        function borrarPresetDescuento(idx) { presetsDescuentos.splice(idx,1); saveData(); renderPresetsDescuentos(); }
+
         function construirTextoComprobante() {
             const tipoDoc = document.getElementById('p_tipo_doc').value;
             const cliente = document.getElementById('p_cliente').value || 'Cliente';
@@ -946,7 +1023,7 @@
             document.querySelectorAll('.r-row').forEach(r => {
                 const n = r.querySelector('.r-nombre').value;
                 const p = r.querySelector('.r-precio').value;
-                if(n) { txt += `• ${n}: $${parseFloat(p||0).toLocaleString()}\n`; hasR = true; }
+                if(n) { txt += `• ${n}:$${parseFloat(p||0).toLocaleString()}\n`; hasR = true; }
             });
             if(!hasR) txt += `• Sin repuestos adicionales\n`;
             txt += `\n👉 Subtotal Repuestos: $${subRepuestos.toLocaleString()}\n\n`;
@@ -956,7 +1033,7 @@
             document.querySelectorAll('.s-row').forEach(s => {
                 const n = s.querySelector('.s-nombre').value;
                 const p = s.querySelector('.s-precio').value;
-                if(n) { txt += `• ${n}: $${parseFloat(p||0).toLocaleString()}\n`; hasS = true; }
+                if(n) { txt += `• ${n}:$${parseFloat(p||0).toLocaleString()}\n`; hasS = true; }
             });
             if(!hasS) txt += `• Servicio general\n`;
             txt += `\n👉 Subtotal Mano de Obra: $${subServicios.toLocaleString()}\n`;
@@ -982,7 +1059,7 @@
                 txt += `──────────────────────────────\n`;
             }
             
-            txt += `🔧 ${configTaller.nombre} | ${configTaller.ig}\n`;
+            txt += `🔧 ${configTaller.nombre} \vert{}${configTaller.ig}\n`;
             if(configTaller.direccion) txt += `📍 ${configTaller.direccion}\n`;
             if(configTaller.telefono) txt += `📲 Consultas: ${configTaller.telefono}`;
 
@@ -1028,7 +1105,7 @@
             txt += `📌 NOTA TÉCNICA:\n`;
             txt += `Se sugiere realizar estos arreglos antes de rodar para evitar daños o desgastes mayores.\n`;
             txt += `──────────────────────────────\n`;
-            txt += `🔧 ${configTaller.nombre} | ${configTaller.ig}\n`;
+            txt += `🔧 ${configTaller.nombre} \vert{}${configTaller.ig}\n`;
             if(configTaller.direccion) txt += `📍 ${configTaller.direccion}\n`;
             if(configTaller.telefono) txt += `📲 Turnos y Consultas: ${configTaller.telefono}`;
 
@@ -1061,50 +1138,6 @@
             addRepuestoRow();
             calcularPresupuestoVivo();
         }
-
-        function renderPresets() {
-            const container = document.getElementById('presetsContainer');
-            const listConfig = document.getElementById('listaPresetsConfig');
-            container.innerHTML = ''; listConfig.innerHTML = '';
-
-            presets.forEach((p, idx) => {
-                container.innerHTML += `<span class="preset-badge" onclick="addServicioRow('${p.nombre}', ${p.precio})">+ ${p.nombre} ($${p.precio.toLocaleString()})</span>`;
-                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} - $${p.precio.toLocaleString()}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
-            });
-        }
-
-        function agregarPreset() {
-            const n = document.getElementById('new_preset_name').value;
-            const p = parseFloat(document.getElementById('new_preset_price').value);
-            if(n && p) { presets.push({nombre: n, precio: p}); saveData(); renderPresets(); }
-        }
-
-        function borrarPreset(idx) { presets.splice(idx,1); saveData(); renderPresets(); }
-
-        function renderPresetsDescuentos() {
-            const container = document.getElementById('discountPresetsContainer');
-            const listConfig = document.getElementById('listaPresetsDescuentosConfig');
-            container.innerHTML = ''; listConfig.innerHTML = '';
-
-            presetsDescuentos.forEach((d, idx) => {
-                container.innerHTML += `<span class="preset-badge" style="color:var(--brand-blue); border-color:var(--brand-blue); background:#091424;" onclick="aplicarPresetDescuento('${d.nombre}', ${d.monto})">% ${d.nombre}</span>`;
-                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${d.nombre} - -$${d.monto}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPresetDescuento(${idx})">×</button></li>`;
-            });
-        }
-
-        function aplicarPresetDescuento(nombre, monto) {
-            document.getElementById('p_descuento_nombre').value = nombre;
-            document.getElementById('p_descuento_monto').value = monto;
-            calcularPresupuestoVivo();
-        }
-
-        function agregarPresetDescuento() {
-            const n = document.getElementById('new_disc_name').value;
-            const m = parseFloat(document.getElementById('new_disc_val').value);
-            if(n && m) { presetsDescuentos.push({nombre: n, monto: m}); saveData(); renderPresetsDescuentos(); }
-        }
-
-        function borrarPresetDescuento(idx) { presetsDescuentos.splice(idx,1); saveData(); renderPresetsDescuentos(); }
 
         // Historial agrupado por Clientes
         function renderHistorialClientes() {
@@ -1157,10 +1190,7 @@
                         <div class="card-body p-2 d-flex justify-content-between align-items-center">
                             <div>
                                 <strong class="small d-block text-light">🚲 ${h.bici}</strong>
-                                <small class="text-muted" style="font-size:0.75rem;">📅 ${h.fecha}</small>
-                            </div>
-                            <div class="text-end">
-                                <span class="fw-bold me-2 small" style="color:var(--brand-yellow);">$${h.total.toLocaleString()}</span>
+                                <small class="text-muted" style="font-size:0.75rem;">📅 ${h.fecha}</small> </div> <div class="text-end"> <span class="fw-bold me-2 small" style="color:var(--brand-yellow);">$${h.total.toLocaleString()}</span>
                                 <button class="btn btn-sm btn-outline-brand p-1 px-2" onclick="verComprobanteModalText(${h.id})">Ver</button>
                             </div>
                         </div>
@@ -1175,7 +1205,7 @@
             const item = historialComprobantes.find(h => h.id === id);
             if(!item) return;
             document.getElementById('comprobanteTextoView').innerText = item.texto;
-            new bootstrap.Modal(document.getElementById('comprobanteModal')).show();
+            new bootstrap.Modal(document.getElementById('comprobanteModal`).show();
         }
 
         function enviarComprobanteDesdeModal() {
