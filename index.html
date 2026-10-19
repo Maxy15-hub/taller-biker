@@ -105,18 +105,14 @@
 
         .text-muted { color: var(--text-muted) !important; }
 
-        .catalog-container {
-            max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color);
-            padding: 10px; border-radius: 10px; background: #0c0c10;
-        }
-        
+        /* Items dentro del modal de selección múltiple */
         .catalog-item-check {
             display: flex; align-items: center; justify-content: space-between;
-            background: #15151c; border: 1px solid #22222d; border-radius: 8px;
-            padding: 8px 12px; margin-bottom: 6px; font-size: 0.85rem; cursor: pointer;
+            background: #181820; border: 1px solid #2d2d38; border-radius: 10px;
+            padding: 10px 14px; margin-bottom: 8px; font-size: 0.9rem; cursor: pointer;
         }
-        .catalog-item-check:hover { background: #1c1c26; border-color: var(--brand-yellow); }
-        .catalog-item-check input[type="checkbox"] { accent-color: var(--brand-yellow); transform: scale(1.1); cursor: pointer; }
+        .catalog-item-check:hover { background: #22222d; border-color: var(--brand-yellow); }
+        .catalog-item-check input[type="checkbox"] { accent-color: var(--brand-yellow); transform: scale(1.2); cursor: pointer; }
 
         .modal-content { background-color: var(--bg-card); color: var(--text-light); border: 1px solid var(--border-color); border-radius: 16px; }
         
@@ -134,6 +130,7 @@
             color: var(--brand-yellow); background-color: rgba(212, 163, 0, 0.04); border-bottom: 3px solid var(--brand-yellow); 
         }
 
+        /* Botón de micrófono estilo WhatsApp */
         .fab-mic {
             position: fixed; bottom: 85px; right: 20px; width: 62px; height: 62px; border-radius: 50%;
             background: linear-gradient(135deg, var(--brand-yellow), #b08500); color: #000; display: flex; align-items: center; justify-content: center;
@@ -219,13 +216,11 @@
                                 </div>
                             </div>
 
-                            <!-- Catálogo de Carga Rápida con Selección Múltiple -->
+                            <!-- Botón para abrir el Catálogo Rápido con Buscador (CalculDoc) -->
                             <div class="mb-3">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label class="form-label small text-muted m-0">Selección Rápida de Tarifario (CalculDoc):</label>
-                                    <button class="btn btn-sm btn-brand py-1 px-3" style="font-size: 0.75rem;" onclick="agregarServiciosSeleccionados()"><i class="fas fa-plus-circle me-1"></i> Agregar Seleccionados</button>
-                                </div>
-                                <div id="presetsContainer" class="catalog-container"></div>
+                                <button class="btn btn-brand w-100 py-2 fw-bold shadow-sm" onclick="abrirCatalogoModal()">
+                                    <i class="fas fa-search me-2"></i> 🔍 Carga Rápida / Tarifario (CalculDoc)
+                                </button>
                             </div>
 
                             <div class="row g-3">
@@ -349,7 +344,31 @@
         <button class="fab-mic" id="btnMic" title="Mantené presionado para hablar"><i class="fas fa-microphone"></i></button>
     </div>
 
-    <!-- Modales -->
+    <!-- MODAL DE CARGA RÁPIDA CON BUSCADOR INTELIGENTE -->
+    <div class="modal fade" id="catalogoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="color:var(--brand-yellow);"><i class="fas fa-search me-2"></i>Selección Rápida de Tarifario</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" id="searchCatalogInput" class="form-control" placeholder="🔍 Escribí para buscar servicio o repuesto (ej: cubierta, cambio...)" onkeyup="filtrarCatalogoModal()">
+                    </div>
+                    <div id="modalPresetsContainer" style="max-height: 350px; overflow-y: auto;">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary w-25" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-brand w-70 py-2 fw-bold" onclick="agregarServiciosSeleccionadosModal()"><i class="fas fa-check-circle me-1"></i> Aceptar y Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales de Configuración e Historial -->
     <div class="modal fade" id="configModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -510,16 +529,8 @@
             db = firebase.firestore();
             auth = firebase.auth();
 
-            // Manejar el resultado de la redirección de Google al volver
-            auth.getRedirectResult().then(result => {
-                if (result.user) {
-                    currentUser = result.user;
-                    updateUserUI(result.user);
-                    sincronizarDesdeNube();
-                }
-            }).catch(error => {
-                console.error("Error en redirección de login:", error);
-            });
+            // Usamos popup con persistencia local para asegurar que la sesión se guarde correctamente
+            auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 
             auth.onAuthStateChanged(user => {
                 if (user) {
@@ -585,7 +596,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             cargarInputsConfig();
-            renderPresets();
+            renderPresetsModal();
             renderPresetsDescuentos();
             renderHistorialClientes();
             addServicioRow();
@@ -753,7 +764,7 @@
 
                     saveData();
                     cargarInputsConfig();
-                    renderPresets();
+                    renderPresetsModal();
                     renderPresetsDescuentos();
                     renderHistorialClientes();
                     alert("¡Copia de seguridad cargada y restaurada con éxito!");
@@ -786,7 +797,7 @@
                         }
                     });
                     saveData();
-                    renderPresets();
+                    renderPresetsModal();
                     alert(`¡Tarifario importado! Se agregaron ${agregados} precios al catálogo del taller.`);
                 } catch(err) {
                     alert("Error al leer el archivo de precios.");
@@ -817,7 +828,7 @@
                     
                     saveData();
                     cargarInputsConfig();
-                    renderPresets();
+                    renderPresetsModal();
                     renderPresetsDescuentos();
                     renderHistorialClientes();
                 }
@@ -854,14 +865,19 @@
             }
         }
 
-        // Método de Login por redirección para evitar bloqueos en celulares
+        // Login por Popup con persistencia local asegurada
         function loginGoogle() {
             if (!auth) {
                 alert("El sistema de autenticación de Firebase no está disponible.");
                 return;
             }
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithRedirect(provider).catch(error => {
+            auth.signInWithPopup(provider).then(result => {
+                currentUser = result.user;
+                updateUserUI(result.user);
+                sincronizarDesdeNube();
+                alert("¡Sesión iniciada con éxito!");
+            }).catch(error => {
                 console.error("Error al iniciar sesión:", error);
                 alert("No se pudo iniciar sesión: " + error.message);
             });
@@ -922,27 +938,47 @@
             calcularPresupuestoVivo();
         }
 
-        // Selección múltiple desde el checklist del tarifario
-        function renderPresets() {
-            const container = document.getElementById('presetsContainer');
+        // --- CATÁLOGO Y MODAL DE CARGA RÁPIDA (CON BUSCADOR INTELIGENTE / LUPITA) ---
+        function abrirCatalogoModal() {
+            document.getElementById('searchCatalogInput').value = '';
+            renderPresetsModal();
+            new bootstrap.Modal(document.getElementById('catalogoModal')).show();
+        }
+
+        function renderPresetsModal(filtro = '') {
+            const container = document.getElementById('modalPresetsContainer');
             const listConfig = document.getElementById('listaPresetsConfig');
-            container.innerHTML = ''; listConfig.innerHTML = '';
+            container.innerHTML = ''; 
+            if(listConfig) listConfig.innerHTML = '';
+
+            const filtroLower = filtro.toLowerCase().trim();
 
             presets.forEach((p, idx) => {
-                container.innerHTML += `
-                    <label class="catalog-item-check">
-                        <div>
-                            <input type="checkbox" class="preset-checkbox me-2" data-nombre="${p.nombre.replace(/"/g, '&quot;')}" data-precio="${p.precio}">
-                            <span>${p.nombre}</span>
-                        </div>
-                        <span class="text-warning fw-bold ms-2">$${p.precio.toLocaleString()}</span>
-                    </label>
-                `;
-                listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} - $${p.precio.toLocaleString()}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
+                const nombreMatch = p.nombre.toLowerCase().includes(filtroLower);
+                if (nombreMatch) {
+                    container.innerHTML += `
+                        <label class="catalog-item-check">
+                            <div>
+                                <input type="checkbox" class="preset-checkbox me-2" data-nombre="${p.nombre.replace(/"/g, '&quot;')}" data-precio="${p.precio}">
+                                <span>${p.nombre}</span>
+                            </div>
+                            <span class="text-warning fw-bold ms-2">$${p.precio.toLocaleString()}</span>
+                        </label>
+                    `;
+                }
+
+                if(listConfig) {
+                    listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${p.nombre} - $${p.precio.toLocaleString()}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPreset(${idx})">×</button></li>`;
+                }
             });
         }
 
-        function agregarServiciosSeleccionados() {
+        function filtrarCatalogoModal() {
+            const texto = document.getElementById('searchCatalogInput').value;
+            renderPresetsModal(texto);
+        }
+
+        function agregarServiciosSeleccionadosModal() {
             const checkboxes = document.querySelectorAll('.preset-checkbox:checked');
             if (checkboxes.length === 0) {
                 alert("Por favor, tildá al menos un servicio del catálogo.");
@@ -953,20 +989,25 @@
                 const nombre = chk.getAttribute('data-nombre');
                 const precio = parseFloat(chk.getAttribute('data-precio'));
                 addServicioRow(nombre, precio);
-                chk.checked = false; // Desmarcar después de agregar
             });
 
             calcularPresupuestoVivo();
+            
+            // Cerrar el modal
+            const modalEl = document.getElementById('catalogoModal');
+            const modalObj = bootstrap.Modal.getInstance(modalEl);
+            if(modalObj) modalObj.hide();
+
             alert(`¡Se agregaron ${checkboxes.length} servicio(s) a la calculadora!`);
         }
 
         function agregarPreset() {
             const n = document.getElementById('new_preset_name').value;
             const p = parseFloat(document.getElementById('new_preset_price').value);
-            if(n && p) { presets.push({nombre: n, precio: p}); saveData(); renderPresets(); }
+            if(n && p) { presets.push({nombre: n, precio: p}); saveData(); renderPresetsModal(); }
         }
 
-        function borrarPreset(idx) { presets.splice(idx,1); saveData(); renderPresets(); }
+        function borrarPreset(idx) { presets.splice(idx,1); saveData(); renderPresetsModal(); }
 
         function renderPresetsDescuentos() {
             const container = document.getElementById('discountPresetsContainer');
@@ -974,7 +1015,7 @@
             container.innerHTML = ''; listConfig.innerHTML = '';
 
             presetsDescuentos.forEach((d, idx) => {
-                container.innerHTML += `<span class="preset-badge" style="color:var(--brand-blue); border-color:var(--brand-blue); background:#091424;" onclick="aplicarPresetDescuento('${d.nombre}', ${d.monto})">% ${d.nombre}</span>`;
+                container.innerHTML += `<span class="preset-badge" style="color:var(--brand-blue); border-color:var(--brand-blue); background:#091424; cursor:pointer; padding:6px 12px; border-radius:20px; display:inline-block; font-size:0.8rem; font-weight:700; margin:3px;" onclick="aplicarPresetDescuento('${d.nombre}', ${d.monto})">% ${d.nombre}</span>`;
                 listConfig.innerHTML += `<li class="list-group-item bg-dark text-light d-flex justify-content-between p-2 small"><span>${d.nombre} - -$${d.monto}</span><button class="btn btn-sm btn-outline-danger p-0 px-2" onclick="borrarPresetDescuento(${idx})">×</button></li>`;
             });
         }
