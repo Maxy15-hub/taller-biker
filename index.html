@@ -103,6 +103,16 @@
             background-color: #22222b; color: #fff; border-color: var(--brand-yellow); box-shadow: 0 0 0 0.2rem rgba(212, 163, 0, 0.2);
         }
 
+        /* Estilo sutil y chico para el selector de tipo de documento */
+        .select-tipo-doc {
+            font-size: 0.85rem !important;
+            padding: 8px 12px !important;
+            background-color: #15151a !important;
+            color: #d4a300 !important;
+            border-color: #33333d !important;
+            text-transform: none !important;
+        }
+
         .text-muted { color: var(--text-muted) !important; }
 
         .catalog-item-check {
@@ -180,10 +190,10 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label small fw-bold" style="color:var(--brand-yellow);"><i class="fas fa-exchange-alt me-1"></i> Tipo de Documento a Generar:</label>
-                                <select id="p_tipo_doc" class="form-select" onchange="calcularPresupuestoVivo()" style="border-color:var(--brand-yellow);">
-                                    <option value="presupuesto" selected>📋 PRESUPUESTO ESTIMADO (Pre-servicio)</option>
-                                    <option value="comprobante">🧾 COMPROBANTE DE PAGO Y ENTREGA (Final)</option>
+                                <label class="form-label small text-muted mb-1"><i class="fas fa-exchange-alt me-1"></i> Tipo de documento a generar:</label>
+                                <select id="p_tipo_doc" class="form-select select-tipo-doc" onchange="calcularPresupuestoVivo()">
+                                    <option value="presupuesto" selected>Presupuesto estimado (Pre-servicio)</option>
+                                    <option value="comprobante">Comprobante de pago y entrega (Final)</option>
                                 </select>
                             </div>
 
@@ -437,6 +447,7 @@
         </div>
     </div>
 
+    <!-- MODAL HISTORIAL DEL CLIENTE -->
     <div class="modal fade" id="clienteHistorialModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -569,6 +580,7 @@
         ];
 
         let historialComprobantes = JSON.parse(localStorage.getItem('tb_historial')) || [];
+        let clienteActualAbierto = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             cargarInputsConfig();
@@ -1102,11 +1114,17 @@
         }
 
         function abrirHistorialCliente(clienteNombre) {
+            clienteActualAbierto = clienteNombre;
             document.getElementById('modalClienteTitle').innerHTML = `<i class="fas fa-user-circle me-2" style="color:var(--brand-yellow);"></i>Historial de: ${clienteNombre}`;
             const container = document.getElementById('clienteComprobantesList');
             container.innerHTML = '';
 
             const trabajosCliente = historialComprobantes.filter(h => (h.cliente ? h.cliente.trim() : 'Sin Nombre') === clienteNombre);
+
+            if(trabajosCliente.length === 0) {
+                container.innerHTML = `<p class="text-muted small text-center">No hay registros para este cliente.</p>`;
+                return;
+            }
 
             trabajosCliente.forEach(h => {
                 container.innerHTML += `
@@ -1114,11 +1132,11 @@
                         <div class="card-body p-2 d-flex justify-content-between align-items-center">
                             <div>
                                 <strong class="small d-block text-light">🚲 ${h.bici}</strong>
-                                <small class="text-muted" style="font-size:0.75rem;">📅 ${h.fecha}</small>
+                                <small class="text-muted" style="font-size:0.75rem;">📅 ${h.fecha} | Total: <span style="color:var(--brand-yellow);">$${h.total.toLocaleString()}</span></small>
                             </div>
-                            <div class="text-end">
-                                <span class="fw-bold me-2 small" style="color:var(--brand-yellow);">$${h.total.toLocaleString()}</span>
+                            <div class="d-flex gap-1">
                                 <button class="btn btn-sm btn-outline-brand p-1 px-2" onclick="verComprobanteModalText(${h.id})">Ver</button>
+                                <button class="btn btn-sm btn-outline-danger p-1 px-2" onclick="eliminarComprobanteHistorial(${h.id})" title="Eliminar registro"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
                     </div>
@@ -1126,6 +1144,24 @@
             });
 
             new bootstrap.Modal(document.getElementById('clienteHistorialModal')).show();
+        }
+
+        function eliminarComprobanteHistorial(id) {
+            if(confirm("¿Seguro querés eliminar este registro del historial?")) {
+                historialComprobantes = historialComprobantes.filter(h => h.id !== id);
+                saveData();
+                renderHistorialClientes();
+                
+                // Actualizar la vista del modal del cliente o cerrarlo si ya no quedan
+                const restantes = historialComprobantes.filter(h => (h.cliente ? h.cliente.trim() : 'Sin Nombre') === clienteActualAbierto);
+                if(restantes.length > 0) {
+                    abrirHistorialCliente(clienteActualAbierto);
+                } else {
+                    const modalEl = document.getElementById('clienteHistorialModal');
+                    const modalObj = bootstrap.Modal.getInstance(modalEl);
+                    if(modalObj) modalObj.hide();
+                }
+            }
         }
 
         function verComprobanteModalText(id) {
